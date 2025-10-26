@@ -19,7 +19,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Npc.cpp" />
+    <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Source\OlympeEngine.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Factory.h" />
+    <ClInclude Include="GameEngine.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Npc.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="Singleton.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
