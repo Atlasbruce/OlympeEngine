@@ -11,9 +11,11 @@ Purpose:
 #pragma once
 class Singleton
 {
-	static Singleton* instance;
+
+	~Singleton() = default;
+
 public:	
-	static Singleton* getInstance()
+	static Singleton* get()
 	{
 		if (instance == nullptr)
 		{
@@ -21,5 +23,13 @@ public:
 		}
 		return instance;
 	}
+
+	virtual void Process() {};
+	virtual void Render() {};
+	virtual void OnEvent() {};
+
+	// Properties
+	static Singleton* instance;
 };
 
+Singleton* Singleton::instance = nullptr;

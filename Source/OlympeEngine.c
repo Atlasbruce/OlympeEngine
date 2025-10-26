@@ -16,8 +16,8 @@ static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 static Uint64 last_time = 0;
 
-#define WINDOW_WIDTH 640
-#define WINDOW_HEIGHT 480
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 600
 
 #define NUM_POINTS 500
 #define MIN_PIXELS_PER_SECOND 30  /* move at least this many pixels per second. */
@@ -38,14 +38,14 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 {
     int i;
 
-    SDL_SetAppMetadata("Example Renderer Points", "1.0", "com.example.renderer-points");
+    SDL_SetAppMetadata("Olympe Game Engine", "2.0", "com.googlesites.olympeengine");
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
 
-    if (!SDL_CreateWindowAndRenderer("examples/renderer/points", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
+    if (!SDL_CreateWindowAndRenderer("Olympe Engine 2.0", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }

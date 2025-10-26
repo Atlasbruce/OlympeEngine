@@ -19,20 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="Npc.cpp" />
-    <ClCompile Include="Object.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Source\OlympeEngine.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Factory.h" />
-    <ClInclude Include="GameEngine.h" />
-    <ClInclude Include="GameObject.h" />
-    <ClInclude Include="Npc.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="Singleton.h" />
+    <ClInclude Include="Source\Factory.h" />
+    <ClInclude Include="Source\GameEngine.h" />
+    <ClInclude Include="Source\GameObject.h" />
+    <ClInclude Include="Source\InputsManager.h" />
+    <ClInclude Include="Source\json.hpp" />
+    <ClInclude Include="Source\Npc.h" />
+    <ClInclude Include="Source\Object.h" />
+    <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\Singleton.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -93,6 +91,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>$(ProjectName)_r</TargetName>
     <OutDir>$(SolutionDir)\</OutDir>
+    <SourcePath>\Olympe Engine\Source;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
