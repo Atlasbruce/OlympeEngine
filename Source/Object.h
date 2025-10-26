@@ -38,8 +38,6 @@ enum class ObjectState
 	Hiding,
 };
 
-
-
 class Object
 {
 public:
@@ -59,6 +57,14 @@ public:
 	virtual void Process() {};
 	virtual void Render() {};
 	virtual void OnEvent() {};
+
+	// comparaison operator
+	inline virtual bool	operator==	(Object& _oc) { return (this == &_oc); }
+	inline virtual bool	operator!=	(Object& _oc) { return (this != &_oc); }
+	inline virtual bool	operator>	(Object& _oc) { return false; }
+	inline virtual bool	operator<	(Object& _oc) { return false; }
+	inline virtual bool	operator>=	(Object& _oc) { return false; }
+	inline virtual bool	operator<=	(Object& _oc) { return false; }
 };
 
 

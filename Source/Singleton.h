@@ -11,11 +11,22 @@ Purpose:
 #pragma once
 class Singleton
 {
-
-	~Singleton() = default;
+public:
+	Singleton()
+	{
+		if (instance == nullptr)
+		{
+			instance = new Singleton();
+		}
+	}
+	virtual ~Singleton()
+	{
+		if (instance != nullptr) 
+			delete instance;
+	}
 
 public:	
-	static Singleton* get()
+	static Singleton* Get()
 	{
 		if (instance == nullptr)
 		{
@@ -30,6 +41,11 @@ public:
 
 	// Properties
 	static Singleton* instance;
+
+	bool operator==(const Singleton& other) const
+	{
+		return false;
+	}
 };
 
 Singleton* Singleton::instance = nullptr;

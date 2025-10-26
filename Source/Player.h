@@ -8,7 +8,8 @@ Purpose:
 - Handles Joypads and Input Mapping.
 - Manages Events for collisions, interactions, and state changes.
 
-*/#pragma once
+*/
+#pragma once
 #include "GameObject.h"
 class Player :
     public GameObject

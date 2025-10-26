@@ -60,6 +60,10 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 
     last_time = SDL_GetTicks();
 
+	//Olympe Engine Elements Initialization Here
+    //GameEngine::Get();
+    //Factory::Get();
+
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
 
