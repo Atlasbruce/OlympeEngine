@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\OlympeEngine.c" />
+    <ClCompile Include="Source\OlympeEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Factory.h" />
