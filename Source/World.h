@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <type_traits>
 
+#include "Level.h" // add Level management
+
 class World : public Singleton
 {
 public:
@@ -22,6 +24,14 @@ public:
         return instance;
     }
     static World& Get() { return GetInstance(); }
+
+    // Level management
+    void AddLevel(std::unique_ptr<Level> level)
+    {
+        if (level) m_levels.push_back(std::move(level));
+    }
+
+    const std::vector<std::unique_ptr<Level>>& GetLevels() const { return m_levels; }
 
     // Create and attach a property to an owner. World takes ownership.
     template<typename T, typename... Args>
@@ -88,28 +98,28 @@ public:
     // Main processing loop called each frame: events are processed first (async), then stages in order
     void Process(float dt)
     {
-        // 0) Ensure queued events are dispatched before the update stages
+        //0) Ensure queued events are dispatched before the update stages
         EventManager::Get().Process();
 
-        // 1) Physics
+        //1) Physics
         for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::Physics)])
         {
             if (prop) prop->Process(dt);
         }
 
-        // 2) AI
+        //2) AI
         for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::AI)])
         {
             if (prop) prop->Process(dt);
         }
 
-        // 3) Render stage (note: actual drawing may require renderer context)
+        //3) Render stage (note: actual drawing may require renderer context)
         for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::Render)])
         {
             if (prop) prop->Render();
         }
 
-        // 4) Audio
+        //4) Audio
         for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::Audio)])
         {
             if (prop) prop->Process(dt);
@@ -120,4 +130,7 @@ private:
     std::vector<std::unique_ptr<GameObjectProperty>> m_properties; // owns all properties
     std::array<std::vector<GameObjectProperty*>, static_cast<size_t>(PropertyStage::Count)> m_stageLists;
     std::unordered_map<int, std::vector<GameObjectProperty*>> m_ownerMap;
+
+    // Level storage
+    std::vector<std::unique_ptr<Level>> m_levels;
 };

@@ -24,21 +24,34 @@
     <ClCompile Include="Source\system\SystemMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\CollisionMap.h" />
     <ClInclude Include="Source\Factory.h" />
     <ClInclude Include="Source\GameEngine.h" />
+    <ClInclude Include="Source\GameMenu.h" />
     <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\GameObjectProperty.h" />
+    <ClInclude Include="Source\GameRules.h" />
+    <ClInclude Include="Source\GraphicMap.h" />
     <ClInclude Include="Source\InputsManager.h" />
     <ClInclude Include="Source\json.hpp" />
+    <ClInclude Include="Source\Level.h" />
     <ClInclude Include="Source\Npc.h" />
     <ClInclude Include="Source\Object.h" />
+    <ClInclude Include="Source\Objective.h" />
     <ClInclude Include="Source\Player.h" />
+    <ClInclude Include="Source\Quest.h" />
+    <ClInclude Include="Source\QuestManager.h" />
+    <ClInclude Include="Source\Sector.h" />
+    <ClInclude Include="Source\Serialization.h" />
     <ClInclude Include="Source\Singleton.h" />
     <ClInclude Include="Source\system\EventManager.h" />
     <ClInclude Include="Source\system\GameMenu.h" />
     <ClInclude Include="Source\system\message.h" />
     <ClInclude Include="Source\system\SystemMenu.h" />
     <ClInclude Include="source\system\system_consts.h" />
+    <ClInclude Include="Source\Task.h" />
+    <ClInclude Include="Source\third_party\nlohmann\json.hpp" />
+    <ClInclude Include="Source\VideoGame.h" />
     <ClInclude Include="Source\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
