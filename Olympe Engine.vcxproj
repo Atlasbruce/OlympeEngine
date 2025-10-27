@@ -19,13 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Object.cpp" />
     <ClCompile Include="Source\OlympeEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Factory.h" />
     <ClInclude Include="Source\GameEngine.h" />
     <ClInclude Include="Source\GameObject.h" />
+    <ClInclude Include="Source\GameObjectProperty.h" />
     <ClInclude Include="Source\InputsManager.h" />
     <ClInclude Include="Source\json.hpp" />
     <ClInclude Include="Source\Npc.h" />
@@ -35,6 +35,7 @@
     <ClInclude Include="Source\system\EventManager.h" />
     <ClInclude Include="Source\system\message.h" />
     <ClInclude Include="source\system\system_consts.h" />
+    <ClInclude Include="Source\World.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

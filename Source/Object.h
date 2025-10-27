@@ -9,6 +9,7 @@ Purpose:
 */
 #pragma once
 #include <string>
+#include "system/message.h"
 
 enum class ObjectType
 {
@@ -56,7 +57,7 @@ public:
 
 	virtual void Process() {};
 	virtual void Render() {};
-	virtual void OnEvent() {};
+	virtual void OnEvent(const Message& msg) {};
 
 	// comparaison operator
 	inline virtual bool	operator==	(Object& _oc) { return (this == &_oc); }

@@ -12,6 +12,7 @@
 #include <SDL3/SDL_main.h>
 #include "gameengine.h"
 #include "Factory.h"
+#include "World.h"
 
  /* We will use this renderer to draw into this window every frame. */
 static SDL_Window* window = NULL;
@@ -64,6 +65,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 
 	//Olympe Engine Elements Initialization Here
     GameEngine::Get();
+    World::Get();
  
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
@@ -105,6 +107,9 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     }
 
     last_time = now;
+
+    // Update world properties (events already processed inside World::Process)
+    World::Get().Process(elapsed);
 
     /* as you can see from this, rendering draws over whatever was drawn before it. */
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
