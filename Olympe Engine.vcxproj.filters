@@ -25,16 +25,22 @@
     <Filter Include="Fichiers d%27en-tête\Player">
       <UniqueIdentifier>{2e434cc8-9878-4419-9538-7f76dfd1cbcb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\Properties">
+      <UniqueIdentifier>{aa29337d-d071-4ec0-919a-26448b0bbb43}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\OlympeEngine.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\system\GameMenu.cpp">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\SystemMenu.cpp">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\system\system_consts.h">
-      <Filter>Fichiers sources</Filter>
-    </ClInclude>
     <ClInclude Include="Source\system\EventManager.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
@@ -69,10 +75,19 @@
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\GameObjectProperty.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\Properties</Filter>
+    </ClInclude>
+    <ClInclude Include="source\system\system_consts.h">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\system\GameMenu.h">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\system\SystemMenu.h">
+      <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\World.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\OlympeEngine.cpp" />
+    <ClCompile Include="Source\system\GameMenu.cpp" />
+    <ClCompile Include="Source\system\SystemMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Factory.h" />
@@ -33,7 +35,9 @@
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Singleton.h" />
     <ClInclude Include="Source\system\EventManager.h" />
+    <ClInclude Include="Source\system\GameMenu.h" />
     <ClInclude Include="Source\system\message.h" />
+    <ClInclude Include="Source\system\SystemMenu.h" />
     <ClInclude Include="source\system\system_consts.h" />
     <ClInclude Include="Source\World.h" />
   </ItemGroup>
