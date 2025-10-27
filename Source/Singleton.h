@@ -9,43 +9,19 @@ Purpose:
 
 */
 #pragma once
+
+// Base Singleton marker class (no instance managed here).
+// Individual derived classes should implement their own GetInstance()/Get() methods.
+
 class Singleton
 {
 public:
-	Singleton()
-	{
-		if (instance == nullptr)
-		{
-			instance = new Singleton();
-		}
-	}
-	virtual ~Singleton()
-	{
-		if (instance != nullptr) 
-			delete instance;
-	}
-
-public:	
-	static Singleton* Get()
-	{
-		if (instance == nullptr)
-		{
-			instance = new Singleton();
-		}
-		return instance;
-	}
+	Singleton() = default;
+	virtual ~Singleton() = default;
 
 	virtual void Process() {};
 	virtual void Render() {};
 	virtual void OnEvent() {};
 
-	// Properties
-	static Singleton* instance;
-
-	bool operator==(const Singleton& other) const
-	{
-		return false;
-	}
+	bool operator==(const Singleton& other) const { return this == &other; }
 };
-
-Singleton* Singleton::instance = nullptr;

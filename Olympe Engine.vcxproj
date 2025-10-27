@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Object.cpp" />
     <ClCompile Include="Source\OlympeEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -31,6 +32,9 @@
     <ClInclude Include="Source\Object.h" />
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Singleton.h" />
+    <ClInclude Include="Source\system\EventManager.h" />
+    <ClInclude Include="Source\system\message.h" />
+    <ClInclude Include="source\system\system_consts.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

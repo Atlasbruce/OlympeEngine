@@ -10,7 +10,8 @@
 #define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
-#include "Singleton.h"
+#include "gameengine.h"
+#include "Factory.h"
 
  /* We will use this renderer to draw into this window every frame. */
 static SDL_Window* window = NULL;
@@ -62,8 +63,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     last_time = SDL_GetTicks();
 
 	//Olympe Engine Elements Initialization Here
-    //GameEngine::Get();
-    //Factory::Get();
+    GameEngine::Get();
+ 
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }

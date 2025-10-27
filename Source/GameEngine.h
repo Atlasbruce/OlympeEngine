@@ -18,7 +18,7 @@ class GameEngine: public Singleton
 	public:
 		//GameEngine properties and methods
 		GameEngine() = default;
-		virtual ~GameEngine()
+		virtual ~GameEngine()	
 		{
 			// Clean up all objects
 			for (auto obj : objectlist)
@@ -27,6 +27,16 @@ class GameEngine: public Singleton
 			}
 			objectlist.clear();
 		}
+
+		//-------------------------------------------------------------
+		// Per-class singleton accessors
+		static GameEngine& GetInstance()
+		{
+			static GameEngine instance;
+			return instance;
+		}
+		static GameEngine& Get() { return GetInstance(); }
+
 		//-------------------------------------------------------------
 		// Object Management
 		std::vector<Object*> objectlist;

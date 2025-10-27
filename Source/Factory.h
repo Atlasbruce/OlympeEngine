@@ -24,6 +24,13 @@ public:
     using CreatorFunction = std::function<Object* ()>;
     std::map<std::string, CreatorFunction> m_registeredCreators;
 
+    // Per-class singleton accessors
+    static Factory& GetInstance()
+    {
+        static Factory instance;
+        return instance;
+    }
+    static Factory& Get() { return GetInstance(); }
 
     /**
      * @brief Enregistre une fonction de création pour un nom de classe donné.
@@ -34,10 +41,10 @@ public:
     bool Register(const std::string& className, CreatorFunction creator)
     {
         auto it = m_registeredCreators.find(className);
-        if (it->first == className)
+        if (it != m_registeredCreators.end())
         {
             std::cerr << "Warning: Class '" << className << "' already registered." << std::endl;
-			return false;
+            return false;
         }
         else
         {
@@ -63,7 +70,8 @@ public:
         }
         // Appel de la fonction de création stockée dans la map
         Object *o = it->second();
-		GameEngine::instance.AddObject(o);
+        // add to game engine
+        GameEngine::Get().AddObject(o);
         return o;
     }
 
@@ -95,7 +103,7 @@ class AutoRegister
 public:
     AutoRegister(const std::string& className)
     {
-        ObjectFactory::GetInstance().Register(className, createT<T>);
+        Factory::GetInstance().Register(className, createT<T>);
     }
 };
 
