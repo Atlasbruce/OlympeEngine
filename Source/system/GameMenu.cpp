@@ -1,5 +1,6 @@
 #include "GameMenu.h"
 #include "EventManager.h"
+#include "../VideoGame.h"
 #include <iostream>
 
 GameMenu::GameMenu()
@@ -18,6 +19,11 @@ void GameMenu::Activate()
     EventManager::Get().Register(this, EventType::EventType_Menu_Validate);
     EventManager::Get().Register(this, EventType::EventType_Menu_Enter);
     EventManager::Get().Register(this, EventType::EventType_Menu_Exit);
+
+    // Pause the game when the menu is activated
+    VideoGame::Get().Pause();
+
+    std::cout << "GameMenu: activated\n";
 }
 
 void GameMenu::Deactivate()
@@ -27,6 +33,11 @@ void GameMenu::Deactivate()
     EventManager::Get().Unregister(this, EventType::EventType_Menu_Validate);
     EventManager::Get().Unregister(this, EventType::EventType_Menu_Enter);
     EventManager::Get().Unregister(this, EventType::EventType_Menu_Exit);
+
+    // Resume the game when the menu is closed
+    VideoGame::Get().Resume();
+
+    std::cout << "GameMenu: deactivated\n";
 }
 
 void GameMenu::OnEvent(const Message& msg)
@@ -46,7 +57,11 @@ void GameMenu::OnEvent(const Message& msg)
             if (m_active)
             {
                 std::cout << "GameMenu: Validate item '" << (m_entries.size()>0?m_entries[m_selected]:std::string("<none>")) << "'\n";
-                // send a generic hit event to the engine indicating selection
+                // If the validated item is Exit, request the game to quit
+                if (m_entries.size() > 0 && m_entries[m_selected] == "Exit")
+                {
+                    VideoGame::Get().RequestQuit();
+                }
             }
             break;
         default:

@@ -20,22 +20,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\AI_Player.cpp" />
+    <ClCompile Include="Source\GameState.cpp" />
     <ClCompile Include="Source\OlympeEngine.cpp" />
+    <ClCompile Include="Source\system\Camera.cpp" />
     <ClCompile Include="Source\system\GameMenu.cpp" />
     <ClCompile Include="Source\system\JoystickManager.cpp" />
     <ClCompile Include="Source\system\KeyboardManager.cpp" />
     <ClCompile Include="Source\system\MouseManager.cpp" />
     <ClCompile Include="Source\system\SystemMenu.cpp" />
+    <ClCompile Include="Source\system\Viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AI_Player.h" />
     <ClInclude Include="Source\CollisionMap.h" />
     <ClInclude Include="Source\Factory.h" />
     <ClInclude Include="Source\GameEngine.h" />
-    <ClInclude Include="Source\GameMenu.h" />
     <ClInclude Include="Source\GameObject.h" />
     <ClInclude Include="Source\GameObjectProperty.h" />
     <ClInclude Include="Source\GameRules.h" />
+    <ClInclude Include="Source\GameState.h" />
     <ClInclude Include="Source\GraphicMap.h" />
     <ClInclude Include="Source\InputsManager.h" />
     <ClInclude Include="Source\json.hpp" />
@@ -49,6 +52,7 @@
     <ClInclude Include="Source\Sector.h" />
     <ClInclude Include="Source\Serialization.h" />
     <ClInclude Include="Source\Singleton.h" />
+    <ClInclude Include="Source\system\Camera.h" />
     <ClInclude Include="Source\system\EventManager.h" />
     <ClInclude Include="Source\system\GameMenu.h" />
     <ClInclude Include="Source\system\JoystickManager.h" />
@@ -57,6 +61,7 @@
     <ClInclude Include="Source\system\MouseManager.h" />
     <ClInclude Include="Source\system\SystemMenu.h" />
     <ClInclude Include="source\system\system_consts.h" />
+    <ClInclude Include="Source\system\Viewport.h" />
     <ClInclude Include="Source\Task.h" />
     <ClInclude Include="Source\third_party\nlohmann\json.hpp" />
     <ClInclude Include="Source\VideoGame.h" />

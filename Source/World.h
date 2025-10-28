@@ -11,6 +11,7 @@
 #include <type_traits>
 
 #include "Level.h" // add Level management
+#include "GameState.h"
 
 class World : public Singleton
 {
@@ -102,16 +103,26 @@ public:
         //0) Ensure queued events are dispatched before the update stages
         EventManager::Get().Process();
 
+        // check global game state
+        GameState state = GameStateManager::GetState();
+        bool paused = (state == GameState::GameState_Paused);
+
         //1) Physics
-        for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::Physics)])
+        if (!paused)
         {
-            if (prop) prop->Process(dt);
+            for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::Physics)])
+            {
+                if (prop) prop->Process(dt);
+            }
         }
 
         //2) AI
-        for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::AI)])
+        if (!paused)
         {
-            if (prop) prop->Process(dt);
+            for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::AI)])
+            {
+                if (prop) prop->Process(dt);
+            }
         }
 
         //3) Render stage (note: actual drawing may require renderer context)
@@ -121,9 +132,12 @@ public:
         }
 
         //4) Audio
-        for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::Audio)])
+        if (!paused)
         {
-            if (prop) prop->Process(dt);
+            for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::Audio)])
+            {
+                if (prop) prop->Process(dt);
+            }
         }
     }
 

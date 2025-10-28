@@ -15,6 +15,9 @@
 #include "World.h"
 #include "system/JoystickManager.h"
 #include "InputsManager.h"
+#include "GameState.h"
+#include "system/Camera.h"
+#include "system/Viewport.h"
 
  /* We will use this renderer to draw into this window every frame. */
 static SDL_Window* window = NULL;
@@ -69,6 +72,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     GameEngine::Get();
     World::Get();
     InputsManager::Get().Initialize();
+    Camera::Get().Initialize();
  
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
@@ -116,17 +120,61 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 
     last_time = now;
 
+    // If game state requests quit, end the application loop
+    if (GameStateManager::GetState() == GameState::GameState_Quit)
+    {
+        return SDL_APP_SUCCESS;
+    }
+
     // Update world properties (events already processed inside World::Process)
     World::Get().Process(elapsed);
 
     /* as you can see from this, rendering draws over whatever was drawn before it. */
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
     SDL_RenderClear(renderer);  /* start with a blank canvas. */
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);  /* white, full alpha */
-    SDL_RenderPoints(renderer, points, SDL_arraysize(points));  /* draw all the points! */
 
-    /* You can also draw single points with SDL_RenderPoint(), but it's
-       cheaper (sometimes significantly so) to do them all at once. */
+    // Multi-viewport rendering: for each viewport, set SDL viewport and draw scene
+    const auto& rects = Viewport::Get().GetViewRects();
+    const auto& players = Viewport::Get().GetPlayers();
+
+    if (rects.empty())
+    {
+        // fallback single full render
+        SDL_SetRenderViewport(renderer, nullptr);
+        Camera::Get().Apply(renderer);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+        SDL_RenderPoints(renderer, points, SDL_arraysize(points));
+    }
+    else
+    {
+        // for each viewport: transform points according to the camera assigned to the player (if any)
+        for (size_t vi = 0; vi < rects.size(); ++vi)
+        {
+            const SDL_Rect& vr = rects[vi];
+            SDL_SetRenderViewport(renderer, &vr);
+
+            short playerID = 0;
+            if (vi < players.size()) playerID = players[vi];
+
+            auto cam = Camera::Get().GetCameraForPlayer(playerID);
+
+            // transform points to camera space (top-left world coordinates stored in cam.x/cam.y)
+            static SDL_FPoint transformed[NUM_POINTS];
+            for (int p = 0; p < NUM_POINTS; ++p)
+            {
+                float tx = (points[p].x - cam.x) * cam.zoom; // apply zoom
+                float ty = (points[p].y - cam.y) * cam.zoom;
+                transformed[p].x = tx;
+                transformed[p].y = ty;
+            }
+
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+            SDL_RenderPoints(renderer, transformed, SDL_arraysize(points));
+        }
+
+        // reset viewport to full for any UI overlays
+        SDL_SetRenderViewport(renderer, nullptr);
+    }
 
     SDL_RenderPresent(renderer);  /* put it all on the screen! */
 
@@ -138,4 +186,5 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     /* SDL will clean up the window/renderer for us. */
     InputsManager::Get().Shutdown();
+    Camera::Get().Shutdown();
 }
