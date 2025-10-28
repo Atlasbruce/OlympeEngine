@@ -12,7 +12,7 @@ Purpose:
 
 // Base Singleton marker class (no instance managed here).
 // Individual derived classes should implement their own GetInstance()/Get() methods.
-
+class Message;
 class Singleton
 {
 public:
@@ -21,7 +21,7 @@ public:
 
 	virtual void Process() {};
 	virtual void Render() {};
-	virtual void OnEvent() {};
+	virtual void OnEvent(const Message& /*msg*/) {};
 
 	bool operator==(const Singleton& other) const { return this == &other; }
 };

@@ -39,7 +39,7 @@ void Camera::Shutdown()
 
 void Camera::CreateCameraForPlayer(short playerID)
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    //std::lock_guard<std::mutex> lock(m_mutex);
     if (m_cameras.find(playerID) != m_cameras.end()) return;
     CameraInstance inst;
     inst.playerId = playerID;

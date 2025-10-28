@@ -11,6 +11,8 @@
 #include "system/Camera.h"
 #include "system/Viewport.h"
 #include "system/JoystickManager.h"
+#include "system/EventManager.h"
+#include "system/message.h"
 #include "GameState.h"
 #include <memory>
 #include <iostream>
@@ -39,10 +41,27 @@ public:
 		 // Create default player 0
 		 AddPlayer();
 
+		 // Register to EventManager for game events
+		 using EM = EventManager;
+		 EM::Get().Register(this, EventType::EventType_Game_Pause, [this](const Message& m){ this->OnEvent(m); });
+		 EM::Get().Register(this, EventType::EventType_Game_Resume, [this](const Message& m){ this->OnEvent(m); });
+		 EM::Get().Register(this, EventType::EventType_Game_Quit, [this](const Message& m){ this->OnEvent(m); });
+		 EM::Get().Register(this, EventType::EventType_Game_Restart, [this](const Message& m){ this->OnEvent(m); });
+		 EM::Get().Register(this, EventType::EventType_Game_AddPlayer, [this](const Message& m){ this->OnEvent(m); });
+		 EM::Get().Register(this, EventType::EventType_Game_RemovePlayer, [this](const Message& m){ this->OnEvent(m); });
+		 EM::Get().Register(this, EventType::EventType_Game_TakeScreenshot, [this](const Message& m){ this->OnEvent(m); });
+		 EM::Get().Register(this, EventType::EventType_Game_SaveState, [this](const Message& m){ this->OnEvent(m); });
+		 EM::Get().Register(this, EventType::EventType_Game_LoadState, [this](const Message& m){ this->OnEvent(m); });
+
 		 // Ensure default state is running
 		 GameStateManager::SetState(GameState::GameState_Running);
 	}
- virtual ~VideoGame() { std::cout << "VideoGame destroyed\n"; }
+ ~VideoGame()
+ {
+     std::cout << "VideoGame destroyed\n";
+     // Unregister from EventManager
+     EventManager::Get().UnregisterAll(this);
+ }
 
  // Per-class singleton accessors
  static VideoGame& GetInstance()
@@ -118,6 +137,7 @@ public:
      // update viewport and create camera for player
      Viewport::Get().AddPlayer(newId);
      Camera::Get().CreateCameraForPlayer(newId);
+     std::cout << "VideoGame: Added player " << newId << "\n";
      return newId;
  }
 
@@ -135,11 +155,89 @@ public:
      m_players.erase(it);
      Viewport::Get().RemovePlayer(PlayerID);
      Camera::Get().RemoveCameraForPlayer(PlayerID);
+     std::cout << "VideoGame: Removed player " << PlayerID << "\n";
      return true;
  }
 
  int GetPlayerCount() const { return static_cast<int>(m_players.size()); }
  const std::vector<short>& GetPlayers() const { return m_players; }
+
+ // Event handler for EventManager messages registered in ctor
+ void OnEvent(const Message& msg)
+ {
+     switch (msg.type)
+     {
+         case EventType::EventType_Game_Pause:
+             Pause();
+             std::cout << "VideoGame: Paused via event\n";
+             break;
+         case EventType::EventType_Game_Resume:
+             Resume();
+             std::cout << "VideoGame: Resumed via event\n";
+             break;
+         case EventType::EventType_Game_Quit:
+             RequestQuit();
+             std::cout << "VideoGame: Quit requested via event\n";
+             break;
+         case EventType::EventType_Game_Restart:
+             // Placeholder: restart current level (not implemented fully)
+             std::cout << "VideoGame: Restart requested via event (not implemented)\n";
+             break;
+         case EventType::EventType_Game_AddPlayer:
+         {
+             // controlId (if provided) may request a specific player id; otherwise add next
+             bool ok = false;
+             if (msg.controlId >= 0)
+             {
+                 short requested = static_cast<short>(msg.controlId);
+                 // if requested id already present, ignore
+                 if (std::find(m_players.begin(), m_players.end(), requested) == m_players.end())
+                 {
+                     // attempt to add with that id by first creating players until needed id available
+                     short added = AddPlayer();
+                     // AddPlayer chooses lowest free id; if not the requested one, user can map controllers separately
+                     (void)added;
+                     ok = true;
+                 }
+             }
+             else
+             {
+                 short added = AddPlayer();
+                 ok = (added >= 0);
+             }
+             std::cout << "VideoGame: AddPlayer event -> " << (ok ? "success" : "failed") << "\n";
+             break;
+         }
+         case EventType::EventType_Game_RemovePlayer:
+         {
+             if (msg.controlId >= 0)
+             {
+                 short pid = static_cast<short>(msg.controlId);
+                 bool ok = RemovePlayer(pid);
+                 std::cout << "VideoGame: RemovePlayer event for " << pid << " -> " << (ok ? "removed" : "not found") << "\n";
+             }
+             break;
+         }
+         case EventType::EventType_Game_TakeScreenshot:
+             // Not implemented: placeholder
+             std::cout << "VideoGame: TakeScreenshot event (not implemented)\n";
+             break;
+         case EventType::EventType_Game_SaveState:
+         {
+             int slot = msg.controlId;
+             std::cout << "VideoGame: SaveState event slot=" << slot << " (not implemented)\n";
+             break;
+         }
+         case EventType::EventType_Game_LoadState:
+         {
+             int slot = msg.controlId;
+             std::cout << "VideoGame: LoadState event slot=" << slot << " (not implemented)\n";
+             break;
+         }
+         default:
+             break;
+     }
+ }
 
 private:
  std::unique_ptr<World> world;

@@ -59,6 +59,17 @@ enum class EventType
 	EventType_Camera_Viewport_Remove, // remove a camera viewport from renderers texture list on screen
 	EventType_Camera_Viewport_Clear, // clear camera viewport (return to full renderer size)
 
+	// -------- GAME EVENTS ----------
+	EventType_Game_Pause, // pause the game from GameMenu
+	EventType_Game_Resume, // resume the game from GameMenu
+	EventType_Game_Quit, // quit the game from GameMenu
+	EventType_Game_Restart, // restart the current level from GameMenu
+	EventType_Game_AddPlayer, // add a new player (up to 4) param: player id (0..3)
+	EventType_Game_RemovePlayer, // remove a player param: player id (0..3)
+	EventType_Game_TakeScreenshot, // take a screenshot of the current frame
+	EventType_Game_SaveState, // save game state to slot (param: slot id)
+	EventType_Game_LoadState, // load game state from slot (param: slot id)
+
 
     EventType_Any,
     EventType_MAX

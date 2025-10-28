@@ -18,6 +18,7 @@
 #include "GameState.h"
 #include "system/Camera.h"
 #include "system/Viewport.h"
+#include "videogame.h"
 
  /* We will use this renderer to draw into this window every frame. */
 static SDL_Window* window = NULL;
@@ -81,6 +82,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 /* This function runs when a new event (mouse input, keypresses, etc) occurs. */
 SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 {
+    if (!event) return SDL_APP_CONTINUE;
+
     // Forward to input submanagers (they will post EventManager messages)
     JoystickManager::Get().HandleEvent(event);
     KeyboardManager::Get().HandleEvent(event);
