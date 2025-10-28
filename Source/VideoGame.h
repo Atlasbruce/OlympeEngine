@@ -18,13 +18,14 @@
 #include <iostream>
 #include <vector>
 #include <unordered_map>
+#include "system/system_utils.h"
 
 class VideoGame : public Singleton
 {
 public:
 	VideoGame()
 	{
-		 std::cout << "VideoGame created\n";
+		 SYSTEM_LOG << "VideoGame created\n";
 		 // Initialize components
 		 world = std::make_unique<World>();
 		 rules = std::make_unique<GameRules>("DefaultRules");
@@ -62,7 +63,7 @@ public:
 	}
  ~VideoGame()
  {
-     std::cout << "VideoGame destroyed\n";
+     SYSTEM_LOG << "VideoGame destroyed\n";
      // Unregister from EventManager
      EventManager::Get().UnregisterAll(this);
  }
@@ -141,7 +142,7 @@ public:
      // update viewport and create camera for player
      Viewport::Get().AddPlayer(newId);
      Camera::Get().CreateCameraForPlayer(newId);
-     std::cout << "VideoGame: Added player " << newId << "\n";
+     SYSTEM_LOG << "VideoGame: Added player " << newId << "\n";
      return newId;
  }
 
@@ -159,7 +160,7 @@ public:
      m_players.erase(it);
      Viewport::Get().RemovePlayer(PlayerID);
      Camera::Get().RemoveCameraForPlayer(PlayerID);
-     std::cout << "VideoGame: Removed player " << PlayerID << "\n";
+     SYSTEM_LOG << "VideoGame: Removed player " << PlayerID << "\n";
      return true;
  }
 
@@ -173,19 +174,19 @@ public:
      {
          case EventType::EventType_Game_Pause:
              Pause();
-             std::cout << "VideoGame: Paused via event\n";
+             SYSTEM_LOG << "VideoGame: Paused via event\n";
              break;
          case EventType::EventType_Game_Resume:
              Resume();
-             std::cout << "VideoGame: Resumed via event\n";
+             SYSTEM_LOG << "VideoGame: Resumed via event\n";
              break;
          case EventType::EventType_Game_Quit:
              RequestQuit();
-             std::cout << "VideoGame: Quit requested via event\n";
+             SYSTEM_LOG << "VideoGame: Quit requested via event\n";
              break;
          case EventType::EventType_Game_Restart:
              // Placeholder: restart current level (not implemented fully)
-             std::cout << "VideoGame: Restart requested via event (not implemented)\n";
+             SYSTEM_LOG << "VideoGame: Restart requested via event (not implemented)\n";
              break;
          case EventType::EventType_Game_AddPlayer:
          {
@@ -209,7 +210,7 @@ public:
                  short added = AddPlayer();
                  ok = (added >= 0);
              }
-             std::cout << "VideoGame: AddPlayer event -> " << (ok ? "success" : "failed") << "\n";
+             SYSTEM_LOG << "VideoGame: AddPlayer event -> " << (ok ? "success" : "failed") << "\n";
              break;
          }
          case EventType::EventType_Game_RemovePlayer:
@@ -218,24 +219,24 @@ public:
              {
                  short pid = static_cast<short>(msg.controlId);
                  bool ok = RemovePlayer(pid);
-                 std::cout << "VideoGame: RemovePlayer event for " << pid << " -> " << (ok ? "removed" : "not found") << "\n";
+                 SYSTEM_LOG << "VideoGame: RemovePlayer event for " << pid << " -> " << (ok ? "removed" : "not found") << "\n";
              }
              break;
          }
          case EventType::EventType_Game_TakeScreenshot:
              // Not implemented: placeholder
-             std::cout << "VideoGame: TakeScreenshot event (not implemented)\n";
+             SYSTEM_LOG << "VideoGame: TakeScreenshot event (not implemented)\n";
              break;
          case EventType::EventType_Game_SaveState:
          {
              int slot = msg.controlId;
-             std::cout << "VideoGame: SaveState event slot=" << slot << " (not implemented)\n";
+             SYSTEM_LOG << "VideoGame: SaveState event slot=" << slot << " (not implemented)\n";
              break;
          }
          case EventType::EventType_Game_LoadState:
          {
              int slot = msg.controlId;
-             std::cout << "VideoGame: LoadState event slot=" << slot << " (not implemented)\n";
+             SYSTEM_LOG << "VideoGame: LoadState event slot=" << slot << " (not implemented)\n";
              break;
          }
          case EventType::EventType_Keyboard_KeyDown:
@@ -249,7 +250,7 @@ public:
                  {
                      m_kpPlusPressed = true;
                      short added = AddPlayer();
-                     std::cout << "VideoGame: Numpad + pressed -> add viewport (AddPlayer returned " << added << ")\n";
+                     SYSTEM_LOG << "VideoGame: Numpad + pressed -> add viewport (AddPlayer returned " << added << ")\n";
                  }
              }
              else if (sc == SDL_SCANCODE_KP_MINUS)
@@ -261,7 +262,7 @@ public:
                      {
                          short pid = m_players.back();
                          bool ok = RemovePlayer(pid);
-                         std::cout << "VideoGame: Numpad - pressed -> remove viewport/player " << pid << " -> " << (ok?"removed":"failed") << "\n";
+                         SYSTEM_LOG << "VideoGame: Numpad - pressed -> remove viewport/player " << pid << " -> " << (ok?"removed":"failed") << "\n";
                      }
                  }
              }

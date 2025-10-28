@@ -59,6 +59,8 @@
     <ClInclude Include="Source\system\KeyboardManager.h" />
     <ClInclude Include="Source\system\message.h" />
     <ClInclude Include="Source\system\MouseManager.h" />
+    <ClInclude Include="Source\system\systel_utils.h" />
+    <ClInclude Include="Source\system\system_utils.h" />
     <ClInclude Include="Source\system\SystemMenu.h" />
     <ClInclude Include="source\system\system_consts.h" />
     <ClInclude Include="Source\system\Viewport.h" />

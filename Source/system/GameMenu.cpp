@@ -2,6 +2,7 @@
 #include "EventManager.h"
 #include "../VideoGame.h"
 #include <iostream>
+#include "system_utils.h"
 
 GameMenu::GameMenu()
 {
@@ -23,7 +24,7 @@ void GameMenu::Activate()
     // Pause the game when the menu is activated
     VideoGame::Get().Pause();
 
-    std::cout << "GameMenu: activated\n";
+    SYSTEM_LOG << "GameMenu: activated\n";
 }
 
 void GameMenu::Deactivate()
@@ -37,7 +38,7 @@ void GameMenu::Deactivate()
     // Resume the game when the menu is closed
     VideoGame::Get().Resume();
 
-    std::cout << "GameMenu: deactivated\n";
+    SYSTEM_LOG << "GameMenu: deactivated\n";
 }
 
 void GameMenu::OnEvent(const Message& msg)
@@ -47,16 +48,16 @@ void GameMenu::OnEvent(const Message& msg)
     {
         case EventType::EventType_Menu_Enter:
             Activate();
-            std::cout << "GameMenu: Enter event - activated\n";
+            SYSTEM_LOG << "GameMenu: Enter event - activated\n";
             break;
         case EventType::EventType_Menu_Exit:
             Deactivate();
-            std::cout << "GameMenu: Exit event - deactivated\n";
+            SYSTEM_LOG << "GameMenu: Exit event - deactivated\n";
             break;
         case EventType::EventType_Menu_Validate:
             if (m_active)
             {
-                std::cout << "GameMenu: Validate item '" << (m_entries.size()>0?m_entries[m_selected]:std::string("<none>")) << "'\n";
+                SYSTEM_LOG << "GameMenu: Validate item '" << (m_entries.size()>0?m_entries[m_selected]:std::string("<none>")) << "'\n";
                 // If the validated item is Exit, request the game to quit
                 if (m_entries.size() > 0 && m_entries[m_selected] == "Exit")
                 {
@@ -72,10 +73,10 @@ void GameMenu::OnEvent(const Message& msg)
 void GameMenu::Render()
 {
     if (!m_active) return;
-    std::cout << "--- GameMenu ---\n";
+    SYSTEM_LOG << "--- GameMenu ---\n";
     for (size_t i = 0; i < m_entries.size(); ++i)
     {
-        if (static_cast<int>(i) == m_selected) std::cout << "> "; else std::cout << "  ";
-        std::cout << m_entries[i] << "\n";
+        if (static_cast<int>(i) == m_selected) SYSTEM_LOG << "> "; else SYSTEM_LOG << "  ";
+        SYSTEM_LOG << m_entries[i] << "\n";
     }
 }

@@ -1,6 +1,7 @@
 #include "SystemMenu.h"
 #include <algorithm>
 #include <iostream>
+#include "system_utils.h"
 
 SystemMenu::SystemMenu()
 {
@@ -25,14 +26,14 @@ void SystemMenu::Activate()
     if (m_active) return;
     m_active = true;
     // For now we just log to stdout. Integration with UI/SDL will be done later.
-    std::cout << "SystemMenu: activated\n";
+    SYSTEM_LOG << "SystemMenu: activated\n";
 }
 
 void SystemMenu::Deactivate()
 {
     if (!m_active) return;
     m_active = false;
-    std::cout << "SystemMenu: deactivated\n";
+    SYSTEM_LOG << "SystemMenu: deactivated\n";
 }
 
 void SystemMenu::Toggle()

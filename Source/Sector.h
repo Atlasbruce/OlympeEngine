@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <iostream>
+#include "system/system_utils.h"
 
 class Sector
 {
@@ -18,12 +19,12 @@ public:
 
  Sector(const std::string& n = "Unnamed") : name(n)
  {
- std::cout << "Sector '" << name << "' created\n";
+ SYSTEM_LOG << "Sector '" << name << "' created\n";
  collision = std::make_unique<CollisionMap>();
  graphics = std::make_unique<GraphicMap>();
  }
  ~Sector()
  {
- std::cout << "Sector '" << name << "' destroyed\n";
+ SYSTEM_LOG << "Sector '" << name << "' destroyed\n";
  }
 };

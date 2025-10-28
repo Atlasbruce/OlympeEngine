@@ -9,12 +9,13 @@
 #include <memory>
 #include <string>
 #include <iostream>
+#include "system/system_utils.h"
 
 class QuestManager : public Singleton
 {
 public:
- QuestManager() { std::cout << "QuestManager created\n"; }
- virtual ~QuestManager() { std::cout << "QuestManager destroyed\n"; }
+ QuestManager() { SYSTEM_LOG << "QuestManager created\n"; }
+ virtual ~QuestManager() { SYSTEM_LOG << "QuestManager destroyed\n"; }
 
  static QuestManager& GetInstance()
  {

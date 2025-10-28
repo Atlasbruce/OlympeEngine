@@ -5,12 +5,13 @@
 
 #include <vector>
 #include <iostream>
+#include "system/system_utils.h"
 
 class CollisionMap
 {
 public:
- CollisionMap() { std::cout << "CollisionMap created\n"; }
- ~CollisionMap() { std::cout << "CollisionMap destroyed\n"; }
+ CollisionMap() { SYSTEM_LOG << "CollisionMap created\n"; }
+ ~CollisionMap() { SYSTEM_LOG << "CollisionMap destroyed\n"; }
 
  // Simple placeholder for collision data
  std::vector<int> data;

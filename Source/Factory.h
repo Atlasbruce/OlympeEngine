@@ -17,6 +17,7 @@ Purpose:
 #include <stdexcept>
 #include <iostream>
 #include "GameEngine.h"
+#include "system/system_utils.h"
 
 class Factory: public Singleton
 {
@@ -49,7 +50,7 @@ public:
         else
         {
             m_registeredCreators.emplace(className, creator);
-            std::cout << "Class '" << className << "' registered." << std::endl;
+            SYSTEM_LOG << "Class '" << className << "' registered." << std::endl;
             return true;
         }
     }

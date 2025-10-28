@@ -17,11 +17,11 @@ public:
 
  Level(const std::string& n = "Level") : name(n)
  {
- std::cout << "Level '" << name << "' created\n";
+ SYSTEM_LOG << "Level '" << name << "' created\n";
  }
  ~Level()
  {
- std::cout << "Level '" << name << "' destroyed\n";
+ SYSTEM_LOG << "Level '" << name << "' destroyed\n";
  }
 
  void AddSector(std::unique_ptr<Sector> s)

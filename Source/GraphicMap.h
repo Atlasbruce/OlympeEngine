@@ -10,8 +10,8 @@
 class GraphicMap
 {
 public:
- GraphicMap() { std::cout << "GraphicMap created\n"; }
- ~GraphicMap() { std::cout << "GraphicMap destroyed\n"; }
+ GraphicMap() { SYSTEM_LOG << "GraphicMap created\n"; }
+ ~GraphicMap() { SYSTEM_LOG << "GraphicMap destroyed\n"; }
 
  std::vector<std::string> elements;
 
