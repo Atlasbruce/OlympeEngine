@@ -131,6 +131,7 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 
     // Update world properties (events already processed inside World::Process)
     World::Get().Process(elapsed);
+	EventManager::Get().Process();
 
     /* as you can see from this, rendering draws over whatever was drawn before it. */
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */

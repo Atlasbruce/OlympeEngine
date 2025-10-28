@@ -53,6 +53,10 @@ public:
 		 EM::Get().Register(this, EventType::EventType_Game_SaveState, [this](const Message& m){ this->OnEvent(m); });
 		 EM::Get().Register(this, EventType::EventType_Game_LoadState, [this](const Message& m){ this->OnEvent(m); });
 
+		 // Register to keyboard events to allow viewport add/remove with numpad +/-
+		 EM::Get().Register(this, EventType::EventType_Keyboard_KeyDown, [this](const Message& m){ this->OnEvent(m); });
+		 EM::Get().Register(this, EventType::EventType_Keyboard_KeyUp, [this](const Message& m){ this->OnEvent(m); });
+
 		 // Ensure default state is running
 		 GameStateManager::SetState(GameState::GameState_Running);
 	}
@@ -234,6 +238,42 @@ public:
              std::cout << "VideoGame: LoadState event slot=" << slot << " (not implemented)\n";
              break;
          }
+         case EventType::EventType_Keyboard_KeyDown:
+         {
+             // msg.controlId contains SDL_Scancode
+             auto sc = static_cast<SDL_Scancode>(msg.controlId);
+             if (sc == SDL_SCANCODE_KP_PLUS)
+             {
+                 // debounce: only act on initial press
+                 if (!m_kpPlusPressed && msg.state == 1)
+                 {
+                     m_kpPlusPressed = true;
+                     short added = AddPlayer();
+                     std::cout << "VideoGame: Numpad + pressed -> add viewport (AddPlayer returned " << added << ")\n";
+                 }
+             }
+             else if (sc == SDL_SCANCODE_KP_MINUS)
+             {
+                 if (!m_kpMinusPressed && msg.state == 1)
+                 {
+                     m_kpMinusPressed = true;
+                     if (!m_players.empty())
+                     {
+                         short pid = m_players.back();
+                         bool ok = RemovePlayer(pid);
+                         std::cout << "VideoGame: Numpad - pressed -> remove viewport/player " << pid << " -> " << (ok?"removed":"failed") << "\n";
+                     }
+                 }
+             }
+             break;
+         }
+         case EventType::EventType_Keyboard_KeyUp:
+         {
+             auto sc = static_cast<SDL_Scancode>(msg.controlId);
+             if (sc == SDL_SCANCODE_KP_PLUS) m_kpPlusPressed = false;
+             if (sc == SDL_SCANCODE_KP_MINUS) m_kpMinusPressed = false;
+             break;
+         }
          default:
              break;
      }
@@ -252,4 +292,8 @@ private:
  std::vector<short> m_players;
  std::unordered_map<short, SDL_JoystickID> m_playerToJoystick; // -1 = keyboard
  bool m_keyboardAssigned = false;
+
+ // key debounce flags for numpad +/-
+ bool m_kpPlusPressed = false;
+ bool m_kpMinusPressed = false;
 };

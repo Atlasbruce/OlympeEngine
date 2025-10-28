@@ -12,7 +12,8 @@ Purpose:
 
 // Base Singleton marker class (no instance managed here).
 // Individual derived classes should implement their own GetInstance()/Get() methods.
-class Message;
+struct Message;
+
 class Singleton
 {
 public:
