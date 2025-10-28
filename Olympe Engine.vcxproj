@@ -21,6 +21,9 @@
   <ItemGroup>
     <ClCompile Include="Source\OlympeEngine.cpp" />
     <ClCompile Include="Source\system\GameMenu.cpp" />
+    <ClCompile Include="Source\system\JoystickManager.cpp" />
+    <ClCompile Include="Source\system\KeyboardManager.cpp" />
+    <ClCompile Include="Source\system\MouseManager.cpp" />
     <ClCompile Include="Source\system\SystemMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -46,7 +49,10 @@
     <ClInclude Include="Source\Singleton.h" />
     <ClInclude Include="Source\system\EventManager.h" />
     <ClInclude Include="Source\system\GameMenu.h" />
+    <ClInclude Include="Source\system\JoystickManager.h" />
+    <ClInclude Include="Source\system\KeyboardManager.h" />
     <ClInclude Include="Source\system\message.h" />
+    <ClInclude Include="Source\system\MouseManager.h" />
     <ClInclude Include="Source\system\SystemMenu.h" />
     <ClInclude Include="source\system\system_consts.h" />
     <ClInclude Include="Source\Task.h" />

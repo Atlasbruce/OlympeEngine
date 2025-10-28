@@ -13,6 +13,8 @@
 #include "gameengine.h"
 #include "Factory.h"
 #include "World.h"
+#include "system/JoystickManager.h"
+#include "InputsManager.h"
 
  /* We will use this renderer to draw into this window every frame. */
 static SDL_Window* window = NULL;
@@ -66,6 +68,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 	//Olympe Engine Elements Initialization Here
     GameEngine::Get();
     World::Get();
+    InputsManager::Get().Initialize();
  
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
@@ -74,6 +77,11 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 /* This function runs when a new event (mouse input, keypresses, etc) occurs. */
 SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 {
+    // Forward to input submanagers (they will post EventManager messages)
+    JoystickManager::Get().HandleEvent(event);
+    KeyboardManager::Get().HandleEvent(event);
+    MouseManager::Get().HandleEvent(event);
+
     if (event->type == SDL_EVENT_QUIT) {
         return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
     }
@@ -129,4 +137,5 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 void SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     /* SDL will clean up the window/renderer for us. */
+    InputsManager::Get().Shutdown();
 }

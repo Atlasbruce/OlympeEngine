@@ -26,9 +26,21 @@ enum class EventType
     EventType_NewObjectGUI,
 
 	// -------- SECTOR EVENTS ----------    
-
     EventType_SectorToActivate,        // Sector to activate
     EventType_SectorToDeactivate,      // Sector to deactivate
+
+	// -------- INPUTS EVENTS ----------
+	EventType_Joystick_AxisMotion,
+	EventType_Joystick_ButtonDown,
+	EventType_Joystick_ButtonUp,
+
+	EventType_Keyboard_KeyDown,
+	EventType_Keyboard_KeyUp,
+
+	EventType_Mouse_ButtonDown,
+	EventType_Mouse_ButtonUp,
+	EventType_Mouse_Motion,
+
 
     EventType_Any,
     EventType_MAX

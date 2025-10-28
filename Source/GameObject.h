@@ -24,6 +24,7 @@ public:
     GameObject() = default;
     virtual ~GameObject() override = default;
 
+    //---------------------------------------------------------------------------------------------
 	// GameObject Properties--------------------------
     public:
 		// position
@@ -33,14 +34,16 @@ public:
         float height = 0.0f;
         // Bounding Box
 	    SDL_FRect boundingBox = { 0.0f, 0.0f, 0.0f, 0.0f };
-
+		// static or dynamic
+		bool isDynamic = false;
+    //---------------------------------------------------------------------------------------------
     // Add a property to this GameObject (delegates ownership to World/ECS)
     template<typename T, typename... Args>
     T* AddProperty(Args&&... args)
     {
         return World::Get().CreateProperty<T>(this, std::forward<Args>(args)...);
     }
-
+    //---------------------------------------------------------------------------------------------
     // Get properties attached to this GameObject
     std::vector<GameObjectProperty*> GetProperties() const
     {

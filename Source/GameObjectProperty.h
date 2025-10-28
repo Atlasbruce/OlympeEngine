@@ -14,7 +14,7 @@ enum class PropertyStage
     Audio = 4,
     Count = 5
 };
-
+//---------------------------------------------------------------------------------------------
 class GameObjectProperty
 {
 public:
@@ -39,7 +39,8 @@ protected:
     Object* owner = nullptr;
 };
 
-// Example concrete properties - minimal implementations
+//---------------------------------------------------------------------------------------------
+// Inherited properties - minimal implementations
 
 class PhysicsProperty : public GameObjectProperty
 {
@@ -52,7 +53,7 @@ public:
         // Basic physics integration should be implemented by project-specific code.
     }
 };
-
+//---------------------------------------------------------------------------------------------
 class AIProperty : public GameObjectProperty
 {
 public:
@@ -64,7 +65,7 @@ public:
         // AI logic goes here.
     }
 };
-
+//---------------------------------------------------------------------------------------------
 class VisualProperty : public GameObjectProperty
 {
 public:
@@ -76,7 +77,7 @@ public:
         // Drawing logic goes here.
     }
 };
-
+//---------------------------------------------------------------------------------------------
 class AudioProperty : public GameObjectProperty
 {
 public:

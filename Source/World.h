@@ -25,6 +25,7 @@ public:
     }
     static World& Get() { return GetInstance(); }
 
+    //---------------------------------------------------------------------------------------------
     // Level management
     void AddLevel(std::unique_ptr<Level> level)
     {
@@ -32,7 +33,7 @@ public:
     }
 
     const std::vector<std::unique_ptr<Level>>& GetLevels() const { return m_levels; }
-
+    //---------------------------------------------------------------------------------------------
     // Create and attach a property to an owner. World takes ownership.
     template<typename T, typename... Args>
     T* CreateProperty(Object* owner, Args&&... args)
@@ -46,7 +47,7 @@ public:
         m_properties.push_back(std::move(p));
         return static_cast<T*>(raw);
     }
-
+    //---------------------------------------------------------------------------------------------
     // Get properties attached to an owner (by UID)
     std::vector<GameObjectProperty*> GetPropertiesForOwner(int ownerUid) const
     {
@@ -54,13 +55,13 @@ public:
         if (it == m_ownerMap.end()) return {};
         return it->second;
     }
-
+    //---------------------------------------------------------------------------------------------
     std::vector<GameObjectProperty*> GetPropertiesForOwner(Object* owner) const
     {
         if (!owner) return {};
         return GetPropertiesForOwner(owner->uid);
     }
-
+    //---------------------------------------------------------------------------------------------
     // Dispatch a message to all properties of an owner
     void DispatchToProperties(Object* owner, const Message& msg)
     {
@@ -72,7 +73,7 @@ public:
             if (prop) prop->OnEvent(msg);
         }
     }
-
+    //---------------------------------------------------------------------------------------------
     // Remove and destroy all properties for an owner
     void RemovePropertiesForOwner(Object* owner)
     {
@@ -94,7 +95,7 @@ public:
         // erase owner map
         m_ownerMap.erase(oit);
     }
-
+    //---------------------------------------------------------------------------------------------
     // Main processing loop called each frame: events are processed first (async), then stages in order
     void Process(float dt)
     {
