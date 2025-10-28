@@ -14,16 +14,16 @@
 class VideoGame : public Singleton
 {
 public:
- VideoGame()
- {
- std::cout << "VideoGame created\n";
- // Initialize components
- world = std::make_unique<World>("MainWorld");
- rules = std::make_unique<GameRules>("DefaultRules");
- // QuestManager is a singleton; ensure instance exists
- QuestManager::Get();
- menu = std::make_unique<GameMenu>();
- }
+	VideoGame()
+	{
+		 std::cout << "VideoGame created\n";
+		 // Initialize components
+		 world = std::make_unique<World>("MainWorld");
+		 rules = std::make_unique<GameRules>("DefaultRules");
+		 // QuestManager is a singleton; ensure instance exists
+		 QuestManager::Get();
+		 menu = std::make_unique<GameMenu>();
+	}
  virtual ~VideoGame() { std::cout << "VideoGame destroyed\n"; }
 
  static VideoGame& GetInstance()

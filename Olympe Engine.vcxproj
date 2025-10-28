@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\AI_Player.cpp" />
     <ClCompile Include="Source\OlympeEngine.cpp" />
     <ClCompile Include="Source\system\GameMenu.cpp" />
     <ClCompile Include="Source\system\JoystickManager.cpp" />
@@ -27,6 +28,7 @@
     <ClCompile Include="Source\system\SystemMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\AI_Player.h" />
     <ClInclude Include="Source\CollisionMap.h" />
     <ClInclude Include="Source\Factory.h" />
     <ClInclude Include="Source\GameEngine.h" />
