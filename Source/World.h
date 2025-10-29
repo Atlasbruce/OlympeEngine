@@ -20,7 +20,10 @@ public:
     {
         SYSTEM_LOG << "World Initialized\n";
     }
-    virtual ~World() = default;
+    virtual ~World()
+    {
+		SYSTEM_LOG << "World Destroyed\n";
+    }
 
     static World& GetInstance()
     {

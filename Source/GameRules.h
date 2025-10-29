@@ -5,13 +5,23 @@
 
 #include <string>
 #include <iostream>
+#include "Singleton.h"
+#include "system/system_utils.h"
 
-class GameRules
+class GameRules : public Singleton
 {
 public:
  std::string name;
  GameRules(const std::string& n = "DefaultRules") : name(n) { SYSTEM_LOG << "GameRules '" << name << "' created\n"; }
  ~GameRules() { SYSTEM_LOG << "GameRules '" << name << "' destroyed\n"; }
+
+ static GameRules& GetInstance()
+ {
+	 static GameRules instance;
+	 return instance;
+ }
+ static GameRules& Get() { return GetInstance(); }
+
 
  // Placeholder for rule checks
  bool Validate() const { return true; }

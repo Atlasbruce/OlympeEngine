@@ -100,6 +100,13 @@ public:
         Register(static_cast<void*>(obj), type, [obj](const Message& msg) { obj->OnEvent(msg); });
     }
 
+    // Convenience overload: register an Object* using its virtual OnEvent method
+    void Register(Singleton* singleton, EventType type)
+    {
+        if (!singleton) return;
+        Register(static_cast<void*>(singleton), type, [singleton](const Message& msg) { singleton->OnEvent(msg); });
+    }
+
     // Unregister a specific owner from a specific event type
     void Unregister(void* owner, EventType type)
     {

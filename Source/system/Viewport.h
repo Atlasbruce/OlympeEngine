@@ -1,9 +1,10 @@
 #pragma once
-
+#include "../Singleton.h"
 #include <SDL3/SDL.h>
 #include <vector>
 #include <unordered_map>
 #include <algorithm>
+#include "system_utils.h"
 
 // Simple Viewport manager singleton that computes up to 4 view rectangles
 // according to the number of players. Viewports are laid out as follows:
@@ -12,11 +13,11 @@
 // 3 players: vertical split (3 columns)
 // 4 players: 2x2 grid
 
-class Viewport
+class Viewport : public Singleton
 {
 public:
-    Viewport() = default;
-    ~Viewport() = default;
+    Viewport() {}// { Initialize(); }
+	~Viewport() { Shutdown (); }
 
     static Viewport& GetInstance()
     {
@@ -33,6 +34,7 @@ public:
         m_viewRects.clear();
         // default single viewport
         UpdateViewports();
+		SYSTEM_LOG << "Viewport Initialized\n";
     }
 
     void Shutdown()
@@ -40,6 +42,7 @@ public:
         m_players.clear();
         m_viewRects.clear();
         m_playerIndexMap.clear();
+		SYSTEM_LOG << "Viewport Shutdown\n";
     }
 
     // Add a player id (0..3). Returns true if added, false if already present or full

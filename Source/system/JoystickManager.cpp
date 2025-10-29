@@ -42,6 +42,7 @@ void JoystickManager::Shutdown()
         }
     }
     m_joysticks.clear();
+	SYSTEM_LOG << "JoystickManager Shutdown\n";
 }
 //---------------------------------------------------------------------------------------------
 void JoystickManager::Process(float /*dt*/)

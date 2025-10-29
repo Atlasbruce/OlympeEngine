@@ -25,10 +25,10 @@ class GameEngine: public Singleton
 		//GameEngine properties and methods
 		GameEngine()
 		{
-			eventmanager = std::make_unique<EventManager>();
-			inputsmanager = std::make_unique<InputsManager>();
-			systemmenu = std::make_unique<SystemMenu>();
-			videogame = std::make_unique<VideoGame>();
+			//eventmanager = std::make_unique<EventManager>();
+			//inputsmanager = std::make_unique<InputsManager>();
+			//systemmenu = std::make_unique<SystemMenu>();
+			//videogame = std::make_unique<VideoGame>();
 
 			name = "GameEngine";
 			
@@ -42,6 +42,7 @@ class GameEngine: public Singleton
 				delete obj;
 			}
 			objectlist.clear();
+			SYSTEM_LOG << "GameEngine destroyed\n";
 		}
 
 		//-------------------------------------------------------------
@@ -65,8 +66,14 @@ class GameEngine: public Singleton
 
 		//-------------------------------------------------------------
 	public:
-		std::unique_ptr<InputsManager> inputsmanager;
-		std::unique_ptr<SystemMenu> systemmenu;
-		std::unique_ptr<VideoGame> videogame;
-		std::unique_ptr<EventManager> eventmanager;
+		//std::unique_ptr<InputsManager> inputsmanager;
+		//std::unique_ptr<SystemMenu> systemmenu;
+		//std::unique_ptr<VideoGame> videogame;
+		//std::unique_ptr<EventManager> eventmanager;
+
+		EventManager& eventmanager = EventManager::GetInstance();
+		InputsManager& inputsmanager = InputsManager::GetInstance();
+		SystemMenu& systemmenu = SystemMenu::GetInstance();
+		VideoGame& videogame = VideoGame::GetInstance();
+
 };

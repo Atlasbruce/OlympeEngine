@@ -12,9 +12,6 @@ public:
     InputsManager()
     {
 		name = "InputsManager";
-        JoystickManager::GetInstance();
-        KeyboardManager::GetInstance();
-        MouseManager::GetInstance();
 
         SYSTEM_LOG << "InputsManager created and Initialized\n";
     }
@@ -33,9 +30,9 @@ public:
 
     void Shutdown()
     {
-        JoystickManager::Get().Shutdown();
-        KeyboardManager::Get().Shutdown();
-        MouseManager::Get().Shutdown();
+        //JoystickManager::Get().Shutdown();
+        //KeyboardManager::Get().Shutdown();
+        //MouseManager::Get().Shutdown();
         m_playerBindings.clear();
         m_keyboardAssigned = false;
     }
@@ -80,6 +77,9 @@ public:
 private:
     std::unordered_map<short, SDL_JoystickID> m_playerBindings;
     bool m_keyboardAssigned = false;
+	JoystickManager& joystickmanager = JoystickManager::GetInstance();
+	KeyboardManager& keyboardmanager = KeyboardManager::GetInstance();
+	MouseManager& mousemanager = MouseManager::GetInstance();
 
 };
 
