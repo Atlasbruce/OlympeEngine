@@ -16,7 +16,6 @@ public:
     {
         name = "JoystickManager";
 		Initialize();
-		SYSTEM_LOG << "JoystickManager created\n";
     }
     virtual ~JoystickManager()
     {

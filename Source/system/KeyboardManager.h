@@ -14,12 +14,10 @@ public:
     {
         name = "KeyboardManager";
 		Initialize();
-		SYSTEM_LOG << "KeyboardManager created and Initialized\n";
     }
     virtual ~KeyboardManager()
     {
 		Shutdown();
-        SYSTEM_LOG << "KeyboardManager destroyed\n";
 	}
 
     static KeyboardManager& GetInstance();

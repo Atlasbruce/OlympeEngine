@@ -15,6 +15,9 @@
 class Viewport
 {
 public:
+    Viewport() = default;
+    ~Viewport() = default;
+
     static Viewport& GetInstance()
     {
         static Viewport instance;
@@ -84,10 +87,6 @@ public:
 
     // Return ordered list of player ids (if empty, engine should treat it as single default player)
     const std::vector<short>& GetPlayers() const { return m_players; }
-
-private:
-    Viewport() = default;
-    ~Viewport() = default;
 
     void UpdateViewports()
     {

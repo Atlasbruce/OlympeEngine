@@ -25,10 +25,10 @@ class GameEngine: public Singleton
 		//GameEngine properties and methods
 		GameEngine()
 		{
+			eventmanager = std::make_unique<EventManager>();
 			inputsmanager = std::make_unique<InputsManager>();
 			systemmenu = std::make_unique<SystemMenu>();
-			//videogame = sdt::make_unique<VideoGame>();
-			VideoGame::GetInstance();
+			videogame = std::make_unique<VideoGame>();
 
 			name = "GameEngine";
 			
@@ -68,4 +68,5 @@ class GameEngine: public Singleton
 		std::unique_ptr<InputsManager> inputsmanager;
 		std::unique_ptr<SystemMenu> systemmenu;
 		std::unique_ptr<VideoGame> videogame;
+		std::unique_ptr<EventManager> eventmanager;
 };

@@ -28,6 +28,9 @@ public:
     };
 
 public:
+    Camera() { Initialize(); }
+    ~Camera() { Shutdown(); }
+
     static Camera& GetInstance()
     {
         static Camera instance;
@@ -52,9 +55,6 @@ public:
     void OnEvent(const Message& msg);
 
 private:
-	Camera() { Initialize(); }
-	~Camera() { Shutdown(); }
-
     mutable std::mutex m_mutex;
     std::unordered_map<short, CameraInstance> m_cameras;
 };

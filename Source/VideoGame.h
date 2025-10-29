@@ -29,16 +29,14 @@ public:
 
 		// Initialize components
 		world = std::make_unique<World>();
-		rules = std::make_unique<GameRules>("DefaultRules");
-		// QuestManager is a singleton; ensure instance exists
+		gamerules = std::make_unique<GameRules>("DefaultRules");
 		questmanager = std::make_unique<QuestManager>();
-		menu = std::make_unique<GameMenu>();
-
-		// Initialize camera singleton
-		Camera::Get();
+		gamemenu = std::make_unique<GameMenu>();
+		camera = std::make_unique<Camera>();
+		viewport = std::make_unique<Viewport>();
 
 		// Initialize viewport (default size)
-		Viewport::Get().Initialize(800,600);
+		viewport->Initialize(800,600);
 
 		// Create default player 0
 		AddPlayer();
@@ -75,17 +73,17 @@ public:
      // Per-class singleton accessors
      static VideoGame& GetInstance()
      {
-     static VideoGame instance;
-     return instance;
+        static VideoGame instance;
+        return instance;
      }
      static VideoGame& Get() { return GetInstance(); }
 
-     World& GetWorld() { return *world; }
-     GameRules& GetRules() { return *rules; }
-     QuestManager& GetQuestManager() { return *questmanager; }
-     GameMenu& GetMenu() { return *menu; }
-
-     Camera& GetCamera() { return Camera::Get(); }
+    inline World& GetWorld() { return *world; }
+    inline GameRules& GetRules() { return *gamerules; }
+    inline QuestManager& GetQuestManager() { return *questmanager; }
+    inline GameMenu& GetMenu() { return *gamemenu; }
+    inline Camera& GetCamera() { return *camera; }
+	inline Viewport& GetViewport() { return *viewport; }
 
      // Game state helpers (front-end to GameStateManager)
      void SetState(GameState s)
@@ -144,8 +142,8 @@ public:
 
          m_players.push_back(newId);
          // update viewport and create camera for player
-         Viewport::Get().AddPlayer(newId);
-         Camera::Get().CreateCameraForPlayer(newId);
+         viewport->AddPlayer(newId);
+         camera->CreateCameraForPlayer(newId);
          SYSTEM_LOG << "VideoGame: Added player " << newId << "\n";
          return newId;
      }
@@ -284,12 +282,15 @@ public:
          }
      }
 
-private:
+public:
      std::unique_ptr<World> world;
-     std::unique_ptr<GameRules> rules;
-     std::unique_ptr<GameMenu> menu;
+     std::unique_ptr<GameRules> gamerules;
+     std::unique_ptr<GameMenu> gamemenu;
      std::unique_ptr<QuestManager> questmanager;
+	 std::unique_ptr<Camera> camera;
+	 std::unique_ptr<Viewport> viewport;
 
+private:
      // cached state for quick local reads (authoritative value lives in GameStateManager)
      GameState m_state = GameState::GameState_Running;
 

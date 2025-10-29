@@ -17,6 +17,7 @@ void KeyboardManager::Initialize()
 
 void KeyboardManager::Shutdown()
 {
+    SYSTEM_LOG << "KeyboardManager deleted\n";
 }
 
 void KeyboardManager::HandleEvent(const SDL_Event* ev)
