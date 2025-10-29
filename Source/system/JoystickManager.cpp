@@ -4,14 +4,6 @@
 #include <SDL3/SDL.h>
 #include <iostream>
 
-JoystickManager::JoystickManager()
-{
-}
-
-JoystickManager::~JoystickManager()
-{
-    Shutdown();
-}
 //---------------------------------------------------------------------------------------------
 JoystickManager& JoystickManager::GetInstance()
 {
@@ -36,6 +28,7 @@ void JoystickManager::Initialize()
         }
         SDL_free(ids);
     }
+	SYSTEM_LOG << "JoystickManager created and Initialized with " << count << " joysticks connected\n";
 }
 //---------------------------------------------------------------------------------------------
 void JoystickManager::Shutdown()

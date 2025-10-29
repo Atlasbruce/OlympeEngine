@@ -6,12 +6,13 @@ nchereau@gmail.com
 Purpose:
 - Singleton design pattern implementation.
 - Ensures a class has only one instance and provides a global point of access to it.
+- Base Singleton marker class (no instance managed here).
+- Individual derived classes should implement their own GetInstance()/Get() methods.
 
 */
 #pragma once
+#include <string>
 
-// Base Singleton marker class (no instance managed here).
-// Individual derived classes should implement their own GetInstance()/Get() methods.
 struct Message;
 
 class Singleton
@@ -24,5 +25,5 @@ public:
 	virtual void Render() {};
 	virtual void OnEvent(const Message& /*msg*/) {};
 
-	bool operator==(const Singleton& other) const { return this == &other; }
+	std::string name = "unnamed singleton";
 };

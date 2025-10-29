@@ -25,6 +25,16 @@ public:
     using CreatorFunction = std::function<Object* ()>;
     std::map<std::string, CreatorFunction> m_registeredCreators;
 
+    Factory()
+    {
+		name = "Factory";
+		SYSTEM_LOG << "Factory created and Initialized\n";
+    };
+    virtual ~Factory()
+    {
+        SYSTEM_LOG << "Factory destroyed\n";
+	}
+
     // Per-class singleton accessors
     static Factory& GetInstance()
     {
@@ -75,10 +85,6 @@ public:
         GameEngine::Get().AddObject(o);
         return o;
     }
-
-   Factory() = default;
-   virtual ~Factory() {}
-   Factory(const Factory&) = delete;
 };
 
 

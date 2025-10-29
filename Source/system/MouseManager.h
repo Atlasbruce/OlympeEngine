@@ -5,17 +5,24 @@
 #include "message.h"
 #include <SDL3/SDL.h>
 #include <mutex>
+#include "system_utils.h"
 
 class MouseManager : public Singleton
 {
 public:
-    MouseManager();
-    virtual ~MouseManager();
+    MouseManager()
+    {
+		Initialize();
+    }
+    virtual ~MouseManager()
+    {
+        Shutdown();
+    }
 
     static MouseManager& GetInstance();
     static MouseManager& Get() { return GetInstance(); }
 
-    void Initialize();
+	void Initialize();
     void Shutdown();
 
     void HandleEvent(const SDL_Event* ev);

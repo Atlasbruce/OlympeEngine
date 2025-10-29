@@ -3,18 +3,6 @@
 #include <iostream>
 #include "system_utils.h"
 
-SystemMenu::SystemMenu()
-{
-    // default entries
-    m_items.push_back("About");
-    m_items.push_back("Settings");
-    m_items.push_back("Exit");
-}
-
-SystemMenu::~SystemMenu()
-{
-}
-
 SystemMenu& SystemMenu::GetInstance()
 {
     static SystemMenu instance;

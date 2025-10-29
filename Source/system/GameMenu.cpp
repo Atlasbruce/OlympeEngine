@@ -4,13 +4,6 @@
 #include <iostream>
 #include "system_utils.h"
 
-GameMenu::GameMenu()
-{
-}
-
-GameMenu::~GameMenu()
-{
-}
 
 void GameMenu::Activate()
 {

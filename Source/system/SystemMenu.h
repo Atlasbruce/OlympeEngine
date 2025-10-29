@@ -3,6 +3,7 @@
 #include "../Singleton.h"
 #include <vector>
 #include <string>
+#include "system_utils.h"
 
 // Lightweight System menu singleton used by GameEngine to provide global
 // application-level menu controls (show/hide, basic commands).
@@ -12,8 +13,20 @@
 class SystemMenu : public Singleton
 {
 public:
-    SystemMenu();
-    virtual ~SystemMenu();
+    SystemMenu()
+    {
+        // default entries
+        m_items.push_back("About");
+        m_items.push_back("Settings");
+        m_items.push_back("Exit");
+		name = "SystemMenu";
+        SYSTEM_LOG << "SystemMenu Initialized\n";
+    }
+    virtual ~SystemMenu()
+    {
+        SYSTEM_LOG << "SystemMenu Shutdown\n";
+	}
+
 
     static SystemMenu& GetInstance();
     static SystemMenu& Get() { return GetInstance(); }

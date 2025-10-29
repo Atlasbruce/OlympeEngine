@@ -14,23 +14,30 @@
 class QuestManager : public Singleton
 {
 public:
- QuestManager() { SYSTEM_LOG << "QuestManager created\n"; }
- virtual ~QuestManager() { SYSTEM_LOG << "QuestManager destroyed\n"; }
+	QuestManager()
+	{
+		name = "QuestManager";
+		SYSTEM_LOG << "QuestManager Initialized\n";
+	}
+	virtual ~QuestManager()
+	{
+		SYSTEM_LOG << "QuestManager Shutdown\n";
+	}
 
- static QuestManager& GetInstance()
- {
- static QuestManager instance;
- return instance;
- }
- static QuestManager& Get() { return GetInstance(); }
+	static QuestManager& GetInstance()
+	{
+		static QuestManager instance;
+		return instance;
+	}
+	static QuestManager& Get() { return GetInstance(); }
 
- void AddQuest(std::unique_ptr<Quest> q)
- {
- quests.push_back(std::move(q));
- }
+	void AddQuest(std::unique_ptr<Quest> q)
+	{
+		quests.push_back(std::move(q));
+	}
 
- const std::vector<std::unique_ptr<Quest>>& GetQuests() const { return quests; }
+	const std::vector<std::unique_ptr<Quest>>& GetQuests() const { return quests; }
 
 private:
- std::vector<std::unique_ptr<Quest>> quests;
+	std::vector<std::unique_ptr<Quest>> quests;
 };

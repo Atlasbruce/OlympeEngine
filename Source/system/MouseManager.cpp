@@ -2,15 +2,6 @@
 #include "EventManager.h"
 #include <iostream>
 
-MouseManager::MouseManager()
-{
-}
-
-MouseManager::~MouseManager()
-{
-    Shutdown();
-}
-
 MouseManager& MouseManager::GetInstance()
 {
     static MouseManager instance;
@@ -19,10 +10,13 @@ MouseManager& MouseManager::GetInstance()
 
 void MouseManager::Initialize()
 {
+	name = "MouseManager";
+    SYSTEM_LOG << "MouseManager Initialized\n";
 }
 
 void MouseManager::Shutdown()
 {
+	SYSTEM_LOG << "MouseManager Shutdown\n";
 }
 
 void MouseManager::HandleEvent(const SDL_Event* ev)

@@ -31,6 +31,7 @@
     <ClCompile Include="Source\system\Viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Source\AI_Player.h" />
     <ClInclude Include="Source\CollisionMap.h" />
     <ClInclude Include="Source\Factory.h" />
@@ -49,6 +50,7 @@
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Quest.h" />
     <ClInclude Include="Source\QuestManager.h" />
+    <ClInclude Include="source\resource.h" />
     <ClInclude Include="Source\Sector.h" />
     <ClInclude Include="Source\Serialization.h" />
     <ClInclude Include="Source\Singleton.h" />
@@ -59,7 +61,6 @@
     <ClInclude Include="Source\system\KeyboardManager.h" />
     <ClInclude Include="Source\system\message.h" />
     <ClInclude Include="Source\system\MouseManager.h" />
-    <ClInclude Include="Source\system\systel_utils.h" />
     <ClInclude Include="Source\system\system_utils.h" />
     <ClInclude Include="Source\system\SystemMenu.h" />
     <ClInclude Include="source\system\system_consts.h" />
@@ -71,6 +72,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Resources\olympe.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Olympe Engine.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -127,7 +134,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>$(ProjectName)_d</TargetName>
     <OutDir>$(SolutionDir)\</OutDir>
-    <PublicIncludeDirectories>SDL\include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
+    <PublicIncludeDirectories>Source;SDL\include;Source\system;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>$(ProjectName)_r</TargetName>

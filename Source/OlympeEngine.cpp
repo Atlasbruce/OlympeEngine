@@ -20,6 +20,8 @@
 #include "system/Viewport.h"
 #include "videogame.h"
 
+using namespace std;
+
  /* We will use this renderer to draw into this window every frame. */
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
@@ -69,12 +71,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 
     last_time = SDL_GetTicks();
 
-	//Olympe Engine Elements Initialization Here
-    GameEngine::Get();
-    World::Get();
-    InputsManager::Get().Initialize();
-    Camera::Get().Initialize();
- 
+	//Olympe Engine and all managers singleton Initialization Here
+    GameEngine::GetInstance();
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -189,6 +187,4 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 void SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     /* SDL will clean up the window/renderer for us. */
-    InputsManager::Get().Shutdown();
-    Camera::Get().Shutdown();
 }

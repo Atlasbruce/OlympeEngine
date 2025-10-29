@@ -5,12 +5,13 @@
 #include <mutex>
 #include "message.h"
 #include "system_consts.h"
+#include "../singleton.h"
 
 // Camera singleton that manages multiple per-player camera instances.
 // Exposes minimal API used by the engine: Initialize(), Shutdown(), Apply(renderer)
 // Additional helpers allow creating/removing cameras per player and query their transform.
 
-class Camera
+class Camera : public Singleton
 {
 public:
     struct CameraInstance
@@ -51,8 +52,8 @@ public:
     void OnEvent(const Message& msg);
 
 private:
-    Camera() = default;
-    ~Camera() = default;
+	Camera() { Initialize(); }
+	~Camera() { Shutdown(); }
 
     mutable std::mutex m_mutex;
     std::unordered_map<short, CameraInstance> m_cameras;

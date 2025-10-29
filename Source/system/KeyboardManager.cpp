@@ -1,15 +1,7 @@
 #include "KeyboardManager.h"
 #include "EventManager.h"
 #include <iostream>
-
-KeyboardManager::KeyboardManager()
-{
-}
-
-KeyboardManager::~KeyboardManager()
-{
-    Shutdown();
-}
+#include "system_utils.h"
 
 KeyboardManager& KeyboardManager::GetInstance()
 {
@@ -20,6 +12,7 @@ KeyboardManager& KeyboardManager::GetInstance()
 void KeyboardManager::Initialize()
 {
     // nothing special for now - SDL keyboard events are delivered automatically
+	SYSTEM_LOG << "KeyboardManager created and Initialized\n";
 }
 
 void KeyboardManager::Shutdown()

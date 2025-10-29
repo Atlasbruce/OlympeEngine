@@ -1,20 +1,29 @@
 #pragma once
 
-#include "../Object.h"
-#include "../system/system_consts.h"
+#include "../object.h"
 #include <vector>
 #include <string>
+#include "system_utils.h"
 
 // GameMenu is an instance-based menu attached to a VideoGame object.
-// It receives events (via Object::OnEvent forwarding) and can be used
+// It receives events (via OnEvent(Message& msg) forwarding) and can be used
 // to navigate a set of menu entries. It is also a GameObject-like
 // entity so it can be added to the engine's object list if desired.
 
 class GameMenu : public Object
 {
 public:
-    GameMenu();
-    virtual ~GameMenu();
+    GameMenu()
+    {
+        name = "GameMenu";
+		//type = ObjectType::Menu;
+		SYSTEM_LOG << "GameMenu Initialized\n";
+	}
+    virtual ~GameMenu()
+    {
+        Deactivate();
+		SYSTEM_LOG << "GameMenu Destroyed\n";
+    }
 
     void Activate();
     void Deactivate();

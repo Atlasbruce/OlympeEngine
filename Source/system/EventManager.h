@@ -9,6 +9,7 @@
 #include <mutex>
 #include <queue>
 #include <algorithm>
+#include "system_utils.h"
 
 // EventManager: central dispatcher for engine messages.
 // Inline (header-only) implementation placed in Source/system.
@@ -21,8 +22,16 @@ public:
     using ListenerEntry = std::pair<void*, Listener>; // owner pointer + callback
 
 public:
-    EventManager() = default;
-    ~EventManager() = default;
+    EventManager()
+    {
+		name = "EventManager";
+        SYSTEM_LOG << "EventManager created and Initialized\n";
+    }
+
+    ~EventManager()
+    {
+        SYSTEM_LOG << "EventManager destroyed\n";
+	}
 
     // Per-class singleton accessors
     static EventManager& GetInstance()

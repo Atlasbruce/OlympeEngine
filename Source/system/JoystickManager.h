@@ -12,8 +12,16 @@
 class JoystickManager : public Singleton
 {
 public:
-    JoystickManager();
-    virtual ~JoystickManager();
+    JoystickManager()
+    {
+        name = "JoystickManager";
+		Initialize();
+		SYSTEM_LOG << "JoystickManager created\n";
+    }
+    virtual ~JoystickManager()
+    {
+		Shutdown();
+	}
 
     static JoystickManager& GetInstance();
     static JoystickManager& Get() { return GetInstance(); }

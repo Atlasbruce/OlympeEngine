@@ -23,278 +23,282 @@
 class VideoGame : public Singleton
 {
 public:
-	VideoGame()
-	{
-		 SYSTEM_LOG << "VideoGame created\n";
-		 // Initialize components
-		 world = std::make_unique<World>();
-		 rules = std::make_unique<GameRules>("DefaultRules");
-		 // QuestManager is a singleton; ensure instance exists
-		 questmanager = std::make_unique<QuestManager>();
-		 menu = std::make_unique<GameMenu>();
+    VideoGame()
+    {
+		name = "VideoGame";
 
-		 // Initialize camera singleton
-		 Camera::Get().Initialize();
+		// Initialize components
+		world = std::make_unique<World>();
+		rules = std::make_unique<GameRules>("DefaultRules");
+		// QuestManager is a singleton; ensure instance exists
+		questmanager = std::make_unique<QuestManager>();
+		menu = std::make_unique<GameMenu>();
 
-		 // Initialize viewport (default size)
-		 Viewport::Get().Initialize(800,600);
+		// Initialize camera singleton
+		Camera::Get();
 
-		 // Create default player 0
-		 AddPlayer();
+		// Initialize viewport (default size)
+		Viewport::Get().Initialize(800,600);
 
-		 // Register to EventManager for game events
-		 using EM = EventManager;
-		 EM::Get().Register(this, EventType::EventType_Game_Pause, [this](const Message& m){ this->OnEvent(m); });
-		 EM::Get().Register(this, EventType::EventType_Game_Resume, [this](const Message& m){ this->OnEvent(m); });
-		 EM::Get().Register(this, EventType::EventType_Game_Quit, [this](const Message& m){ this->OnEvent(m); });
-		 EM::Get().Register(this, EventType::EventType_Game_Restart, [this](const Message& m){ this->OnEvent(m); });
-		 EM::Get().Register(this, EventType::EventType_Game_AddPlayer, [this](const Message& m){ this->OnEvent(m); });
-		 EM::Get().Register(this, EventType::EventType_Game_RemovePlayer, [this](const Message& m){ this->OnEvent(m); });
-		 EM::Get().Register(this, EventType::EventType_Game_TakeScreenshot, [this](const Message& m){ this->OnEvent(m); });
-		 EM::Get().Register(this, EventType::EventType_Game_SaveState, [this](const Message& m){ this->OnEvent(m); });
-		 EM::Get().Register(this, EventType::EventType_Game_LoadState, [this](const Message& m){ this->OnEvent(m); });
+		// Create default player 0
+		AddPlayer();
 
-		 // Register to keyboard events to allow viewport add/remove with numpad +/-
-		 EM::Get().Register(this, EventType::EventType_Keyboard_KeyDown, [this](const Message& m){ this->OnEvent(m); });
-		 EM::Get().Register(this, EventType::EventType_Keyboard_KeyUp, [this](const Message& m){ this->OnEvent(m); });
+		// Register to EventManager for game events
+		using EM = EventManager;
+		EM::Get().Register(this, EventType::EventType_Game_Pause, [this](const Message& m){ this->OnEvent(m); });
+		EM::Get().Register(this, EventType::EventType_Game_Resume, [this](const Message& m){ this->OnEvent(m); });
+		EM::Get().Register(this, EventType::EventType_Game_Quit, [this](const Message& m){ this->OnEvent(m); });
+		EM::Get().Register(this, EventType::EventType_Game_Restart, [this](const Message& m){ this->OnEvent(m); });
+		EM::Get().Register(this, EventType::EventType_Game_AddPlayer, [this](const Message& m){ this->OnEvent(m); });
+		EM::Get().Register(this, EventType::EventType_Game_RemovePlayer, [this](const Message& m){ this->OnEvent(m); });
+		EM::Get().Register(this, EventType::EventType_Game_TakeScreenshot, [this](const Message& m){ this->OnEvent(m); });
+		EM::Get().Register(this, EventType::EventType_Game_SaveState, [this](const Message& m){ this->OnEvent(m); });
+		EM::Get().Register(this, EventType::EventType_Game_LoadState, [this](const Message& m){ this->OnEvent(m); });
 
-		 // Ensure default state is running
-		 GameStateManager::SetState(GameState::GameState_Running);
+		// Register to keyboard events to allow viewport add/remove with numpad +/-
+		EM::Get().Register(this, EventType::EventType_Keyboard_KeyDown, [this](const Message& m){ this->OnEvent(m); });
+		EM::Get().Register(this, EventType::EventType_Keyboard_KeyUp, [this](const Message& m){ this->OnEvent(m); });
+
+		// Ensure default state is running
+		GameStateManager::SetState(GameState::GameState_Running);
+
+       SYSTEM_LOG << "VideoGame created\n";
 	}
- ~VideoGame()
- {
-     SYSTEM_LOG << "VideoGame destroyed\n";
-     // Unregister from EventManager
-     EventManager::Get().UnregisterAll(this);
- }
 
- // Per-class singleton accessors
- static VideoGame& GetInstance()
- {
- static VideoGame instance;
- return instance;
- }
- static VideoGame& Get() { return GetInstance(); }
-
- World& GetWorld() { return *world; }
- GameRules& GetRules() { return *rules; }
- QuestManager& GetQuestManager() { return *questmanager; }
- GameMenu& GetMenu() { return *menu; }
-
- Camera& GetCamera() { return Camera::Get(); }
-
- // Game state helpers (front-end to GameStateManager)
- void SetState(GameState s)
- {
- GameStateManager::SetState(s);
- m_state = s;
- }
- GameState GetState() const { return GameStateManager::GetState(); }
- bool IsPaused() const { return GameStateManager::IsPaused(); }
-
- void Pause() { SetState(GameState::GameState_Paused); }
- void Resume() { SetState(GameState::GameState_Running); }
- void RequestQuit() { SetState(GameState::GameState_Quit); }
-
- // Player management: supports up to 4 players
- // Returns assigned player ID [0..3] or -1 on failure
- short AddPlayer()
- {
-     if (m_players.size() >= 4) return -1;
-     // choose lowest unused id
-     short newId = -1;
-     for (short i = 0; i < 4; ++i) {
-         if (std::find(m_players.begin(), m_players.end(), i) == m_players.end()) { newId = i; break; }
-     }
-     if (newId < 0) return -1;
-
-     // assign a joystick if available (one joystick per player) otherwise use keyboard if not used
-     auto joysticks = JoystickManager::Get().GetConnectedJoysticks();
-     SDL_JoystickID picked = 0;
-     bool assignedJoystick = false;
-     for (auto id : joysticks)
+     ~VideoGame()
      {
-         bool used = false;
-         for (auto &kv : m_playerToJoystick) if (kv.second == id) { used = true; break; }
-         if (!used) { picked = id; assignedJoystick = true; break; }
+         SYSTEM_LOG << "VideoGame destroyed\n";
+         // Unregister from EventManager
+         EventManager::Get().UnregisterAll(this);
      }
 
-     if (assignedJoystick)
+     // Per-class singleton accessors
+     static VideoGame& GetInstance()
      {
-         m_playerToJoystick[newId] = picked;
+     static VideoGame instance;
+     return instance;
      }
-     else
+     static VideoGame& Get() { return GetInstance(); }
+
+     World& GetWorld() { return *world; }
+     GameRules& GetRules() { return *rules; }
+     QuestManager& GetQuestManager() { return *questmanager; }
+     GameMenu& GetMenu() { return *menu; }
+
+     Camera& GetCamera() { return Camera::Get(); }
+
+     // Game state helpers (front-end to GameStateManager)
+     void SetState(GameState s)
      {
-         // if no joystick available, use keyboard only if keyboard not already used
-         if (!m_keyboardAssigned)
+     GameStateManager::SetState(s);
+     m_state = s;
+     }
+     GameState GetState() const { return GameStateManager::GetState(); }
+     bool IsPaused() const { return GameStateManager::IsPaused(); }
+
+     void Pause() { SetState(GameState::GameState_Paused); }
+     void Resume() { SetState(GameState::GameState_Running); }
+     void RequestQuit() { SetState(GameState::GameState_Quit); }
+
+     // Player management: supports up to 4 players
+     // Returns assigned player ID [0..3] or -1 on failure
+     short AddPlayer()
+     {
+         if (m_players.size() >= 4) return -1;
+         // choose lowest unused id
+         short newId = -1;
+         for (short i = 0; i < 4; ++i) {
+             if (std::find(m_players.begin(), m_players.end(), i) == m_players.end()) { newId = i; break; }
+         }
+         if (newId < 0) return -1;
+
+         // assign a joystick if available (one joystick per player) otherwise use keyboard if not used
+         auto joysticks = JoystickManager::Get().GetConnectedJoysticks();
+         SDL_JoystickID picked = 0;
+         bool assignedJoystick = false;
+         for (auto id : joysticks)
          {
-             m_keyboardAssigned = true;
-             m_playerToJoystick[newId] = SDL_JoystickID(-1); // -1 denotes keyboard
+             bool used = false;
+             for (auto &kv : m_playerToJoystick) if (kv.second == id) { used = true; break; }
+             if (!used) { picked = id; assignedJoystick = true; break; }
+         }
+
+         if (assignedJoystick)
+         {
+             m_playerToJoystick[newId] = picked;
          }
          else
          {
-             // cannot add player: no free controller
-             return -1;
-         }
-     }
-
-     m_players.push_back(newId);
-     // update viewport and create camera for player
-     Viewport::Get().AddPlayer(newId);
-     Camera::Get().CreateCameraForPlayer(newId);
-     SYSTEM_LOG << "VideoGame: Added player " << newId << "\n";
-     return newId;
- }
-
- bool RemovePlayer(const short PlayerID)
- {
-     auto it = std::find(m_players.begin(), m_players.end(), PlayerID);
-     if (it == m_players.end()) return false;
-     // free controller mapping
-     auto pit = m_playerToJoystick.find(PlayerID);
-     if (pit != m_playerToJoystick.end())
-     {
-         if (pit->second == SDL_JoystickID(-1)) m_keyboardAssigned = false;
-         m_playerToJoystick.erase(pit);
-     }
-     m_players.erase(it);
-     Viewport::Get().RemovePlayer(PlayerID);
-     Camera::Get().RemoveCameraForPlayer(PlayerID);
-     SYSTEM_LOG << "VideoGame: Removed player " << PlayerID << "\n";
-     return true;
- }
-
- int GetPlayerCount() const { return static_cast<int>(m_players.size()); }
- const std::vector<short>& GetPlayers() const { return m_players; }
-
- // Event handler for EventManager messages registered in ctor
- void OnEvent(const Message& msg)
- {
-     switch (msg.type)
-     {
-         case EventType::EventType_Game_Pause:
-             Pause();
-             SYSTEM_LOG << "VideoGame: Paused via event\n";
-             break;
-         case EventType::EventType_Game_Resume:
-             Resume();
-             SYSTEM_LOG << "VideoGame: Resumed via event\n";
-             break;
-         case EventType::EventType_Game_Quit:
-             RequestQuit();
-             SYSTEM_LOG << "VideoGame: Quit requested via event\n";
-             break;
-         case EventType::EventType_Game_Restart:
-             // Placeholder: restart current level (not implemented fully)
-             SYSTEM_LOG << "VideoGame: Restart requested via event (not implemented)\n";
-             break;
-         case EventType::EventType_Game_AddPlayer:
-         {
-             // controlId (if provided) may request a specific player id; otherwise add next
-             bool ok = false;
-             if (msg.controlId >= 0)
+             // if no joystick available, use keyboard only if keyboard not already used
+             if (!m_keyboardAssigned)
              {
-                 short requested = static_cast<short>(msg.controlId);
-                 // if requested id already present, ignore
-                 if (std::find(m_players.begin(), m_players.end(), requested) == m_players.end())
-                 {
-                     // attempt to add with that id by first creating players until needed id available
-                     short added = AddPlayer();
-                     // AddPlayer chooses lowest free id; if not the requested one, user can map controllers separately
-                     (void)added;
-                     ok = true;
-                 }
+                 m_keyboardAssigned = true;
+                 m_playerToJoystick[newId] = SDL_JoystickID(-1); // -1 denotes keyboard
              }
              else
              {
-                 short added = AddPlayer();
-                 ok = (added >= 0);
+                 // cannot add player: no free controller
+                 return -1;
              }
-             SYSTEM_LOG << "VideoGame: AddPlayer event -> " << (ok ? "success" : "failed") << "\n";
-             break;
          }
-         case EventType::EventType_Game_RemovePlayer:
+
+         m_players.push_back(newId);
+         // update viewport and create camera for player
+         Viewport::Get().AddPlayer(newId);
+         Camera::Get().CreateCameraForPlayer(newId);
+         SYSTEM_LOG << "VideoGame: Added player " << newId << "\n";
+         return newId;
+     }
+
+     bool RemovePlayer(const short PlayerID)
+     {
+         auto it = std::find(m_players.begin(), m_players.end(), PlayerID);
+         if (it == m_players.end()) return false;
+         // free controller mapping
+         auto pit = m_playerToJoystick.find(PlayerID);
+         if (pit != m_playerToJoystick.end())
          {
-             if (msg.controlId >= 0)
+             if (pit->second == SDL_JoystickID(-1)) m_keyboardAssigned = false;
+             m_playerToJoystick.erase(pit);
+         }
+         m_players.erase(it);
+         Viewport::Get().RemovePlayer(PlayerID);
+         Camera::Get().RemoveCameraForPlayer(PlayerID);
+         SYSTEM_LOG << "VideoGame: Removed player " << PlayerID << "\n";
+         return true;
+     }
+
+     int GetPlayerCount() const { return static_cast<int>(m_players.size()); }
+     const std::vector<short>& GetPlayers() const { return m_players; }
+
+     // Event handler for EventManager messages registered in ctor
+     void OnEvent(const Message& msg)
+     {
+         switch (msg.type)
+         {
+             case EventType::EventType_Game_Pause:
+                 Pause();
+                 SYSTEM_LOG << "VideoGame: Paused via event\n";
+                 break;
+             case EventType::EventType_Game_Resume:
+                 Resume();
+                 SYSTEM_LOG << "VideoGame: Resumed via event\n";
+                 break;
+             case EventType::EventType_Game_Quit:
+                 RequestQuit();
+                 SYSTEM_LOG << "VideoGame: Quit requested via event\n";
+                 break;
+             case EventType::EventType_Game_Restart:
+                 // Placeholder: restart current level (not implemented fully)
+                 SYSTEM_LOG << "VideoGame: Restart requested via event (not implemented)\n";
+                 break;
+             case EventType::EventType_Game_AddPlayer:
              {
-                 short pid = static_cast<short>(msg.controlId);
-                 bool ok = RemovePlayer(pid);
-                 SYSTEM_LOG << "VideoGame: RemovePlayer event for " << pid << " -> " << (ok ? "removed" : "not found") << "\n";
-             }
-             break;
-         }
-         case EventType::EventType_Game_TakeScreenshot:
-             // Not implemented: placeholder
-             SYSTEM_LOG << "VideoGame: TakeScreenshot event (not implemented)\n";
-             break;
-         case EventType::EventType_Game_SaveState:
-         {
-             int slot = msg.controlId;
-             SYSTEM_LOG << "VideoGame: SaveState event slot=" << slot << " (not implemented)\n";
-             break;
-         }
-         case EventType::EventType_Game_LoadState:
-         {
-             int slot = msg.controlId;
-             SYSTEM_LOG << "VideoGame: LoadState event slot=" << slot << " (not implemented)\n";
-             break;
-         }
-         case EventType::EventType_Keyboard_KeyDown:
-         {
-             // msg.controlId contains SDL_Scancode
-             auto sc = static_cast<SDL_Scancode>(msg.controlId);
-             if (sc == SDL_SCANCODE_KP_PLUS)
-             {
-                 // debounce: only act on initial press
-                 if (!m_kpPlusPressed && msg.state == 1)
+                 // controlId (if provided) may request a specific player id; otherwise add next
+                 bool ok = false;
+                 if (msg.controlId >= 0)
                  {
-                     m_kpPlusPressed = true;
-                     short added = AddPlayer();
-                     SYSTEM_LOG << "VideoGame: Numpad + pressed -> add viewport (AddPlayer returned " << added << ")\n";
-                 }
-             }
-             else if (sc == SDL_SCANCODE_KP_MINUS)
-             {
-                 if (!m_kpMinusPressed && msg.state == 1)
-                 {
-                     m_kpMinusPressed = true;
-                     if (!m_players.empty())
+                     short requested = static_cast<short>(msg.controlId);
+                     // if requested id already present, ignore
+                     if (std::find(m_players.begin(), m_players.end(), requested) == m_players.end())
                      {
-                         short pid = m_players.back();
-                         bool ok = RemovePlayer(pid);
-                         SYSTEM_LOG << "VideoGame: Numpad - pressed -> remove viewport/player " << pid << " -> " << (ok?"removed":"failed") << "\n";
+                         // attempt to add with that id by first creating players until needed id available
+                         short added = AddPlayer();
+                         // AddPlayer chooses lowest free id; if not the requested one, user can map controllers separately
+                         (void)added;
+                         ok = true;
                      }
                  }
+                 else
+                 {
+                     short added = AddPlayer();
+                     ok = (added >= 0);
+                 }
+                 SYSTEM_LOG << "VideoGame: AddPlayer event -> " << (ok ? "success" : "failed") << "\n";
+                 break;
              }
-             break;
+             case EventType::EventType_Game_RemovePlayer:
+             {
+                 if (msg.controlId >= 0)
+                 {
+                     short pid = static_cast<short>(msg.controlId);
+                     bool ok = RemovePlayer(pid);
+                     SYSTEM_LOG << "VideoGame: RemovePlayer event for " << pid << " -> " << (ok ? "removed" : "not found") << "\n";
+                 }
+                 break;
+             }
+             case EventType::EventType_Game_TakeScreenshot:
+                 // Not implemented: placeholder
+                 SYSTEM_LOG << "VideoGame: TakeScreenshot event (not implemented)\n";
+                 break;
+             case EventType::EventType_Game_SaveState:
+             {
+                 int slot = msg.controlId;
+                 SYSTEM_LOG << "VideoGame: SaveState event slot=" << slot << " (not implemented)\n";
+                 break;
+             }
+             case EventType::EventType_Game_LoadState:
+             {
+                 int slot = msg.controlId;
+                 SYSTEM_LOG << "VideoGame: LoadState event slot=" << slot << " (not implemented)\n";
+                 break;
+             }
+             case EventType::EventType_Keyboard_KeyDown:
+             {
+                 // msg.controlId contains SDL_Scancode
+                 auto sc = static_cast<SDL_Scancode>(msg.controlId);
+                 if (sc == SDL_SCANCODE_KP_PLUS)
+                 {
+                     // debounce: only act on initial press
+                     if (!m_kpPlusPressed && msg.state == 1)
+                     {
+                         m_kpPlusPressed = true;
+                         short added = AddPlayer();
+                         SYSTEM_LOG << "VideoGame: Numpad + pressed -> add viewport (AddPlayer returned " << added << ")\n";
+                     }
+                 }
+                 else if (sc == SDL_SCANCODE_KP_MINUS)
+                 {
+                     if (!m_kpMinusPressed && msg.state == 1)
+                     {
+                         m_kpMinusPressed = true;
+                         if (!m_players.empty())
+                         {
+                             short pid = m_players.back();
+                             bool ok = RemovePlayer(pid);
+                             SYSTEM_LOG << "VideoGame: Numpad - pressed -> remove viewport/player " << pid << " -> " << (ok?"removed":"failed") << "\n";
+                         }
+                     }
+                 }
+                 break;
+             }
+             case EventType::EventType_Keyboard_KeyUp:
+             {
+                 auto sc = static_cast<SDL_Scancode>(msg.controlId);
+                 if (sc == SDL_SCANCODE_KP_PLUS) m_kpPlusPressed = false;
+                 if (sc == SDL_SCANCODE_KP_MINUS) m_kpMinusPressed = false;
+                 break;
+             }
+             default:
+                 break;
          }
-         case EventType::EventType_Keyboard_KeyUp:
-         {
-             auto sc = static_cast<SDL_Scancode>(msg.controlId);
-             if (sc == SDL_SCANCODE_KP_PLUS) m_kpPlusPressed = false;
-             if (sc == SDL_SCANCODE_KP_MINUS) m_kpMinusPressed = false;
-             break;
-         }
-         default:
-             break;
      }
- }
 
 private:
- std::unique_ptr<World> world;
- std::unique_ptr<GameRules> rules;
- std::unique_ptr<GameMenu> menu;
- std::unique_ptr<QuestManager> questmanager;
+     std::unique_ptr<World> world;
+     std::unique_ptr<GameRules> rules;
+     std::unique_ptr<GameMenu> menu;
+     std::unique_ptr<QuestManager> questmanager;
 
- // cached state for quick local reads (authoritative value lives in GameStateManager)
- GameState m_state = GameState::GameState_Running;
+     // cached state for quick local reads (authoritative value lives in GameStateManager)
+     GameState m_state = GameState::GameState_Running;
 
- // Players
- std::vector<short> m_players;
- std::unordered_map<short, SDL_JoystickID> m_playerToJoystick; // -1 = keyboard
- bool m_keyboardAssigned = false;
+     // Players
+     std::vector<short> m_players;
+     std::unordered_map<short, SDL_JoystickID> m_playerToJoystick; // -1 = keyboard
+     bool m_keyboardAssigned = false;
 
- // key debounce flags for numpad +/-
- bool m_kpPlusPressed = false;
- bool m_kpMinusPressed = false;
+     // key debounce flags for numpad +/-
+     bool m_kpPlusPressed = false;
+     bool m_kpMinusPressed = false;
 };

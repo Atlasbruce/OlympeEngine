@@ -9,8 +9,20 @@ class InputsManager :
     public Singleton
 {
 public:
-    InputsManager() = default;
-    virtual ~InputsManager() = default;
+    InputsManager()
+    {
+		name = "InputsManager";
+        JoystickManager::GetInstance();
+        KeyboardManager::GetInstance();
+        MouseManager::GetInstance();
+
+        SYSTEM_LOG << "InputsManager created and Initialized\n";
+    }
+    virtual ~InputsManager()
+    {
+        Shutdown();
+		SYSTEM_LOG << "InputsManager destroyed\n";
+    }
 
     static InputsManager& GetInstance()
     {
@@ -18,13 +30,6 @@ public:
         return instance;
     }
     static InputsManager& Get() { return GetInstance(); }
-
-    void Initialize()
-    {
-        JoystickManager::Get().Initialize();
-        KeyboardManager::Get().Initialize();
-        MouseManager::Get().Initialize();
-    }
 
     void Shutdown()
     {
@@ -75,5 +80,6 @@ public:
 private:
     std::unordered_map<short, SDL_JoystickID> m_playerBindings;
     bool m_keyboardAssigned = false;
+
 };
 

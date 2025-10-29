@@ -27,6 +27,10 @@ void Camera::Initialize()
     EventManager::Get().Register(this, EventType::EventType_Camera_Viewport_Add, [this](const Message& m){ this->OnEvent(m); });
     EventManager::Get().Register(this, EventType::EventType_Camera_Viewport_Remove, [this](const Message& m){ this->OnEvent(m); });
     EventManager::Get().Register(this, EventType::EventType_Camera_Viewport_Clear, [this](const Message& m){ this->OnEvent(m); });
+
+	name = "Camera";
+
+	SYSTEM_LOG << "Camera Initialized\n";
 }
 
 void Camera::Shutdown()
@@ -35,6 +39,7 @@ void Camera::Shutdown()
     EventManager::Get().UnregisterAll(this);
     std::lock_guard<std::mutex> lock(m_mutex);
     m_cameras.clear();
+	SYSTEM_LOG << "Camera Shutdown\n";
 }
 
 void Camera::CreateCameraForPlayer(short playerID)

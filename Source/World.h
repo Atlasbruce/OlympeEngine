@@ -16,7 +16,10 @@
 class World : public Singleton
 {
 public:
-    World() = default;
+    World()
+    {
+        SYSTEM_LOG << "World Initialized\n";
+    }
     virtual ~World() = default;
 
     static World& GetInstance()
@@ -50,9 +53,9 @@ public:
     }
     //---------------------------------------------------------------------------------------------
     // Get properties attached to an owner (by UID)
-    std::vector<GameObjectProperty*> GetPropertiesForOwner(int ownerUid) const
+    std::vector<GameObjectProperty*> GetPropertiesForOwner(uint64_t ownerUid) const
     {
-        auto it = m_ownerMap.find(ownerUid);
+        auto it = m_ownerMap.find((const int) ownerUid);
         if (it == m_ownerMap.end()) return {};
         return it->second;
     }
@@ -60,14 +63,14 @@ public:
     std::vector<GameObjectProperty*> GetPropertiesForOwner(Object* owner) const
     {
         if (!owner) return {};
-        return GetPropertiesForOwner(owner->uid);
+        return GetPropertiesForOwner(owner->GetUID());
     }
     //---------------------------------------------------------------------------------------------
     // Dispatch a message to all properties of an owner
     void DispatchToProperties(Object* owner, const Message& msg)
     {
         if (!owner) return;
-        auto it = m_ownerMap.find(owner->uid);
+        auto it = m_ownerMap.find((const int) owner->GetUID());
         if (it == m_ownerMap.end()) return;
         for (auto* prop : it->second)
         {
@@ -79,7 +82,7 @@ public:
     void RemovePropertiesForOwner(Object* owner)
     {
         if (!owner) return;
-        auto oit = m_ownerMap.find(owner->uid);
+        auto oit = m_ownerMap.find((const int) owner->GetUID());
         if (oit == m_ownerMap.end()) return;
         auto list = oit->second; // copy pointers to remove
         // remove from stage lists
