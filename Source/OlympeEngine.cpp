@@ -71,6 +71,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     }
 
     last_time = SDL_GetTicks();
+	SYSTEM_LOG << "----------- OLYMPE ENGINE V2 ------------" << endl;
+    SYSTEM_LOG << "System Initialization\n" << endl;
 
 	//Olympe Engine and all managers singleton Initialization Here
     GameEngine::GetInstance();
@@ -89,10 +91,6 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
     MouseManager::Get().HandleEvent(event);
     EventManager::Get().PostMessage (EventManager::Message(static_cast<EventType>(event->type)));
 
-    //if (event->type == SDL_EVENT_QUIT)
-    //{
-    //    return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
-    //}
     switch (event->type)
     {
 		case SDL_EVENT_KEY_DOWN:
@@ -241,4 +239,7 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 void SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     /* SDL will clean up the window/renderer for us. */
+
+    SYSTEM_LOG << "----------- OLYMPE ENGINE V2 ------------" << endl;
+    SYSTEM_LOG << "System shutdown completed\n" << endl;
 }
