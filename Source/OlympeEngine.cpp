@@ -10,6 +10,7 @@
 #define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <SDL3/SDL_messagebox.h>
 #include "gameengine.h"
 #include "Factory.h"
 #include "World.h"
@@ -95,13 +96,49 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
     switch (event->type)
     {
 		case SDL_EVENT_KEY_DOWN:
-            if (event->key.key == SDLK_ESCAPE)
+        if (event->key.key == SDLK_ESCAPE)
+        {
+            const SDL_MessageBoxButtonData buttons[] =
+            {
+                { /* .flags, .buttonid, .text */        0, 0, "no" },
+                { SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "yes" },
+                { SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "cancel" },
+            };
+            const SDL_MessageBoxColorScheme colorScheme =
+            {
+                { /* .colors (.r, .g, .b) */
+                    /* [SDL_MESSAGEBOX_COLOR_BACKGROUND] */
+                    { 255,   0,   0 },
+                    /* [SDL_MESSAGEBOX_COLOR_TEXT] */
+                    {   0, 255,   0 },
+                    /* [SDL_MESSAGEBOX_COLOR_BUTTON_BORDER] */
+                    { 255, 255,   0 },
+                    /* [SDL_MESSAGEBOX_COLOR_BUTTON_BACKGROUND] */
+                    {   0,   0, 255 },
+                    /* [SDL_MESSAGEBOX_COLOR_BUTTON_SELECTED] */
+                    { 255,   0, 255 }
+                }
+            };
+            const SDL_MessageBoxData messageboxdata = {
+                SDL_MESSAGEBOX_INFORMATION, /* .flags */
+                window, /* .window */
+                "Olympe Engine V2", /* .title */
+                "Do you want to exit Olympe Engine?", /* .message */
+                SDL_arraysize(buttons), /* .numbuttons */
+                buttons, /* .buttons */
+                &colorScheme /* .colorScheme */
+            };
+            int buttonid;
+
+            SDL_ShowMessageBox(&messageboxdata, &buttonid);
+			if (buttonid == 1)
+                return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
+        }
+	    break;
+        case SDL_EVENT_QUIT:
             {
                 return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
-			}
-			break;
-        case SDL_EVENT_QUIT:
-			return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
+            }
             break;
         default:
             return SDL_APP_CONTINUE;  /* carry on with the program! */
