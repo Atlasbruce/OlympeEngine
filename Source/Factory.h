@@ -16,7 +16,7 @@ Purpose:
 #include <memory>
 #include <stdexcept>
 #include <iostream>
-#include "GameEngine.h"
+#include "world.h"
 #include "system/system_utils.h"
 
 class Factory: public Singleton
@@ -82,7 +82,7 @@ public:
         // Appel de la fonction de création stockée dans la map
         Object *o = it->second();
         // add to game engine
-        GameEngine::Get().AddObject(o);
+        World::Get().AddObject(o);
         return o;
     }
 };

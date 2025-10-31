@@ -86,23 +86,41 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
     JoystickManager::Get().HandleEvent(event);
     KeyboardManager::Get().HandleEvent(event);
     MouseManager::Get().HandleEvent(event);
+    EventManager::Get().PostMessage (EventManager::Message(static_cast<EventType>(event->type)));
 
-    if (event->type == SDL_EVENT_QUIT) {
-        return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
-    }
-    return SDL_APP_CONTINUE;  /* carry on with the program! */
+    //if (event->type == SDL_EVENT_QUIT)
+    //{
+    //    return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
+    //}
+    switch (event->type)
+    {
+		case SDL_EVENT_KEY_DOWN:
+            if (event->key.key == SDLK_ESCAPE)
+            {
+                return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
+			}
+			break;
+        case SDL_EVENT_QUIT:
+			return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
+            break;
+        default:
+            return SDL_APP_CONTINUE;  /* carry on with the program! */
+            break;
+	}
+
+    return SDL_APP_CONTINUE; /* carry on with the program! */
+
 }
 
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void* appstate)
 {
-    const Uint64 now = SDL_GetTicks();
-    const float elapsed = ((float)(now - last_time)) / 1000.0f;  /* seconds since last iteration */
-    int i;
+	/* figure out how long it's been since the last frame. */
+    GameEngine::Get().Process();
 
     /* let's move all our points a little for a new frame. */
-    for (i = 0; i < SDL_arraysize(points); i++) {
-        const float distance = elapsed * point_speeds[i];
+    for (int i = 0; i < SDL_arraysize(points); i++) {
+        const float distance = GameEngine::fDt * point_speeds[i];
         points[i].x += distance;
         points[i].y += distance;
         if ((points[i].x >= WINDOW_WIDTH) || (points[i].y >= WINDOW_HEIGHT)) {
@@ -119,8 +137,6 @@ SDL_AppResult SDL_AppIterate(void* appstate)
         }
     }
 
-    last_time = now;
-
     // If game state requests quit, end the application loop
     if (GameStateManager::GetState() == GameState::GameState_Quit)
     {
@@ -128,7 +144,8 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     }
 
     // Update world properties (events already processed inside World::Process)
-    World::Get().Process(elapsed);
+	
+    World::Get().Process();
 	EventManager::Get().Process();
 
     /* as you can see from this, rendering draws over whatever was drawn before it. */

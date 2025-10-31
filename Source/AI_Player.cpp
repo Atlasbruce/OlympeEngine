@@ -29,7 +29,7 @@ AI_Player::~AI_Player()
     EventManager::Get().UnregisterAll(this);
 }
 
-void AI_Player::Process(float dt)
+void AI_Player::Process()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
@@ -51,8 +51,8 @@ void AI_Player::Process(float dt)
         if (m_keyDown) vy = m_keyDown ? m_speed : vy;
     }
 
-    m_posX += vx * dt;
-    m_posY += vy * dt;
+    m_posX += vx * fDt;
+    m_posY += vy * fDt;
 
     if (auto go = dynamic_cast<GameObject*>(owner))
     {

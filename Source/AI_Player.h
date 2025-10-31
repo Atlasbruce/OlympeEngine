@@ -14,7 +14,7 @@ public:
     virtual ~AI_Player() override;
 
     // AI properties participate in the AI stage (AIProperty already does this)
-    virtual void Process(float dt) override;
+    virtual void Process() override;
     virtual void OnEvent(const Message& msg) override;
 
 private:

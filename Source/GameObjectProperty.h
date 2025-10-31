@@ -27,7 +27,7 @@ public:
     virtual PropertyStage Stage() const = 0;
 
     // Called during the update loop (for Physics/AI/Audio)
-    virtual void Process(float /*dt*/) {}
+    virtual void Process() {}
 
     // Called during the render stage (for Render properties)
     virtual void Render() {}
@@ -37,6 +37,7 @@ public:
 
 protected:
     Object* owner = nullptr;
+    static float& fDt; // reference to global frame delta time
 };
 
 //---------------------------------------------------------------------------------------------
@@ -48,7 +49,7 @@ public:
     explicit PhysicsProperty(Object* owner) : GameObjectProperty(owner) {}
     virtual ~PhysicsProperty() override = default;
     virtual PropertyStage Stage() const override { return PropertyStage::Physics; }
-    virtual void Process(float /*dt*/) override
+    virtual void Process() override
     {
         // Basic physics integration should be implemented by project-specific code.
     }
@@ -60,9 +61,10 @@ public:
     explicit AIProperty(Object* owner) : GameObjectProperty(owner) {}
     virtual ~AIProperty() override = default;
     virtual PropertyStage Stage() const override { return PropertyStage::AI; }
-    virtual void Process(float /*dt*/) override
+    virtual void Process() override
     {
         // AI logic goes here.
+
     }
 };
 //---------------------------------------------------------------------------------------------
@@ -84,7 +86,7 @@ public:
     explicit AudioProperty(Object* owner) : GameObjectProperty(owner) {}
     virtual ~AudioProperty() override = default;
     virtual PropertyStage Stage() const override { return PropertyStage::Audio; }
-    virtual void Process(float /*dt*/) override
+    virtual void Process() override
     {
         // Audio update logic goes here.
     }

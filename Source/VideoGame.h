@@ -63,21 +63,20 @@ public:
        SYSTEM_LOG << "VideoGame created\n";
 	}
 
-     ~VideoGame()
-     {
-         SYSTEM_LOG << "VideoGame destroyed\n";
-         // Unregister from EventManager
-         EventManager::Get().UnregisterAll(this);
-     }
+    ~VideoGame()
+    {
+        SYSTEM_LOG << "VideoGame destroyed\n";
+        // Unregister from EventManager
+        EventManager::Get().UnregisterAll(this);
+    }
 
-     // Per-class singleton accessors
-     static VideoGame& GetInstance()
-     {
-        static VideoGame instance;
-        return instance;
-     }
-     static VideoGame& Get() { return GetInstance(); }
-
+    // Per-class singleton accessors
+    static VideoGame& GetInstance()
+    {
+       static VideoGame instance;
+       return instance;
+    }
+    static VideoGame& Get() { return GetInstance(); }
     inline World& GetWorld() { return world; }
     inline GameRules& GetRules() { return gamerules; }
     inline QuestManager& GetQuestManager() { return questmanager; }

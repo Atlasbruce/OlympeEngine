@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\AI_Player.cpp" />
+    <ClCompile Include="Source\GameEngine.cpp" />
+    <ClCompile Include="Source\GameObjectProperty.cpp" />
     <ClCompile Include="Source\GameState.cpp" />
     <ClCompile Include="Source\OlympeEngine.cpp" />
     <ClCompile Include="Source\system\Camera.cpp" />

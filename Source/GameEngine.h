@@ -25,23 +25,11 @@ class GameEngine: public Singleton
 		//GameEngine properties and methods
 		GameEngine()
 		{
-			//eventmanager = std::make_unique<EventManager>();
-			//inputsmanager = std::make_unique<InputsManager>();
-			//systemmenu = std::make_unique<SystemMenu>();
-			//videogame = std::make_unique<VideoGame>();
-
 			name = "GameEngine";
-			
 			SYSTEM_LOG << "GameEngine created and Initialized\n";
 		}
 		virtual ~GameEngine()	
 		{
-			// Clean up all objects
-			for (auto obj : objectlist)
-			{
-				delete obj;
-			}
-			objectlist.clear();
 			SYSTEM_LOG << "GameEngine destroyed\n";
 		}
 
@@ -55,13 +43,14 @@ class GameEngine: public Singleton
 		static GameEngine& Get() { return GetInstance(); }
 
 		//-------------------------------------------------------------
-		// Object Management
-		std::vector<Object*> objectlist;
-
-		void AddObject(Object* obj)
+		void Process() override
 		{
-			// Implementation to add object to the game engine
-			objectlist.push_back(obj);
+			// Calculate Delta Time for th entire engine cycle
+			const Uint64 now = SDL_GetTicks();
+			static Uint64 last_time = 0;
+			fDt = ((float)(now - last_time)) / 1000.0f;  /* seconds since last iteration */
+			last_time = now;
+
 		}
 
 		//-------------------------------------------------------------
@@ -75,5 +64,7 @@ class GameEngine: public Singleton
 		InputsManager& inputsmanager = InputsManager::GetInstance();
 		SystemMenu& systemmenu = SystemMenu::GetInstance();
 		VideoGame& videogame = VideoGame::GetInstance();
+
+		static float fDt; // Delta Time between frames
 
 };

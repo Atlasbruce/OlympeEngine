@@ -68,14 +68,6 @@ public:
 	virtual void Render() {};
 	virtual void OnEvent(const Message& msg) {};
 
-	// comparaison operator
-	inline virtual bool	operator==	(Object& _oc) { return (this == &_oc); }
-	inline virtual bool	operator!=	(Object& _oc) { return (this != &_oc); }
-	inline virtual bool	operator>	(Object& _oc) { return false; }
-	inline virtual bool	operator<	(Object& _oc) { return false; }
-	inline virtual bool	operator>=	(Object& _oc) { return false; }
-	inline virtual bool	operator<=	(Object& _oc) { return false; }
-
 	inline uint64_t GetUID() const { return uid; }
 
 protected:

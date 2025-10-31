@@ -22,6 +22,12 @@ public:
     }
     virtual ~World()
     {
+        // Clean up all objects
+        for (auto obj : objectlist)
+        {
+            delete obj;
+        }
+        objectlist.clear();
 		SYSTEM_LOG << "World Destroyed\n";
     }
 
@@ -104,7 +110,7 @@ public:
     }
     //---------------------------------------------------------------------------------------------
     // Main processing loop called each frame: events are processed first (async), then stages in order
-    void Process(float dt)
+    void Process()
     {
         //0) Ensure queued events are dispatched before the update stages
         EventManager::Get().Process();
@@ -118,7 +124,7 @@ public:
         {
             for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::Physics)])
             {
-                if (prop) prop->Process(dt);
+                if (prop) prop->Process();
             }
         }
 
@@ -127,7 +133,7 @@ public:
         {
             for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::AI)])
             {
-                if (prop) prop->Process(dt);
+                if (prop) prop->Process();
             }
         }
 
@@ -142,16 +148,30 @@ public:
         {
             for (auto* prop : m_stageLists[static_cast<size_t>(PropertyStage::Audio)])
             {
-                if (prop) prop->Process(dt);
+                if (prop) prop->Process();
             }
         }
     }
 
+	//---------------------------------------------------------------------------------------------
+    void AddObject(Object* obj)
+    {
+        // Implementation to add object to the game engine
+        objectlist.push_back(obj);
+    }
+
 private:
+    //-------------------------------------------------------------
+    // Object Management
+    std::vector<Object*> objectlist;
+
+	//-------------------------------------------------------------
+	// Property Management
     std::vector<std::unique_ptr<GameObjectProperty>> m_properties; // owns all properties
     std::array<std::vector<GameObjectProperty*>, static_cast<size_t>(PropertyStage::Count)> m_stageLists;
     std::unordered_map<int, std::vector<GameObjectProperty*>> m_ownerMap;
 
+	//-------------------------------------------------------------
     // Level storage
     std::vector<std::unique_ptr<Level>> m_levels;
 };
