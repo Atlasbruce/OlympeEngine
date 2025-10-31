@@ -19,6 +19,7 @@
 #include <vector>
 #include <unordered_map>
 #include "system/system_utils.h"
+#include "Factory.h"
 
 class VideoGame : public Singleton
 {
@@ -60,6 +61,8 @@ public:
 		// Ensure default state is running
 		GameStateManager::SetState(GameState::GameState_Running);
 
+		Factory::Get().CreateObject("GameObject");
+
        SYSTEM_LOG << "VideoGame created\n";
 	}
 
@@ -87,8 +90,8 @@ public:
      // Game state helpers (front-end to GameStateManager)
      void SetState(GameState s)
      {
-     GameStateManager::SetState(s);
-     m_state = s;
+         GameStateManager::SetState(s);
+         m_state = s;
      }
      GameState GetState() const { return GameStateManager::GetState(); }
      bool IsPaused() const { return GameStateManager::IsPaused(); }

@@ -15,27 +15,38 @@ Purpose:
 #include "World.h"
 #include "GameObjectProperty.h"
 #include <vector>
-
+#include "Factory.h"
+extern SDL_Renderer* renderer;
 class GameObject :
     public Object
 {
 public:
 
-    GameObject() = default;
+    GameObject(){
+        type = ObjectType::None;
+        name = "unnamed GameObject";
+
+        if (!Registered)
+        {
+            // Register this class in the Factory
+            Factory::Get().Register("GameObject", []() { return new GameObject(); });
+            Registered = true;
+		}
+	}
     virtual ~GameObject() override = default;
 
     //---------------------------------------------------------------------------------------------
 	// GameObject Properties--------------------------
     public:
 		// position
-		SDL_Point position = { 0, 0 };
+		SDL_FPoint position = { 0., 0. };
         // Size
-        float width = 0.0f;
-        float height = 0.0f;
+        float width = 100.0f;
+        float height = 150.0f;
         // Bounding Box
 	    SDL_FRect boundingBox = { 0.0f, 0.0f, 0.0f, 0.0f };
 		// static or dynamic
-		bool isDynamic = false;
+        bool isDynamic = false;
     //---------------------------------------------------------------------------------------------
     // Add a property to this GameObject (delegates ownership to World/ECS)
     template<typename T, typename... Args>
@@ -55,5 +66,15 @@ public:
     {
         World::Get().DispatchToProperties(this, msg);
     }
+
+    void Render() override
+    {
+        // Render logic here (e.g., draw sprite at position)
+        boundingBox = { position.x, position.y, width, height };
+        SDL_RenderRect(renderer, &boundingBox  );
+	}
+
+protected:
+    static bool Registered;
 };
 

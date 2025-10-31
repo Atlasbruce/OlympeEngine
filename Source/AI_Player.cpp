@@ -56,8 +56,8 @@ void AI_Player::Process()
 
     if (auto go = dynamic_cast<GameObject*>(owner))
     {
-        go->position.x = static_cast<int>(std::round(m_posX));
-        go->position.y = static_cast<int>(std::round(m_posY));
+        go->position.x = std::round(m_posX);
+        go->position.y = std::round(m_posY);
     }
 }
 
