@@ -56,7 +56,7 @@ public:
         std::unique_ptr<GameObjectProperty> p = std::make_unique<T>(owner, std::forward<Args>(args)...);
         GameObjectProperty* raw = p.get();
         m_stageLists[static_cast<size_t>(raw->Stage())].push_back(raw);
-        m_ownerMap[owner->uid].push_back(raw);
+        m_ownerMap[owner->GetUID()].push_back(raw);
         m_properties.push_back(std::move(p));
         return static_cast<T*>(raw);
     }
@@ -64,7 +64,7 @@ public:
     // Get properties attached to an owner (by UID)
     std::vector<GameObjectProperty*> GetPropertiesForOwner(uint64_t ownerUid) const
     {
-        auto it = m_ownerMap.find((const int) ownerUid);
+        auto it = m_ownerMap.find(ownerUid);
         if (it == m_ownerMap.end()) return {};
         return it->second;
     }
@@ -79,7 +79,7 @@ public:
     void DispatchToProperties(Object* owner, const Message& msg)
     {
         if (!owner) return;
-        auto it = m_ownerMap.find((const int) owner->GetUID());
+        auto it = m_ownerMap.find(owner->GetUID());
         if (it == m_ownerMap.end()) return;
         for (auto* prop : it->second)
         {
@@ -91,7 +91,7 @@ public:
     void RemovePropertiesForOwner(Object* owner)
     {
         if (!owner) return;
-        auto oit = m_ownerMap.find((const int) owner->GetUID());
+        auto oit = m_ownerMap.find(owner->GetUID());
         if (oit == m_ownerMap.end()) return;
         auto list = oit->second; // copy pointers to remove
         // remove from stage lists
@@ -160,6 +160,10 @@ public:
         objectlist.push_back(obj);
     }
 
+    // provide access to object list for other systems (Factory)
+    std::vector<Object*>& GetObjectList() { return objectlist; }
+    const std::vector<Object*>& GetObjectList() const { return objectlist; }
+
 private:
     //-------------------------------------------------------------
     // Object Management
@@ -169,7 +173,7 @@ private:
 	// Property Management
     std::vector<std::unique_ptr<GameObjectProperty>> m_properties; // owns all properties
     std::array<std::vector<GameObjectProperty*>, static_cast<size_t>(PropertyStage::Count)> m_stageLists;
-    std::unordered_map<int, std::vector<GameObjectProperty*>> m_ownerMap;
+    std::unordered_map<uint64_t, std::vector<GameObjectProperty*>> m_ownerMap;
 
 	//-------------------------------------------------------------
     // Level storage

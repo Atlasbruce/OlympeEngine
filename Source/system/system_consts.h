@@ -19,11 +19,15 @@ enum class EventType
 
     EventType_Hit,
 
-    // -------- ENGINE SYSTEM EVENTS ----------
-    EventType_System_NewObject, // WARNING when send message the object is not created and setup yet you must retrieve it on the next engine cycle by its name
-    EventType_NewObjectPersistant,
-    EventType_NewObjectStandAlone,
-    EventType_NewObjectGUI,
+    // -------- OBBJECT EVENTS ----------
+    EventType_Object_Create, 
+	EventType_Object_Destroy,
+	EventType_Property_Add,
+	EventType_Property_Remove,
+
+	// -------- LEVEL EVENTS ----------
+	EventType_Level_Load,
+	EventType_Level_Unload,
 
 	// -------- SECTOR EVENTS ----------    
     EventType_SectorToActivate,        // Sector to activate

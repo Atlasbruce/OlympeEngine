@@ -1,6 +1,8 @@
 #pragma once
 
 #include "system_consts.h"
+#include <string>
+#include <cstdint>
 
 // Message struct in the global namespace. It contains an EventType so
 // existing code that uses "msg.type" continues to work. Additional fields
@@ -25,6 +27,13 @@ struct Message
 
     void* payload = nullptr; // optional pointer for extended data
 
+    // Additional convenience fields for engine-level messages
+    uint64_t targetUid = 0; // target object UID for operations (create/destroy/add property)
+    std::string className; // class to create (for object creation)
+    std::string objectName; // desired object name
+    std::string propertyType; // property type identifier (for property add/remove)
+    std::string propertyParams; // optional params serialized as string
+
     Message(EventType t = EventType::EventType_Default, void* s = nullptr)
-        : type(t), sender(s), deviceId(-1), controlId(-1), state(0), value(0.0f), value2(0.0f), payload(nullptr) {}
+        : type(t), sender(s), deviceId(-1), controlId(-1), state(0), value(0.0f), value2(0.0f), payload(nullptr), targetUid(0) {}
 };
