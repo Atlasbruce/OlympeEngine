@@ -1,12 +1,18 @@
 #include "AI_Player.h"
 #include "GameObject.h"
+#include "Factory.h"
 #include "system/EventManager.h"
 #include <iostream>
 #include <cmath>
 
-AI_Player::AI_Player(Object* owner, float speed)
+bool AI_Player::FactoryRegistered = false;// Factory::Get().Register("AI_Player", AI_Player::Create);
+GameObjectProperty* AI_Player::Create(Object* owner)
+{
+    return new AI_Player(owner);
+}
+
+AI_Player::AI_Player(Object* owner)
     : AIProperty(owner)
-    , m_speed(speed)
 {
     // initialize internal position from owner if it's a GameObject
     if (auto go = dynamic_cast<GameObject*>(owner))

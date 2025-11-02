@@ -10,7 +10,10 @@
 class AI_Player : public AIProperty
 {
 public:
-    explicit AI_Player(Object* owner, float speed = 120.0f);
+    static bool FactoryRegistered;
+    static GameObjectProperty* Create(Object* owner);
+
+    explicit AI_Player(Object* owner);
     virtual ~AI_Player() override;
 
     // AI properties participate in the AI stage (AIProperty already does this)

@@ -66,6 +66,9 @@
     <ClCompile Include="Source\GameObjectProperty.cpp">
       <Filter>Fichiers d%27en-tête\Properties</Filter>
     </ClCompile>
+    <ClCompile Include="source\GameObject.cpp">
+      <Filter>Fichiers d%27en-tête\GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\system\EventManager.h">

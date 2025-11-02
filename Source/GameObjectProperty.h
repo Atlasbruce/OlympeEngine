@@ -15,7 +15,7 @@ enum class PropertyStage
     Count = 5
 };
 //---------------------------------------------------------------------------------------------
-class GameObjectProperty
+class GameObjectProperty : public Object
 {
 public:
     explicit GameObjectProperty(Object* owner) : owner(owner) {}
@@ -38,7 +38,6 @@ public:
 protected:
     Object* owner = nullptr;
     static float& fDt; // reference to global frame delta time
-	static bool FactoryRegistered;
 };
 
 //---------------------------------------------------------------------------------------------

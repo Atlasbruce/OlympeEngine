@@ -94,6 +94,12 @@ public:
         return o;
     }
 
+    GameObjectProperty* AddProperty(const std::string& propertyType, Object* owner)
+    {
+
+
+    }
+
     // Event handling: respond to create/destroy/property messages
     virtual void OnEvent(const Message& msg) override
     {

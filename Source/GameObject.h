@@ -11,16 +11,10 @@ Purpose:
 */
 #pragma once
 #include "Object.h"
-#include <SDL3/SDL_rect.h>
 #include "World.h"
 #include "GameObjectProperty.h"
 #include <vector>
-#include "Factory.h"
-
-//for tests
-//#include <SDL3/SDL_render.h>
-//#include "GameEngine.h"
-//extern SDL_Renderer* renderer;
+#include <SDL3/SDL_rect.h>
 
 
 class GameObject : public Object
@@ -30,7 +24,7 @@ public:
     GameObject(){
         type = ObjectType::None;
         name = "unnamed GameObject";
-		}
+	}
     virtual ~GameObject() override = default;
 
     //---------------------------------------------------------------------------------------------
@@ -65,14 +59,9 @@ public:
        // World::Get().DispatchToProperties(this, msg);
     }
 
-    void Render() override
-    {
-        // Render logic here (e.g., draw sprite at position)
-        boundingBox = { position.x, position.y, width, height };
-       // SDL_RenderRect(GameEngine::Get().renderer, &boundingBox  );
-	}
+    void Render();
 
 protected:
-    static bool Registered;
+    static bool FactoryRegistered;
 };
 

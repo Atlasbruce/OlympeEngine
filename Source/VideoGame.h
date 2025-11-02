@@ -21,6 +21,12 @@
 #include "system/system_utils.h"
 #include "Factory.h"
 
+//for tests
+#include "GameObject.h"
+#include "AI_Player.h"
+
+static GameObject* testGao = nullptr;
+
 class VideoGame : public Singleton
 {
 public:
@@ -61,7 +67,9 @@ public:
 		// Ensure default state is running
 		GameStateManager::SetState(GameState::GameState_Running);
 
-		Factory::Get().CreateObject("GameObject");
+        testGao = (GameObject*)Factory::Get().CreateObject("GameObject");
+		testGao->name = "TestGameObject1";
+		//testGao->AddProperty<AI_Player>();
 
        SYSTEM_LOG << "VideoGame created\n";
 	}
