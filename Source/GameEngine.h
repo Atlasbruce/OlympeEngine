@@ -67,4 +67,6 @@ class GameEngine: public Singleton
 
 		static float fDt; // Delta Time between frames
 
+		SDL_Renderer* renderer = NULL;
+
 };

@@ -38,6 +38,7 @@ public:
 protected:
     Object* owner = nullptr;
     static float& fDt; // reference to global frame delta time
+	static bool FactoryRegistered;
 };
 
 //---------------------------------------------------------------------------------------------

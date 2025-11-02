@@ -149,11 +149,6 @@ public:
                     Object* o = FindObjectByUID(uid);
                     if (o)
                     {
-                        // simplistic: propertyType is one of "Physics","AI","Visual","Audio"
-                        if (msg.propertyType == "Physics") World::Get().CreateProperty<PhysicsProperty>(o);
-                        else if (msg.propertyType == "AI") World::Get().CreateProperty<AIProperty>(o);
-                        else if (msg.propertyType == "Visual") World::Get().CreateProperty<VisualProperty>(o);
-                        else if (msg.propertyType == "Audio") World::Get().CreateProperty<AudioProperty>(o);
                         SYSTEM_LOG << "Factory added property '" << msg.propertyType << "' to object uid=" << uid << "\n";
                     }
                 }

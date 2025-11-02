@@ -16,23 +16,21 @@ Purpose:
 #include "GameObjectProperty.h"
 #include <vector>
 #include "Factory.h"
-extern SDL_Renderer* renderer;
-class GameObject :
-    public Object
+
+//for tests
+//#include <SDL3/SDL_render.h>
+//#include "GameEngine.h"
+//extern SDL_Renderer* renderer;
+
+
+class GameObject : public Object
 {
 public:
 
     GameObject(){
         type = ObjectType::None;
         name = "unnamed GameObject";
-
-        if (!Registered)
-        {
-            // Register this class in the Factory
-            Factory::Get().Register("GameObject", []() { return new GameObject(); });
-            Registered = true;
 		}
-	}
     virtual ~GameObject() override = default;
 
     //---------------------------------------------------------------------------------------------
@@ -48,30 +46,30 @@ public:
 		// static or dynamic
         bool isDynamic = false;
     //---------------------------------------------------------------------------------------------
-    // Add a property to this GameObject (delegates ownership to World/ECS)
-    template<typename T, typename... Args>
-    T* AddProperty(Args&&... args)
-    {
-        return World::Get().CreateProperty<T>(this, std::forward<Args>(args)...);
-    }
-    //---------------------------------------------------------------------------------------------
-    // Get properties attached to this GameObject
-    std::vector<GameObjectProperty*> GetProperties() const
-    {
-        return World::Get().GetPropertiesForOwner(uid);
-    }
+    //// Add a property to this GameObject (delegates ownership to World/ECS)
+    //template<typename T, typename... Args>
+    //T* AddProperty(Args&&... args)
+    //{
+    //    return World::Get().CreateProperty<T>(this, std::forward<Args>(args)...);
+    //}
+    ////---------------------------------------------------------------------------------------------
+    //// Get properties attached to this GameObject
+    //std::vector<GameObjectProperty*> GetProperties() const
+    //{
+    //    return World::Get().GetPropertiesForOwner(uid);
+    //}
 
     // Forward received messages to properties (default behavior)
     virtual void OnEvent(const Message& msg) override
     {
-        World::Get().DispatchToProperties(this, msg);
+       // World::Get().DispatchToProperties(this, msg);
     }
 
     void Render() override
     {
         // Render logic here (e.g., draw sprite at position)
         boundingBox = { position.x, position.y, width, height };
-        SDL_RenderRect(renderer, &boundingBox  );
+       // SDL_RenderRect(GameEngine::Get().renderer, &boundingBox  );
 	}
 
 protected:
