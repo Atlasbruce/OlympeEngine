@@ -5,8 +5,12 @@
 #include "GameEngine.h"
 //extern SDL_Renderer* renderer;
 
-bool GameObject::FactoryRegistered = Factory::Get().Register("GameObject", []() { return new GameObject(); });
+bool GameObject::FactoryRegistered = Factory::Get().Register("GameObject", Create); // []() { return new GameObject(); });
 
+Object* GameObject::Create()
+{
+	return new GameObject();
+}
 
 void GameObject::Render()
 {

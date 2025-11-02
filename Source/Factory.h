@@ -94,7 +94,7 @@ public:
         return o;
     }
 
-    GameObjectProperty* AddProperty(const std::string& propertyType, Object* owner)
+    GameObjectProperty* AddProperty(const std::string& classname, Object* owner)
     {
 
 

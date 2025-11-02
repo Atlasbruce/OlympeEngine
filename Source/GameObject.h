@@ -20,7 +20,8 @@ Purpose:
 class GameObject : public Object
 {
 public:
-
+    static bool FactoryRegistered;
+    static Object* Create();
     GameObject(){
         type = ObjectType::None;
         name = "unnamed GameObject";
@@ -62,6 +63,6 @@ public:
     void Render();
 
 protected:
-    static bool FactoryRegistered;
+    
 };
 
