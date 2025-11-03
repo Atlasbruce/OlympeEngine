@@ -16,5 +16,10 @@ class Npc :
 public:
 
     Npc() = default;
+	virtual ~Npc() override = default;
+	virtual EntityType GetEntityType() const override { return EntityType::NPC; }
+
+	static bool FactoryRegistered;
+	static Object* Create();
 };
 

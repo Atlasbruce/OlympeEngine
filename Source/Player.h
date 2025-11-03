@@ -11,8 +11,14 @@ Purpose:
 */
 #pragma once
 #include "GameObject.h"
-class Player :
-    public GameObject
+class Player : public GameObject
 {
+    public:
+    Player() = default;
+    virtual ~Player() override = default;
+	virtual EntityType GetEntityType() const override { return EntityType::Player; }
+
+	static bool FactoryRegistered;
+	static Object* Create();
 };
 

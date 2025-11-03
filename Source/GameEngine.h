@@ -55,11 +55,6 @@ class GameEngine: public Singleton
 
 		//-------------------------------------------------------------
 	public:
-		//std::unique_ptr<InputsManager> inputsmanager;
-		//std::unique_ptr<SystemMenu> systemmenu;
-		//std::unique_ptr<VideoGame> videogame;
-		//std::unique_ptr<EventManager> eventmanager;
-
 		EventManager& eventmanager = EventManager::GetInstance();
 		InputsManager& inputsmanager = InputsManager::GetInstance();
 		SystemMenu& systemmenu = SystemMenu::GetInstance();

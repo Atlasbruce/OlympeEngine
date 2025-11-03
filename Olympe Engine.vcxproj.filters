@@ -19,55 +19,64 @@
     <Filter Include="Fichiers d%27en-tête\GameObject">
       <UniqueIdentifier>{ad28a455-d2eb-48fd-afae-5acb194b821d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\NPC">
+    <Filter Include="Fichiers d%27en-tête\Component">
+      <UniqueIdentifier>{aa29337d-d071-4ec0-919a-26448b0bbb43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\AI">
+      <UniqueIdentifier>{82ce43e1-62bd-4da3-982e-daf219c00a50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Entities">
       <UniqueIdentifier>{f83642fc-98c1-4b0e-bfc4-006502714838}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\Player">
-      <UniqueIdentifier>{2e434cc8-9878-4419-9538-7f76dfd1cbcb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête\Properties">
-      <UniqueIdentifier>{aa29337d-d071-4ec0-919a-26448b0bbb43}</UniqueIdentifier>
+    <Filter Include="Fichiers d%27en-tête\GameSystem">
+      <UniqueIdentifier>{993d385c-c1cc-447d-b603-55ce21173592}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\OlympeEngine.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\system\GameMenu.cpp">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClCompile>
     <ClCompile Include="Source\system\SystemMenu.cpp">
       <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\AI_Player.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\GameState.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\system\Camera.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\system\JoystickManager.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\system\KeyboardManager.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\system\MouseManager.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\system\Viewport.cpp">
-      <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameEngine.cpp">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameObjectProperty.cpp">
-      <Filter>Fichiers d%27en-tête\Properties</Filter>
+    <ClCompile Include="Source\ObjectComponent.cpp">
+      <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClCompile>
     <ClCompile Include="source\GameObject.cpp">
       <Filter>Fichiers d%27en-tête\GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Npc.cpp">
+      <Filter>Fichiers d%27en-tête\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\AI_Player.cpp">
+      <Filter>Fichiers d%27en-tête\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Player.cpp">
+      <Filter>Fichiers d%27en-tête\Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\GameMenu.cpp">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\Camera.cpp">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\JoystickManager.cpp">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\KeyboardManager.cpp">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\MouseManager.cpp">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\Viewport.cpp">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\GameState.cpp">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OlympeEngine.cpp">
+      <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -87,7 +96,7 @@
       <Filter>Fichiers d%27en-tête\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Source\Npc.h">
-      <Filter>Fichiers d%27en-tête\NPC</Filter>
+      <Filter>Fichiers d%27en-tête\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\message.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
@@ -98,19 +107,13 @@
     <ClInclude Include="Source\json.hpp">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Player.h">
-      <Filter>Fichiers d%27en-tête\Player</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Singleton.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameObjectProperty.h">
-      <Filter>Fichiers d%27en-tête\Properties</Filter>
+    <ClInclude Include="Source\ObjectComponent.h">
+      <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClInclude>
     <ClInclude Include="source\system\system_consts.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\system\GameMenu.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\SystemMenu.h">
@@ -119,71 +122,77 @@
     <ClInclude Include="Source\World.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
-    <ClInclude Include="Source\CollisionMap.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\GraphicMap.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Sector.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Level.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\GameRules.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Task.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Objective.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Quest.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\QuestManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\VideoGame.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\third_party\nlohmann\json.hpp">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Serialization.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Source\AI_Player.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\AI</Filter>
     </ClInclude>
-    <ClInclude Include="Source\GameState.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="Source\Player.h">
+      <Filter>Fichiers d%27en-tête\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="source\resource.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+    <ClInclude Include="Source\system\GameMenu.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\Camera.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\JoystickManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\third_party\nlohmann\json.hpp">
+      <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\KeyboardManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\MouseManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\system_utils.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\Viewport.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameRules.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GameState.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\GraphicMap.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Level.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Objective.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Quest.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\QuestManager.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sector.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Task.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\VideoGame.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\CollisionMap.h">
+      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Fichiers de ressources</Filter>
+    </ClInclude>
+    <ClInclude Include="source\resource.h">
+      <Filter>Fichiers de ressources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

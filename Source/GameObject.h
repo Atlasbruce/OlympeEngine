@@ -12,21 +12,34 @@ Purpose:
 #pragma once
 #include "Object.h"
 #include "World.h"
-#include "GameObjectProperty.h"
+#include "ObjectComponent.h"
 #include <vector>
 #include <SDL3/SDL_rect.h>
 
+
+enum class EntityType
+{
+    None = 0,
+    Player,
+    NPC,
+    Collectible,
+    Trigger,
+    Projectile,
+    Count
+};
 
 class GameObject : public Object
 {
 public:
     static bool FactoryRegistered;
     static Object* Create();
-    GameObject(){
-        type = ObjectType::None;
+    GameObject()
+    {
         name = "unnamed GameObject";
 	}
     virtual ~GameObject() override = default;
+	virtual ObjectType GetObjectType() const override { return ObjectType::Entity; }
+	virtual EntityType GetEntityType() const { return EntityType::None; }
 
     //---------------------------------------------------------------------------------------------
 	// GameObject Properties--------------------------
@@ -49,7 +62,7 @@ public:
     //}
     ////---------------------------------------------------------------------------------------------
     //// Get properties attached to this GameObject
-    //std::vector<GameObjectProperty*> GetProperties() const
+    //std::vector<ObjectComponent*> GetProperties() const
     //{
     //    return World::Get().GetPropertiesForOwner(uid);
     //}

@@ -19,7 +19,7 @@ Purpose:
 #include "World.h"
 #include "system/system_utils.h"
 #include "system/EventManager.h"
-#include "GameObjectProperty.h"
+#include "ObjectComponent.h"
 
 class Factory: public Singleton
 {
@@ -86,18 +86,30 @@ public:
         auto it = m_registeredCreators.find(className);
         if (it == m_registeredCreators.end())
         {
-            SYSTEM_LOG << "Error: Class '" << className << "' not found in factory." << std::endl;
+            SYSTEM_LOG << "Error: Factory::CreateObject: Class '" << className << "' not found/registered in factory." << std::endl;
             return nullptr;
         }
-        Object *o = it->second();
+		Object* o = it->second(); // Cann the Create of the Object
         World::Get().AddObject(o);
         return o;
     }
 
-    GameObjectProperty* AddProperty(const std::string& classname, Object* owner)
+    ObjectComponent* AddComponent(const std::string& className, Object* owner)
     {
+        auto it = m_registeredCreators.find(className);
+        if (it == m_registeredCreators.end())
+        {
+            SYSTEM_LOG << "Error: Class Factory::AddComponent: '" << className << "' not found/registered in factory." << std::endl;
+            return nullptr;
+        }
 
+        ObjectComponent* component = (ObjectComponent*) it->second(); // call the Create of the ObjectComponent
 
+		component->SetOwner(owner); // set the owner to the component
+
+        World::Get().AddComponent(component);
+
+        return component;
     }
 
     // Event handling: respond to create/destroy/property messages
@@ -150,12 +162,12 @@ public:
         case EventType::EventType_Property_Add:
             {
                 uint64_t uid = msg.targetUid;
-                if (uid !=0 && !msg.propertyType.empty())
+                if (uid !=0 && !msg.ComponentType.empty())
                 {
                     Object* o = FindObjectByUID(uid);
                     if (o)
                     {
-                        SYSTEM_LOG << "Factory added property '" << msg.propertyType << "' to object uid=" << uid << "\n";
+                        SYSTEM_LOG << "Factory added property '" << msg.ComponentType << "' to object uid=" << uid << "\n";
                     }
                 }
                 break;

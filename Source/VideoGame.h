@@ -68,8 +68,6 @@ public:
 		GameStateManager::SetState(GameState::GameState_Running);
 
         testGao = (GameObject*)Factory::Get().CreateObject("GameObject");
-		testGao->name = "TestGameObject1";
-		//testGao->AddProperty<AI_Player>();
 
        SYSTEM_LOG << "VideoGame created\n";
 	}

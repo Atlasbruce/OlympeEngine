@@ -5,22 +5,14 @@
 #include <iostream>
 #include <cmath>
 
-bool AI_Player::FactoryRegistered = false;// Factory::Get().Register("AI_Player", AI_Player::Create);
-GameObjectProperty* AI_Player::Create(Object* owner)
+bool AI_Player::FactoryRegistered =  Factory::Get().Register("AI_Player", AI_Player::Create);
+ObjectComponent* AI_Player::Create()
 {
-    return new AI_Player(owner);
+    return new AI_Player();
 }
 
-AI_Player::AI_Player(Object* owner)
-    : AIProperty(owner)
+AI_Player::AI_Player()
 {
-    // initialize internal position from owner if it's a GameObject
-    if (auto go = dynamic_cast<GameObject*>(owner))
-    {
-        m_posX = static_cast<float>(go->position.x);
-        m_posY = static_cast<float>(go->position.y);
-    }
-
     // Register to input-related events
     EventManager::Get().Register(this, EventType::EventType_Joystick_AxisMotion, [this](const Message& m){ this->OnEvent(m); });
     EventManager::Get().Register(this, EventType::EventType_Joystick_ButtonDown, [this](const Message& m){ this->OnEvent(m); });
@@ -33,6 +25,18 @@ AI_Player::~AI_Player()
 {
     // Unregister all callbacks associated with this instance
     EventManager::Get().UnregisterAll(this);
+}
+
+void AI_Player::SetOwner ( Object *_owner)
+{
+    if (!_owner)
+    {
+        SYSTEM_LOG << "Error AI_Player::SetEntity called with null owner!\n";
+        return;
+    }
+
+    owner = _owner;
+
 }
 
 void AI_Player::Process()
@@ -60,11 +64,6 @@ void AI_Player::Process()
     m_posX += vx * fDt;
     m_posY += vy * fDt;
 
-    if (auto go = dynamic_cast<GameObject*>(owner))
-    {
-        go->position.x = std::round(m_posX);
-        go->position.y = std::round(m_posY);
-    }
 }
 
 void AI_Player::OnEvent(const Message& msg)

@@ -1,29 +1,28 @@
 #pragma once
 
-#include "GameObjectProperty.h"
+#include "ObjectComponent.h"
 #include "system/EventManager.h"
 #include <SDL3/SDL.h>
 #include <mutex>
 
-// AI_Player: property that listens to input events (keyboard / joystick)
+// AI_Player: component that listens to input events (keyboard / joystick)
 // and moves its owner GameObject in the four cardinal directions.
-class AI_Player : public AIProperty
+class AI_Player : public AIComponent
 {
 public:
     static bool FactoryRegistered;
-    static GameObjectProperty* Create(Object* owner);
+    static ObjectComponent* Create(void);
 
-    explicit AI_Player(Object* owner);
+    explicit AI_Player();
     virtual ~AI_Player() override;
+
+	virtual void SetOwner(Object* _owner) override;
 
     // AI properties participate in the AI stage (AIProperty already does this)
     virtual void Process() override;
     virtual void OnEvent(const Message& msg) override;
 
 private:
-    float m_speed = 120.0f;
-    float m_posX = 0.0f;
-    float m_posY = 0.0f;
 
     // input state
     float m_axisX = 0.0f;

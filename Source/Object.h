@@ -16,32 +16,13 @@ Purpose:
 enum class ObjectType
 {
 	None = 0,
-	Menu,
-	Player,
-	Enemy,
-	NPC,
-	Item,
-	Environment,
-	Projectile, 
-	Sector,
-	Level,
-	Trigger,
-	Collectible,
-	
-};
-
-enum class ObjectState
-{
-	Idle = 0,
-	Moving,
-	Jumping,
-	Attacking,
-	Dead,
-	Interacting, 
-	Collecting,
-	Probing,
-	Exploring,
-	Hiding,
+	Entity, // Player, NPC, Item, etc.
+	Component, // Physics, AI, Render, Audio, etc.
+	Level, // Game level or environment
+	Sector, // Subdivision of a level
+	GraphicMap, // Tilemap or similar
+	CollisionMap, // Collision data
+	Count
 };
 
 class Object
@@ -58,11 +39,8 @@ public:
 
 public:
 
-	// Object Type
-	ObjectType type = ObjectType::None;
-	// Object State
-	ObjectState state = ObjectState::Idle;
 	std::string name = "unnamed_object";
+	virtual ObjectType GetObjectType() const { return ObjectType::None; }
 
 	virtual void Process() {};
 	virtual void Render() {};
