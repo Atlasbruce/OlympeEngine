@@ -85,10 +85,11 @@ public:
 
 	//---------------------------------------------------------------------------------------------
 	// Objects & Entities management
-    void AddObject(Object* obj)
+    void StoreObject(Object* obj)
     {
         // Implementation to add object to the game engine
         m_objectlist.push_back(obj);
+		SYSTEM_LOG << "World: Added object " + obj->name + " to World\n";
     }
 
     // provide access to object list for other systems (Factory)
@@ -97,7 +98,7 @@ public:
 
     //---------------------------------------------------------------------------------------------
     // Objects' Components management
-    void AddComponent(ObjectComponent* objectComponent)
+    void StoreComponent(ObjectComponent* objectComponent)
     {
         if (!objectComponent)
         {

@@ -29,14 +29,7 @@ AI_Player::~AI_Player()
 
 void AI_Player::SetOwner ( Object *_owner)
 {
-    if (!_owner)
-    {
-        SYSTEM_LOG << "Error AI_Player::SetEntity called with null owner!\n";
-        return;
-    }
-
-    owner = _owner;
-
+	AIComponent::SetOwner(_owner);
 }
 
 void AI_Player::Process()

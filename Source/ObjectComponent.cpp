@@ -21,7 +21,7 @@ void AIComponent::SetOwner(Object* _owner)
     // initialize internal position from owner if it's a GameObject
     if (auto gao = dynamic_cast<GameObject*>(owner))
     {
-        m_posX = static_cast<float>(gao->position.x);
-        m_posY = static_cast<float>(gao->position.y);
+        fRef_posX = &gao->position.x;
+        fRef_posY = &gao->position.y;
     }
 }

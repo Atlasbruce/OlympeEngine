@@ -78,6 +78,9 @@
     <ClCompile Include="Source\OlympeEngine.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="source\AI_Npc.cpp">
+      <Filter>Fichiers d%27en-tête\AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\system\EventManager.h">
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="source\resource.h">
       <Filter>Fichiers de ressources</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AI_Npc.h">
+      <Filter>Fichiers d%27en-tête\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -90,7 +90,7 @@ public:
             return nullptr;
         }
 		Object* o = it->second(); // Cann the Create of the Object
-        World::Get().AddObject(o);
+        World::Get().StoreObject(o);
         return o;
     }
 
@@ -107,7 +107,7 @@ public:
 
 		component->SetOwner(owner); // set the owner to the component
 
-        World::Get().AddComponent(component);
+        World::Get().StoreComponent(component);
 
         return component;
     }

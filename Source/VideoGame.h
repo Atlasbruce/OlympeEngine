@@ -67,7 +67,7 @@ public:
 		// Ensure default state is running
 		GameStateManager::SetState(GameState::GameState_Running);
 
-        testGao = (GameObject*)Factory::Get().CreateObject("GameObject");
+        testGao = (GameObject*)Factory::Get().CreateObject("Player");
 
        SYSTEM_LOG << "VideoGame created\n";
 	}
