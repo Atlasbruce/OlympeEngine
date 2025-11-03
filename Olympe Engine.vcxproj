@@ -28,6 +28,7 @@
     <ClCompile Include="Source\GameState.cpp" />
     <ClCompile Include="Source\OlympeEngine.cpp" />
     <ClCompile Include="source\Player.cpp" />
+    <ClCompile Include="Source\SpriteComponent.cpp" />
     <ClCompile Include="Source\system\Camera.cpp" />
     <ClCompile Include="Source\system\GameMenu.cpp" />
     <ClCompile Include="Source\system\JoystickManager.cpp" />
@@ -61,6 +62,7 @@
     <ClInclude Include="Source\Sector.h" />
     <ClInclude Include="Source\Serialization.h" />
     <ClInclude Include="Source\Singleton.h" />
+    <ClInclude Include="Source\SpriteComponent.h" />
     <ClInclude Include="Source\system\Camera.h" />
     <ClInclude Include="Source\system\EventManager.h" />
     <ClInclude Include="Source\system\GameMenu.h" />

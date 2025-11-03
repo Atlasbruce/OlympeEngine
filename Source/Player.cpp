@@ -18,5 +18,6 @@ Object* Player::Create()
 	static Player *player = new Player();
 	player->name = "Player";
 	Factory::Get().AddComponent("AI_Player", player);
+	Factory::Get().AddComponent("SpriteComponent", player);
 	return player;
 }

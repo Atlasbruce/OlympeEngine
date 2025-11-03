@@ -231,6 +231,8 @@ SDL_AppResult SDL_AppIterate(void* appstate)
         SDL_SetRenderViewport(renderer, nullptr);
     }
 
+	World::Get().Render();
+
     SDL_RenderPresent(renderer);  /* put it all on the screen! */
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */

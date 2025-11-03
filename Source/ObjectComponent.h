@@ -5,13 +5,15 @@
 #include <memory>
 #include "system/system_utils.h"
 
+class GameObject;
+
 // Components processing types in order of execution
 enum class ComponentType
 {
 	None = 0, // no processing or used for extra data components for entities
     Physics = 1,
     AI = 2,
-    Render = 3,
+    Visual = 3,
     Audio = 4,
 	Count = 5 // used in World to size arrays
 };
@@ -38,12 +40,17 @@ public:
     virtual void OnEvent(const Message& /*msg*/) {}
 
 	// Set the owner object of this component
-	virtual void SetOwner(Object* _owner) { owner = _owner; }
+	virtual void SetOwner(Object* _owner)
+    {
+        owner = _owner;
+        gao = (GameObject*)(owner);
+    }
 	inline Object* GetOwner() const { return owner; }
 
 protected:
     Object* owner = nullptr;
     static float& fDt; // reference to global frame delta time
+    GameObject* gao = nullptr;
 };
 
 //---------------------------------------------------------------------------------------------
@@ -68,26 +75,6 @@ public:
     virtual ~AIComponent() override = default;
     virtual ComponentType GetComponentType() const override { return ComponentType::AI; }
     virtual void SetOwner(Object* _owner) override;
- //   {
- //       ObjectComponent::SetOwner(_owner);
- //       if (!_owner)
- //       {
- //           SYSTEM_LOG << "Error AIComponent::SetOwner called with null owner!\n";
- //           return;
- //       }
- //       if (owner->GetObjectType() != ObjectType::Entity)
- //       {
- //           SYSTEM_LOG << "Error AIComponent::SetOwner called with non-Entity owner!\n";
- //           return;
-	//	}
-
- //       // initialize internal position from owner if it's a GameObject
- //       if (auto gao = dynamic_cast<GameObject*>(owner))
- //       {
- //           m_posX = static_cast<float>(gao->position.x);
- //           m_posY = static_cast<float>(gao->position.y);
- //       }
-	//}
     virtual void Process() override {/*AI logic goes here.*/ }
 
     float m_speed = 120.0f; // for tests to be removed
@@ -104,7 +91,7 @@ class VisualComponent : public ObjectComponent
 public:
 	explicit VisualComponent() = default;
     virtual ~VisualComponent() override = default;
-    virtual ComponentType GetComponentType() const override { return ComponentType::Render; }
+    virtual ComponentType GetComponentType() const override { return ComponentType::Visual; }
     virtual void Render() override
     {
         // Drawing logic goes here.

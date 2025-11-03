@@ -1,0 +1,17 @@
+#include "SpriteComponent.h"
+#include "Factory.h"
+#include "GameEngine.h"
+
+
+bool SpriteComponent::FactoryRegistered = Factory::Get().Register("SpriteComponent", SpriteComponent::Create);
+ObjectComponent* SpriteComponent::Create()
+{
+	return new SpriteComponent();
+}
+
+void SpriteComponent::Render()
+{
+	SDL_SetRenderDrawColor(GameEngine::Get().renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);  /* red, full alpha */
+	gao->boundingBox = { gao->position.x, gao->position.y, gao->width, gao->height };
+	SDL_RenderRect(GameEngine::Get().renderer, &gao->boundingBox);
+}

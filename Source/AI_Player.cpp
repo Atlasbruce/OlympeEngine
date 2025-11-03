@@ -54,9 +54,10 @@ void AI_Player::Process()
         if (m_keyDown) vy = m_keyDown ? m_speed : vy;
     }
 
-    m_posX += vx * fDt;
-    m_posY += vy * fDt;
-
+    //m_posX += vx * fDt;
+    //m_posY += vy * fDt;
+    gao->position.x += vx * fDt;
+    gao->position.y += vy * fDt;
 }
 
 void AI_Player::OnEvent(const Message& msg)
