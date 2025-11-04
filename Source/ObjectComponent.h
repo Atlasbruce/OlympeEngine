@@ -35,6 +35,7 @@ public:
 
     // Called during the render Type (for Render properties)
     virtual void Render() {}
+    virtual void RenderDebug() {}
 
     // Called when a message is delivered to this property (via owner forwarding)
     virtual void OnEvent(const Message& /*msg*/) {}

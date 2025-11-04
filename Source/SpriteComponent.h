@@ -7,6 +7,7 @@ class SpriteComponent : public VisualComponent
 	virtual ~SpriteComponent() override = default;
 	static bool FactoryRegistered;
 	static ObjectComponent* Create();
+	virtual void RenderDebug() override;
 	virtual ComponentType GetComponentType() const override { return ComponentType::Visual; }
 	virtual void Render() override;
 };
