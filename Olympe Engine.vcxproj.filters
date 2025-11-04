@@ -188,9 +188,6 @@
     <ClInclude Include="Source\Task.h">
       <Filter>Fichiers d%27en-tête\GameSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Source\VideoGame.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Source\CollisionMap.h">
       <Filter>Fichiers d%27en-tête\GameSystem</Filter>
     </ClInclude>
@@ -207,6 +204,9 @@
       <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClInclude>
     <ClInclude Include="Source\OptionsManager.h">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\VideoGame.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
   </ItemGroup>
