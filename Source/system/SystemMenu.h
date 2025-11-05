@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Singleton.h"
+#include "../object.h"
 #include <vector>
 #include <string>
 #include "system_utils.h"
@@ -10,7 +10,7 @@
 // This implementation is intentionally minimal and independent from the
 // event system so it can be activated simply by calling SystemMenu::Get().
 
-class SystemMenu : public Singleton
+class SystemMenu : public Object
 {
 public:
     SystemMenu()
@@ -27,6 +27,7 @@ public:
         SYSTEM_LOG << "SystemMenu Shutdown\n";
 	}
 
+    virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     static SystemMenu& GetInstance();
     static SystemMenu& Get() { return GetInstance(); }

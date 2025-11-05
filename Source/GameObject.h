@@ -53,19 +53,6 @@ public:
 	    SDL_FRect boundingBox = { 0.0f, 0.0f, 0.0f, 0.0f };
 		// static or dynamic
         bool isDynamic = false;
-    //---------------------------------------------------------------------------------------------
-    //// Add a property to this GameObject (delegates ownership to World/ECS)
-    //template<typename T, typename... Args>
-    //T* AddProperty(Args&&... args)
-    //{
-    //    return World::Get().CreateProperty<T>(this, std::forward<Args>(args)...);
-    //}
-    ////---------------------------------------------------------------------------------------------
-    //// Get properties attached to this GameObject
-    //std::vector<ObjectComponent*> GetProperties() const
-    //{
-    //    return World::Get().GetPropertiesForOwner(uid);
-    //}
 
     // Forward received messages to properties (default behavior)
     virtual void OnEvent(const Message& msg) override
@@ -73,7 +60,7 @@ public:
        // World::Get().DispatchToProperties(this, msg);
     }
 
-    void Render();
+	void Render() { SYSTEM_LOG << "Rendering GameObject: " << name << " at (" << position.x << ", " << position.y << ")\n"; }
 
 protected:
     

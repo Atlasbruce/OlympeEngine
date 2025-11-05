@@ -16,6 +16,7 @@ Purpose:
 enum class ObjectType
 {
 	None = 0,
+	Singleton, // e.g. GameEngine, ResourceManager, EventManager, etc.
 	Entity, // Player, NPC, Item, etc.
 	Component, // Physics, AI, Render, Audio, etc.
 	Level, // Game level or environment

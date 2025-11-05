@@ -1,12 +1,11 @@
 #pragma once
-#include "Singleton.h"
+#include "object.h"
 #include "system/JoystickManager.h"
 #include "system/KeyboardManager.h"
 #include "system/MouseManager.h"
 #include <unordered_map>
 
-class InputsManager :
-    public Singleton
+class InputsManager : public Object
 {
 public:
     InputsManager()
@@ -20,6 +19,8 @@ public:
         Shutdown();
 		SYSTEM_LOG << "InputsManager destroyed\n";
     }
+
+    virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     static InputsManager& GetInstance()
     {

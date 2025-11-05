@@ -5,13 +5,13 @@
 #include <mutex>
 #include "message.h"
 #include "system_consts.h"
-#include "../singleton.h"
+#include "../object.h"
 
 // Camera singleton that manages multiple per-player camera instances.
 // Exposes minimal API used by the engine: Initialize(), Shutdown(), Apply(renderer)
 // Additional helpers allow creating/removing cameras per player and query their transform.
 
-class Camera : public Singleton
+class Camera : public Object
 {
 public:
     struct CameraInstance
@@ -30,6 +30,8 @@ public:
 public:
     Camera() { Initialize(); }
     ~Camera() { Shutdown(); }
+
+    virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     static Camera& GetInstance()
     {

@@ -3,7 +3,7 @@
 */
 #pragma once
 
-#include "Singleton.h"
+#include "object.h"
 #include "World.h"
 #include "GameRules.h"
 #include "QuestManager.h"
@@ -27,7 +27,7 @@
 
 static GameObject* testGao = nullptr;
 
-class VideoGame : public Singleton
+class VideoGame : public Object
 {
 public:
     VideoGame()
@@ -78,6 +78,8 @@ public:
         // Unregister from EventManager
         EventManager::Get().UnregisterAll(this);
     }
+
+    virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     // Per-class singleton accessors
     static VideoGame& GetInstance()

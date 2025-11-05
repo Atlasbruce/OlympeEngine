@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Singleton.h"
+#include "../object.h"
 #include "EventManager.h"
 #include "message.h"
 #include <SDL3/SDL.h>
@@ -9,7 +9,7 @@
 #include <string>
 #include <mutex>
 
-class JoystickManager : public Singleton
+class JoystickManager : public Object
 {
 public:
     JoystickManager()
@@ -21,6 +21,8 @@ public:
     {
 		Shutdown();
 	}
+
+    virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     static JoystickManager& GetInstance();
     static JoystickManager& Get() { return GetInstance(); }

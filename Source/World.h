@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Singleton.h"
+#include "object.h"
 #include "ObjectComponent.h"
 #include "system/EventManager.h"
 #include <vector>
@@ -13,7 +13,7 @@
 #include "Level.h" // add Level management
 #include "GameState.h"
 
-class World : public Singleton
+class World : public Object
 {
 public:
     World()
@@ -30,6 +30,8 @@ public:
         m_objectlist.clear();
 		SYSTEM_LOG << "World Destroyed\n";
     }
+
+    virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     static World& GetInstance()
     {

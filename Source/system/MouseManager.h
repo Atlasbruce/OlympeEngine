@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../Singleton.h"
+#include "../object.h"
 #include "EventManager.h"
 #include "message.h"
 #include <SDL3/SDL.h>
 #include <mutex>
 #include "system_utils.h"
 
-class MouseManager : public Singleton
+class MouseManager : public Object
 {
 public:
     MouseManager()
@@ -18,6 +18,8 @@ public:
     {
         Shutdown();
     }
+
+    virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     static MouseManager& GetInstance();
     static MouseManager& Get() { return GetInstance(); }

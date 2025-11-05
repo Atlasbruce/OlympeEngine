@@ -8,7 +8,7 @@ Purpose:
 
 */
 #pragma once
-#include "Singleton.h"
+#include "object.h"
 #include "Object.h"
 #include <map>
 #include <string>
@@ -21,7 +21,7 @@ Purpose:
 #include "system/EventManager.h"
 #include "ObjectComponent.h"
 
-class Factory: public Singleton
+class Factory: public Object
 {
 public:
     using CreatorFunction = std::function<Object* ()>;
@@ -45,6 +45,8 @@ public:
 		EventManager::Get().Unregister(this, EventType::EventType_Property_Add);
 		EventManager::Get().Unregister(this, EventType::EventType_Property_Remove);
 	}
+
+    virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     // Per-class singleton accessors
     static Factory& GetInstance()

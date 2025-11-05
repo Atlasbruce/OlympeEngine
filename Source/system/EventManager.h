@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../Singleton.h"
-#include "../Object.h"
+#include "../object.h"
 #include "message.h"
 #include <unordered_map>
 #include <vector>
@@ -14,7 +13,7 @@
 // EventManager: central dispatcher for engine messages.
 // Inline (header-only) implementation placed in Source/system.
 
-class EventManager : public Singleton
+class EventManager : public Object
 {
 public:
     using Message = ::Message;
@@ -32,6 +31,8 @@ public:
     {
         SYSTEM_LOG << "EventManager destroyed\n";
 	}
+
+    virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     // Per-class singleton accessors
     static EventManager& GetInstance()
@@ -100,12 +101,12 @@ public:
         Register(static_cast<void*>(obj), type, [obj](const Message& msg) { obj->OnEvent(msg); });
     }
 
-    // Convenience overload: register an Object* using its virtual OnEvent method
-    void Register(Singleton* singleton, EventType type)
-    {
-        if (!singleton) return;
-        Register(static_cast<void*>(singleton), type, [singleton](const Message& msg) { singleton->OnEvent(msg); });
-    }
+    //// Convenience overload: register an Object* using its virtual OnEvent method
+    //void Register(Singleton* singleton, EventType type)
+    //{
+    //    if (!singleton) return;
+    //    Register(static_cast<void*>(singleton), type, [singleton](const Message& msg) { singleton->OnEvent(msg); });
+    //}
 
     // Unregister a specific owner from a specific event type
     void Unregister(void* owner, EventType type)

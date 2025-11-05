@@ -3,7 +3,7 @@
 */
 #pragma once
 
-#include "Singleton.h"
+#include "object.h"
 #include "Quest.h"
 #include <vector>
 #include <memory>
@@ -11,7 +11,7 @@
 #include <iostream>
 #include "system/system_utils.h"
 
-class QuestManager : public Singleton
+class QuestManager : public Object
 {
 public:
 	QuestManager()
@@ -23,6 +23,8 @@ public:
 	{
 		SYSTEM_LOG << "QuestManager Shutdown\n";
 	}
+
+	virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
 	static QuestManager& GetInstance()
 	{

@@ -11,10 +11,3 @@ Object* GameObject::Create()
 {
 	return new GameObject();
 }
-
-void GameObject::Render()
-{
-    // Render logic here (e.g., draw sprite at position)
-    boundingBox = { position.x, position.y, width, height };
-    SDL_RenderRect(GameEngine::Get().renderer, &boundingBox);
-}

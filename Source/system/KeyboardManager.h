@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../Singleton.h"
+#include "../object.h"
 #include "EventManager.h"
 #include "message.h"
 #include <SDL3/SDL.h>
 #include <mutex>
 #include "system_utils.h"
 
-class KeyboardManager : public Singleton
+class KeyboardManager : public Object
 {
 public:
     KeyboardManager()
@@ -19,6 +19,8 @@ public:
     {
 		Shutdown();
 	}
+
+    virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     static KeyboardManager& GetInstance();
     static KeyboardManager& Get() { return GetInstance(); }

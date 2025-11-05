@@ -1,5 +1,5 @@
 #pragma once
-#include "../Singleton.h"
+#include "../object.h"
 #include <SDL3/SDL.h>
 #include <vector>
 #include <unordered_map>
@@ -13,11 +13,13 @@
 // 3 players: vertical split (3 columns)
 // 4 players: 2x2 grid
 
-class Viewport : public Singleton
+class Viewport : public Object
 {
 public:
     Viewport() {}// { Initialize(); }
 	~Viewport() { Shutdown (); }
+
+    virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     static Viewport& GetInstance()
     {

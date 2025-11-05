@@ -2,14 +2,14 @@
 #include <vector>
 #include <string>
 #include "system_utils.h"
-#include "../singleton.h"
+#include "../object.h"
 
 // GameMenu is an instance-based menu attached to a VideoGame object.
 // It receives events (via OnEvent(Message& msg) forwarding) and can be used
 // to navigate a set of menu entries. It is also a GameObject-like
 // entity so it can be added to the engine's object list if desired.
 
-class GameMenu : public Singleton
+class GameMenu : public Object
 {
 public:
     GameMenu()

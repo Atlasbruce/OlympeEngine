@@ -9,7 +9,7 @@ Purpose:
 
 */
 #pragma once
-#include "Singleton.h"
+#include "object.h"
 #include "Object.h"
 #include <vector>
 #include <memory>
@@ -19,7 +19,7 @@ Purpose:
 #include "VideoGame.h"
 #include "system/Camera.h"
 
-class GameEngine: public Singleton
+class GameEngine: public Object
 {
 	public:
 		//GameEngine properties and methods
@@ -32,6 +32,8 @@ class GameEngine: public Singleton
 		{
 			SYSTEM_LOG << "GameEngine destroyed\n";
 		}
+
+		virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
 		//-------------------------------------------------------------
 		// Per-class singleton accessors

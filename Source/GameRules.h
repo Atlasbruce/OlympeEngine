@@ -5,15 +5,17 @@
 
 #include <string>
 #include <iostream>
-#include "Singleton.h"
+#include "object.h"
 #include "system/system_utils.h"
 
-class GameRules : public Singleton
+class GameRules : public Object
 {
 public:
  std::string name;
  GameRules(const std::string& n = "DefaultRules") : name(n) { SYSTEM_LOG << "GameRules '" << name << "' created\n"; }
  ~GameRules() { SYSTEM_LOG << "GameRules '" << name << "' destroyed\n"; }
+
+ virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
  static GameRules& GetInstance()
  {

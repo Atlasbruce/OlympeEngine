@@ -10,6 +10,11 @@ Purpose:
 - Individual derived classes should implement their own GetInstance()/Get() methods.
 
 */
+
+
+/*
+* DEPRECATED : Use Object with ObjectType::Singleton instead.
+
 #pragma once
 #include <string>
 
@@ -23,7 +28,9 @@ public:
 
 	virtual void Process() {};
 	virtual void Render() {};
-	virtual void OnEvent(const Message& /*msg*/) {};
+	virtual void OnEvent(const Message&) {};
 
 	std::string name = "unnamed singleton";
 };
+
+*/

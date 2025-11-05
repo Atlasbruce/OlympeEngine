@@ -50,7 +50,6 @@
     <ClInclude Include="Source\GameState.h" />
     <ClInclude Include="Source\GraphicMap.h" />
     <ClInclude Include="Source\InputsManager.h" />
-    <ClInclude Include="Source\json.hpp" />
     <ClInclude Include="Source\Level.h" />
     <ClInclude Include="Source\Npc.h" />
     <ClInclude Include="Source\Object.h" />
@@ -61,7 +60,6 @@
     <ClInclude Include="source\resource.h" />
     <ClInclude Include="Source\Sector.h" />
     <ClInclude Include="Source\Serialization.h" />
-    <ClInclude Include="Source\Singleton.h" />
     <ClInclude Include="Source\SpriteComponent.h" />
     <ClInclude Include="Source\system\Camera.h" />
     <ClInclude Include="Source\system\EventManager.h" />
