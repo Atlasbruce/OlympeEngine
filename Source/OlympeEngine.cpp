@@ -75,8 +75,10 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     SYSTEM_LOG << "System Initialization\n" << endl;
 
 	//Olympe Engine and all managers singleton Initialization Here
-    GameEngine::GetInstance();
-	GameEngine::Get().renderer = renderer;
+	GameEngine::renderer = renderer; // important: set main renderer for GameEngine before GetInstance
+	GameEngine::GetInstance(); // create the GameEngine
+	GameEngine::Get().Initialize();
+	
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }

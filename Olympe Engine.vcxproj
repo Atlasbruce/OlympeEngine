@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="source\AI_Npc.cpp" />
     <ClCompile Include="Source\AI_Player.cpp" />
+    <ClCompile Include="Source\ColorMorphComponent.cpp" />
     <ClCompile Include="Source\GameEngine.cpp" />
     <ClCompile Include="source\GameObject.cpp" />
     <ClCompile Include="source\Npc.cpp" />
@@ -38,10 +39,12 @@
     <ClCompile Include="Source\system\Viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ColorMorphComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="source\AI_Npc.h" />
     <ClInclude Include="Source\AI_Player.h" />
     <ClInclude Include="Source\CollisionMap.h" />
+    <ClInclude Include="Source\ColorMorphComponent.h" />
     <ClInclude Include="Source\Factory.h" />
     <ClInclude Include="Source\GameEngine.h" />
     <ClInclude Include="Source\GameObject.h" />

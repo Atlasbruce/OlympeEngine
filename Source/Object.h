@@ -13,6 +13,8 @@ Purpose:
 #include <chrono>
 #include <cstdint>
 
+using namespace std;
+
 enum class ObjectType
 {
 	None = 0,

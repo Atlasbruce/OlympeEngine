@@ -69,6 +69,11 @@ public:
 
         testGao = (GameObject*)Factory::Get().CreateObject("Player");
 
+		testGao = (GameObject*)Factory::Get().CreateObject("GameObject");
+		testGao->name = "MorphingColor";
+		testGao->position = { 400.0f, 300.0f };
+		Factory::Get().AddComponent("ColorMorphComponent", testGao);
+
        SYSTEM_LOG << "VideoGame created\n";
 	}
 
