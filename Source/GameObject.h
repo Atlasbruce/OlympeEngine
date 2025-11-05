@@ -60,7 +60,7 @@ public:
        // World::Get().DispatchToProperties(this, msg);
     }
 
-	void Render() { SYSTEM_LOG << "Rendering GameObject: " << name << " at (" << position.x << ", " << position.y << ")\n"; }
+	void Render() { SYSTEM_LOG << " WARNING GameObject::Render call: the visual component should handling the GameObject rendering (sprite, a,imation etc..) invalid call for GameObject: " << name << " at (" << position.x << ", " << position.y << ")\n"; }
 
 protected:
     

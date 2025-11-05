@@ -1,5 +1,5 @@
 #pragma once
-#include "Singleton.h"
+#include "object.h"
 #include "system/system_utils.h"
 
 // use plain enum with bit ops (C++14)
@@ -23,7 +23,7 @@ inline OptionFlags& operator|=(OptionFlags& a, OptionFlags b) { a = a | b; retur
 inline OptionFlags& operator&=(OptionFlags& a, OptionFlags b) { a = static_cast<OptionFlags>(static_cast<uint64_t>(a) & static_cast<uint64_t>(b)); return a; }
 
 
-class OptionsManager : public Singleton
+class OptionsManager : public Object
 {
 public:
     OptionsManager()
@@ -36,6 +36,8 @@ public:
     {
         SYSTEM_LOG << "OptionsManager destroyed\n";
 	}
+
+	virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     static OptionsManager& GetInstance()
     {
