@@ -81,6 +81,9 @@
     <ClCompile Include="source\AI_Npc.cpp">
       <Filter>Fichiers d%27en-tête\AI</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SpriteComponent.cpp">
+      <Filter>Fichiers d%27en-tête\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\system\EventManager.h">
@@ -185,9 +188,6 @@
     <ClInclude Include="Source\Task.h">
       <Filter>Fichiers d%27en-tête\GameSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Source\VideoGame.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Source\CollisionMap.h">
       <Filter>Fichiers d%27en-tête\GameSystem</Filter>
     </ClInclude>
@@ -199,6 +199,15 @@
     </ClInclude>
     <ClInclude Include="source\AI_Npc.h">
       <Filter>Fichiers d%27en-tête\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SpriteComponent.h">
+      <Filter>Fichiers d%27en-tête\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OptionsManager.h">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\VideoGame.h">
+      <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

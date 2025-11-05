@@ -18,6 +18,7 @@ Purpose:
 #include "system/SystemMenu.h"
 #include "VideoGame.h"
 #include "system/Camera.h"
+#include "OptionsManager.h"
 
 class GameEngine: public Object
 {
@@ -61,6 +62,7 @@ class GameEngine: public Object
 		InputsManager& inputsmanager = InputsManager::GetInstance();
 		SystemMenu& systemmenu = SystemMenu::GetInstance();
 		VideoGame& videogame = VideoGame::GetInstance();
+		OptionsManager& optionsmanager = OptionsManager::GetInstance();
 
 		static float fDt; // Delta Time between frames
 

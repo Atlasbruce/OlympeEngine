@@ -12,6 +12,7 @@
 
 #include "Level.h" // add Level management
 #include "GameState.h"
+#include "OptionsManager.h"
 
 class World : public Object
 {
@@ -92,6 +93,14 @@ public:
         {
             if (prop) prop->Render();
         }
+        if (OptionsManager::Get().IsSet(OptionFlags::ShowDebugInfo))
+        {
+            // Render debug for Visual components
+            for (auto* prop : array_component_lists_bytypes[static_cast<size_t>(ComponentType::Visual)])
+            {
+                if (prop) prop->RenderDebug();
+            }
+		}
 	}
 
 	//---------------------------------------------------------------------------------------------

@@ -54,6 +54,7 @@
     <ClInclude Include="Source\Npc.h" />
     <ClInclude Include="Source\Object.h" />
     <ClInclude Include="Source\Objective.h" />
+    <ClInclude Include="Source\OptionsManager.h" />
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Quest.h" />
     <ClInclude Include="Source\QuestManager.h" />
