@@ -25,6 +25,8 @@ ColorMorphComponent::ColorMorphComponent()
     height = 600;
     
     morphTexture = SDL_CreateTexture(GameEngine::renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);
+    SDL_SetTextureBlendMode(morphTexture, SDL_BLENDMODE_BLEND);
+    Initialize();
 }
 
 ColorMorphComponent::~ColorMorphComponent()
@@ -53,7 +55,7 @@ void ColorMorphComponent::OnEvent(const Message& msg)
 void ColorMorphComponent::Process()
 {
     // Slowly animate color positions and hues
-    time += fDt;
+    time += fDt * 0.5f;
     for (auto& cp : points) {
         cp.x = 0.5f + 0.5f * sin(time + (&cp - &points[0]));
         cp.y = 0.5f + 0.5f * cos(time * 0.7f + (&cp - &points[0]));
@@ -61,41 +63,48 @@ void ColorMorphComponent::Process()
         cp.color.g = Uint8(127 + 127 * sin(time * 1.2f + cp.y * 2));
         cp.color.b = Uint8(127 + 127 * sin(time * 0.8f + cp.x * cp.y * 4));
     }
+
+    // Set the texture as render target
+    SDL_SetRenderTarget(GameEngine::renderer, morphTexture);
+
+    GenerateGradient();
+    ApplyBlur(2);
+
+    //SDL_SetRenderDrawColor(GameEngine::renderer, 255, 0, 255, SDL_ALPHA_OPAQUE);  /* red, full alpha */
+    //gao->boundingBox = { gao->position.x, gao->position.y, gao->width, gao->height };
+    //SDL_RenderFillRect(GameEngine::renderer, &gao->boundingBox);
+
+     // Restore main render target
+    SDL_SetRenderTarget(GameEngine::renderer, nullptr);
 }
 
 void ColorMorphComponent::Render()
 {
-    //SDL_SetRenderTarget(GameEngine::renderer, morphTexture);
-    GenerateGradient();
-    ApplyBlur(morphTexture, 3); // Apply a soft blur (simulates bloom)
-    //SDL_SetRenderTarget(GameEngine::renderer, nullptr);
-
-    // Draw final texture to the main renderer
-    SDL_RenderTexture(GameEngine::GameEngine::renderer, morphTexture, nullptr, nullptr);
+    // Copy our texture onto the main renderer
+    SDL_RenderTexture(GameEngine::renderer, morphTexture, nullptr, nullptr);
 }
 
 void ColorMorphComponent::GenerateGradient()
 {
     // Fill texture with interpolated colors based on color points
-    SDL_SetRenderDrawBlendMode(GameEngine::renderer, SDL_BLENDMODE_BLEND);
-    //SDL_SetRenderDrawColor(GameEngine::renderer, 0, 0, 0, 255);
-    //SDL_RenderClear(GameEngine::renderer);
+
+    SDL_SetTextureBlendMode(morphTexture, SDL_BLENDMODE_BLEND);
 
     const int steps = 6;
     for (auto& cp : points) {
-        SDL_SetRenderDrawColor(GameEngine::renderer, cp.color.r, cp.color.g, cp.color.b, 180);
+        SDL_SetRenderDrawColor(GameEngine::renderer, cp.color.r, cp.color.g, cp.color.b, 220);
         int radius = width / steps;
         SDL_FRect circleRect = { cp.x * width - radius / 2, cp.y * height - radius / 2, float(radius), float(radius) };
         SDL_RenderFillRect(GameEngine::renderer, &circleRect);
     }
 }
 
-void ColorMorphComponent::ApplyBlur(SDL_Texture* texture, int passes)
+void ColorMorphComponent::ApplyBlur(int passes)
 {
     // Simple blur: multiple passes with semi-transparent overlays
-    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureBlendMode(morphTexture, SDL_BLENDMODE_BLEND);
     for (int i = 0; i < passes; ++i) {
-        SDL_SetTextureAlphaMod(texture, 180 - i * 40);
-        SDL_RenderTexture(GameEngine::renderer, texture, nullptr, nullptr);
+       // SDL_SetTextureAlphaMod(morphTexture, 180 - i * 40);
+        SDL_RenderTexture(GameEngine::renderer, morphTexture, nullptr, nullptr);
     }
 }

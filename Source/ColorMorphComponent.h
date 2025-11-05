@@ -34,7 +34,7 @@ class ColorMorphComponent : public ObjectComponent
 	std::vector<ColorPoint> points;
 
 	void GenerateGradient(); // Fill the texture with interpolated colors
-	void ApplyBlur(SDL_Texture* texture, int passes = 2); // Apply soft blur
+	void ApplyBlur(int passes = 2); // Apply soft blur
 
 };
 

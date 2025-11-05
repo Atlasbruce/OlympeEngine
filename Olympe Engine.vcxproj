@@ -39,7 +39,6 @@
     <ClCompile Include="Source\system\Viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ColorMorphComponent.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="source\AI_Npc.h" />
     <ClInclude Include="Source\AI_Player.h" />

@@ -11,9 +11,9 @@ ObjectComponent* SpriteComponent::Create()
 
 void SpriteComponent::RenderDebug()
 {
-	SDL_SetRenderDrawColor(GameEngine::Get().renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);  /* red, full alpha */
+	SDL_SetRenderDrawColor(GameEngine::renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);  /* red, full alpha */
 	gao->boundingBox = { gao->position.x, gao->position.y, gao->width, gao->height };
-	SDL_RenderRect(GameEngine::Get().renderer, &gao->boundingBox);
+	SDL_RenderRect(GameEngine::renderer, &gao->boundingBox);
 }
 
 void SpriteComponent::Render()

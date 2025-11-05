@@ -70,11 +70,11 @@ public:
             }
         }
 
-        ////3) Render stage (note: actual drawing may require renderer context)
-        //for (auto* prop : array_component_lists_bytypes[static_cast<size_t>(ComponentType::Visual)])
-        //{
-        //    if (prop) prop->Render();
-        //}
+        //3) Visual
+        for (auto* prop : array_component_lists_bytypes[static_cast<size_t>(ComponentType::Visual)])
+        {
+            if (prop) prop->Process();
+        }
 
         //4) Audio
         if (!paused)
