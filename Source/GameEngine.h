@@ -19,6 +19,9 @@ Purpose:
 #include "system/Camera.h"
 #include "OptionsManager.h"
 
+class VideoGame;
+class EventManager;
+
 class GameEngine: public Object
 {
 	public:
@@ -44,14 +47,20 @@ class GameEngine: public Object
 		}
 		static GameEngine& Get() { return GetInstance(); }
 
-		void Initialize()
-		{
-			ptr_eventmanager = &EventManager::GetInstance();
-			ptr_inputsmanager = &InputsManager::GetInstance();
-			ptr_systemmenu = &SystemMenu::GetInstance();
-			ptr_videogame = &VideoGame::GetInstance();
-			ptr_optionsmanager = &OptionsManager::GetInstance();
-		}
+public:
+		EventManager* ptr_eventmanager = nullptr;
+		InputsManager* ptr_inputsmanager = nullptr;
+		SystemMenu* ptr_systemmenu = nullptr;
+		VideoGame* ptr_videogame = nullptr;
+		OptionsManager* ptr_optionsmanager = nullptr;
+
+		EventManager& eventmanager = *ptr_eventmanager;
+		InputsManager& inputsmanager = *ptr_inputsmanager;
+		SystemMenu& systemmenu = *ptr_systemmenu;
+		VideoGame& videogame = *ptr_videogame;
+		OptionsManager& optionsmanager = *ptr_optionsmanager;
+
+		void Initialize();
 
 		//-------------------------------------------------------------
 		void Process() override
@@ -67,19 +76,11 @@ class GameEngine: public Object
 		//-------------------------------------------------------------
 	public:
 
-		EventManager* ptr_eventmanager = nullptr;
-		InputsManager* ptr_inputsmanager = nullptr;
-		SystemMenu* ptr_systemmenu = nullptr;
-		VideoGame* ptr_videogame = nullptr;
-		OptionsManager* ptr_optionsmanager = nullptr;
 
-		EventManager& eventmanager = *ptr_eventmanager;
-		InputsManager & inputsmanager = *ptr_inputsmanager;
-		SystemMenu& systemmenu = *ptr_systemmenu;
-		VideoGame& videogame = *ptr_videogame;
-		OptionsManager& optionsmanager = *ptr_optionsmanager;
 
 		static float fDt; // Delta Time between frames
+		static int screenWidth;
+		static int screenHeight;
 
 		static SDL_Renderer* renderer;
 		SDL_Renderer* GetMainRenderer() const {  return renderer; }

@@ -21,6 +21,12 @@
 #include "system/Viewport.h"
 #include "videogame.h"
 
+#include <fstream>
+#include <string>
+#include <iterator>
+#include <cctype>
+#include <sstream>
+
 using namespace std;
 
  /* We will use this renderer to draw into this window every frame. */
@@ -28,8 +34,8 @@ static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 static Uint64 last_time = 0;
 
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
+//#define WINDOW_WIDTH 800
+//#define WINDOW_HEIGHT 600
 
 #define NUM_POINTS 500
 #define MIN_PIXELS_PER_SECOND 30  /* move at least this many pixels per second. */
@@ -45,6 +51,79 @@ static Uint64 last_time = 0;
 static SDL_FPoint points[NUM_POINTS];
 static float point_speeds[NUM_POINTS];
 
+// Configuration: defaults
+static const int DEFAULT_WINDOW_WIDTH = 1280;
+static const int DEFAULT_WINDOW_HEIGHT = 720;
+//static int gWindowWidth = DEFAULT_WINDOW_WIDTH;
+//static int gWindowHeight = DEFAULT_WINDOW_HEIGHT;
+
+// Lightweight JSON integer extractor (tolerant to quotes and some variants)
+static bool extract_json_int(const std::string& data, const std::string& key, int& value)
+{
+    // search for key with or without quotes
+    size_t pos = data.find("\"" + key + "\"");
+    if (pos == std::string::npos) pos = data.find('\'' + key + '\'');
+    if (pos == std::string::npos) pos = data.find(key);
+    if (pos == std::string::npos) return false;
+
+    pos = data.find(':', pos);
+    if (pos == std::string::npos) return false;
+    ++pos;
+    // skip spaces
+    while (pos < data.size() && std::isspace(static_cast<unsigned char>(data[pos]))) ++pos;
+    // skip quotes
+    if (pos < data.size() && (data[pos] == '"' || data[pos] == '\'')) ++pos;
+
+    size_t start = pos;
+    if (pos < data.size() && (data[pos] == '+' || data[pos] == '-')) ++pos;
+    bool hasDigits = false;
+    while (pos < data.size() && std::isdigit(static_cast<unsigned char>(data[pos]))) { ++pos; hasDigits = true; }
+    if (!hasDigits) return false;
+
+    std::string num = data.substr(start, pos - start);
+    try {
+        value = std::stoi(num);
+        return true;
+    } catch (...) {
+        return false;
+    }
+}
+
+static void LoadConfigJSON(const char* filename, int& outW, int& outH)
+{
+    outW = DEFAULT_WINDOW_WIDTH;
+    outH = DEFAULT_WINDOW_HEIGHT;
+
+    std::ifstream ifs(filename);
+    if (!ifs) {
+        SYSTEM_LOG << "Config file '" << filename << "' not found — using defaults " << outW << "x" << outH << "\n";
+        return;
+    }
+
+    std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+
+    int w = outW;
+    int h = outH;
+
+    // try multiple possible keys and tolerate a common misspelling
+    if (extract_json_int(content, "screen_width", w) ||
+        extract_json_int(content, "screenWidth", w) ||
+        extract_json_int(content, "width", w)) {
+        // ok
+    }
+    if (extract_json_int(content, "screen_height", h) ||
+        extract_json_int(content, "screenHeight", h) ||
+        extract_json_int(content, "screen_heigth", h) || // tolerate misspelling
+        extract_json_int(content, "height", h)) {
+        // ok
+    }
+
+    if (w > 0) outW = w;
+    if (h > 0) outH = h;
+
+    SYSTEM_LOG << "Config loaded from '" << filename << "': " << outW << "x" << outH << "\n";
+}
+
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 {
@@ -52,33 +131,36 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 
     SDL_SetAppMetadata("Olympe Game Engine", "2.0", "com.googlesites.olympeengine");
 
+    // Load configuration (JSON inside "olympe.ini"). Defaults used if not present.
+    LoadConfigJSON("olympe.ini", GameEngine::screenWidth, GameEngine::screenHeight);
+
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
 
-    if (!SDL_CreateWindowAndRenderer("Olympe Engine 2.0", WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
+    if (!SDL_CreateWindowAndRenderer("Olympe Engine 2.0", GameEngine::screenWidth, GameEngine::screenHeight, SDL_WINDOW_RESIZABLE, &window, &renderer)) {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
-    SDL_SetRenderLogicalPresentation(renderer, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+    SDL_SetRenderLogicalPresentation(renderer, GameEngine::screenWidth, GameEngine::screenHeight, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
     /* set up the data for a bunch of points. */
     for (i = 0; i < SDL_arraysize(points); i++) {
-        points[i].x = SDL_randf() * ((float)WINDOW_WIDTH);
-        points[i].y = SDL_randf() * ((float)WINDOW_HEIGHT);
+        points[i].x = SDL_randf() * ((float)GameEngine::screenWidth);
+        points[i].y = SDL_randf() * ((float)GameEngine::screenHeight);
         point_speeds[i] = MIN_PIXELS_PER_SECOND + (SDL_randf() * (MAX_PIXELS_PER_SECOND - MIN_PIXELS_PER_SECOND));
     }
 
     last_time = SDL_GetTicks();
-	SYSTEM_LOG << "----------- OLYMPE ENGINE V2 ------------" << endl;
+    SYSTEM_LOG << "----------- OLYMPE ENGINE V2 ------------" << endl;
     SYSTEM_LOG << "System Initialization\n" << endl;
 
-	//Olympe Engine and all managers singleton Initialization Here
-	GameEngine::renderer = renderer; // important: set main renderer for GameEngine before GetInstance
-	GameEngine::GetInstance(); // create the GameEngine itself
-	GameEngine::Get().Initialize(); // initialize all submanagers
-	
+    //Olympe Engine and all managers singleton Initialization Here
+    GameEngine::renderer = renderer; // important: set main renderer for GameEngine before GetInstance
+    GameEngine::GetInstance(); // create the GameEngine itself
+    GameEngine::Get().Initialize(); // initialize all submanagers
+    
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
@@ -96,7 +178,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 
     switch (event->type)
     {
-		case SDL_EVENT_KEY_DOWN:
+        case SDL_EVENT_KEY_DOWN:
         if (event->key.key == SDLK_ESCAPE)
         {
             const SDL_MessageBoxButtonData buttons[] =
@@ -132,10 +214,10 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
             int buttonid;
 
             SDL_ShowMessageBox(&messageboxdata, &buttonid);
-			if (buttonid == 1)
+            if (buttonid == 1)
                 return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
         }
-	    break;
+        break;
         case SDL_EVENT_QUIT:
             {
                 return SDL_APP_SUCCESS;  /* end the program, reporting success to the OS. */
@@ -144,7 +226,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
         default:
             return SDL_APP_CONTINUE;  /* carry on with the program! */
             break;
-	}
+    }
 
     return SDL_APP_CONTINUE; /* carry on with the program! */
 
@@ -153,7 +235,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void* appstate)
 {
-	/* figure out how long it's been since the last frame. */
+    /* figure out how long it's been since the last frame. */
     GameEngine::Get().Process();
 
     /* let's move all our points a little for a new frame. */
@@ -161,15 +243,15 @@ SDL_AppResult SDL_AppIterate(void* appstate)
         const float distance = GameEngine::fDt * point_speeds[i];
         points[i].x += distance;
         points[i].y += distance;
-        if ((points[i].x >= WINDOW_WIDTH) || (points[i].y >= WINDOW_HEIGHT)) {
+        if ((points[i].x >= GameEngine::screenWidth) || (points[i].y >= GameEngine::screenHeight)) {
             /* off the screen; restart it elsewhere! */
             if (SDL_rand(2)) {
-                points[i].x = SDL_randf() * ((float)WINDOW_WIDTH);
+                points[i].x = SDL_randf() * ((float)GameEngine::screenWidth);
                 points[i].y = 0.0f;
             }
             else {
                 points[i].x = 0.0f;
-                points[i].y = SDL_randf() * ((float)WINDOW_HEIGHT);
+                points[i].y = SDL_randf() * ((float)GameEngine::screenHeight);
             }
             point_speeds[i] = MIN_PIXELS_PER_SECOND + (SDL_randf() * (MAX_PIXELS_PER_SECOND - MIN_PIXELS_PER_SECOND));
         }
@@ -182,9 +264,9 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     }
 
     // Update world properties (events already processed inside World::Process)
-	
+    
     World::Get().Process();
-	EventManager::Get().Process();
+    EventManager::Get().Process();
 
     /* as you can see from this, rendering draws over whatever was drawn before it. */
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
@@ -233,7 +315,7 @@ SDL_AppResult SDL_AppIterate(void* appstate)
         SDL_SetRenderViewport(renderer, nullptr);
     }
 
-	World::Get().Render();
+    World::Get().Render();
 
     SDL_RenderPresent(renderer);  /* put it all on the screen! */
 

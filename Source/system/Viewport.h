@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include "system_utils.h"
+//#include "../GameEngine.h"
 
 // Simple Viewport manager singleton that computes up to 4 view rectangles
 // according to the number of players. Viewports are laid out as follows:
@@ -16,7 +17,7 @@
 class Viewport : public Object
 {
 public:
-    Viewport() {}// { Initialize(); }
+    Viewport() {}//{ Initialize(GameEngine::screenWidth, GameEngine::screenHeight); }
 	~Viewport() { Shutdown (); }
 
     virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
@@ -28,7 +29,7 @@ public:
     }
     static Viewport& Get() { return GetInstance(); }
 
-    void Initialize(int w = 800, int h = 600)
+    void Initialize(int w, int h)
     {
         m_width = w; m_height = h;
         m_players.clear();

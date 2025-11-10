@@ -93,6 +93,9 @@
     <ClCompile Include="Source\drawing.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="source\VideoGame.cpp">
+      <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\system\EventManager.h">

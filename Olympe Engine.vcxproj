@@ -39,6 +39,7 @@
     <ClCompile Include="Source\system\MouseManager.cpp" />
     <ClCompile Include="Source\system\SystemMenu.cpp" />
     <ClCompile Include="Source\system\Viewport.cpp" />
+    <ClCompile Include="source\VideoGame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />

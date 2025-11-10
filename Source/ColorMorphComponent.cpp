@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <SDL3/SDL_render.h>
 #include <SDL3/SDL_surface.h>
+//#include <SDL3/SDL_image.h>
 #include "drawing.h"
 
 bool ColorMorphComponent::FactoryRegistered = Factory::Get().Register("ColorMorphComponent", ColorMorphComponent::Create);
@@ -22,8 +23,8 @@ static Uint8 LerpColor(Uint8 a, Uint8 b, float t)
 
 ColorMorphComponent::ColorMorphComponent()
 {
-    width = 800;
-    height = 600;
+    width = GameEngine::screenWidth;
+    height = GameEngine::screenHeight;
     
     morphTexture = SDL_CreateTexture(GameEngine::renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);
     SDL_SetTextureBlendMode(morphTexture, SDL_BLENDMODE_BLEND);
@@ -46,6 +47,26 @@ void ColorMorphComponent::Initialize()
         cp.color = { Uint8(rand() % 256), Uint8(rand() % 256), Uint8(rand() % 256), 255 };
         points.push_back(cp);
     }
+
+    SDL_Surface *Olympe_Logo = SDL_LoadBMP(".\\Resources\\olympe_logo.bmp");
+    if (Olympe_Logo) 
+    {
+        SDL_Texture* logoTexture = SDL_CreateTextureFromSurface(GameEngine::renderer, Olympe_Logo);
+        SDL_DestroySurface(Olympe_Logo);
+
+        if (!logoTexture) 
+        {
+            SYSTEM_LOG << "Failed to create logo texture from surface: " << SDL_GetError() << "\n";
+        }
+        else 
+        {
+			this->logoTexture = logoTexture;
+        }
+	}
+    else 
+    {
+        SYSTEM_LOG << "Failed to load logo image: " << SDL_GetError() << "\n";
+	}
 }
 
 void ColorMorphComponent::OnEvent(const Message& msg)
@@ -56,7 +77,7 @@ void ColorMorphComponent::OnEvent(const Message& msg)
 void ColorMorphComponent::Process()
 {
     // Slowly animate color positions and hues
-/*    time += fDt * 0.5f;
+    time += fDt * 0.5f;
     for (auto& cp : points) {
         cp.x = 0.5f + 0.5f * sin(time + (&cp - &points[0]));
         cp.y = 0.5f + 0.5f * cos(time * 0.7f + (&cp - &points[0]));
@@ -75,9 +96,6 @@ void ColorMorphComponent::Process()
 
 	SDL_SetRenderDrawColor(GameEngine::renderer, 0xFF, 0xFF, 0xFF, 0x00);
 	SDL_RenderClear(GameEngine::renderer);
-
-    //GenerateGradient();
-    //ApplyBlur(2);
 
   
     Draw_FilledHexagon(GameEngine::renderer, mPos, 250.f, { 1.f, 0.5f, 0.3f, 1.f });
@@ -101,9 +119,17 @@ void ColorMorphComponent::Process()
     SDL_SetRenderDrawColor(GameEngine::renderer, 0x00, 0x80, 0xFF, 0xFF);
     Draw_FilledCircle(GameEngine::renderer, width / 2, height / 2, width / 20);
 
-    //SDL_SetRenderDrawColor(GameEngine::renderer, 255, 0, 255, SDL_ALPHA_OPAQUE);  /* red, full alpha */
-    //gao->boundingBox = { gao->position.x, gao->position.y, gao->width, gao->height };
-    //SDL_RenderFillRect(GameEngine::renderer, &gao->boundingBox);
+    //GenerateGradient();
+    //ApplyBlur(2);
+
+    // Render the logo onto the morph texture
+    SDL_SetTextureBlendMode(logoTexture, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(GameEngine::renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_SetTextureAlphaMod(logoTexture, 200);
+    SDL_FRect destRect = { (width - 200.f) / 2.f, (height - 100.f) / 2.f, 200.f, 100.f };
+    SDL_RenderTexture(GameEngine::renderer, logoTexture, nullptr, &destRect);
+
+
 
      // Restore main render target
     SDL_SetRenderTarget(GameEngine::renderer, nullptr);
@@ -120,12 +146,13 @@ void ColorMorphComponent::GenerateGradient()
     // Fill texture with interpolated colors based on color points
     const int steps = 6;
 
-    SDL_SetTextureBlendMode(morphTexture, SDL_BLENDMODE_ADD);
+    SDL_SetTextureBlendMode(morphTexture, SDL_BLENDMODE_BLEND);
     for (auto& cp : points) {
         SDL_SetRenderDrawColor(GameEngine::renderer, cp.color.r, cp.color.g, cp.color.b, 220);
         int radius = width / steps;
-        SDL_FRect circleRect = { cp.x * width - radius / 2, cp.y * height - radius / 2, float(radius), float(radius) };
-        SDL_RenderFillRect(GameEngine::renderer, &circleRect);
+        //SDL_FRect circleRect = { cp.x * width - radius / 2, cp.y * height - radius / 2, float(radius), float(radius) };
+        //SDL_RenderFillRect(GameEngine::renderer, &circleRect);
+		Draw_FilledCircle(GameEngine::renderer, static_cast<int>(cp.x * width), static_cast<int>(cp.y * height), radius);
     }
 }
 
@@ -134,7 +161,7 @@ void ColorMorphComponent::ApplyBlur(int passes)
     // Simple blur: multiple passes with semi-transparent overlays
     SDL_SetTextureBlendMode(morphTexture, SDL_BLENDMODE_ADD);
     for (int i = 0; i < passes; ++i) {
-       // SDL_SetTextureAlphaMod(morphTexture, 180 - i * 40);
+        SDL_SetTextureAlphaMod(morphTexture, 180 - i * 40);
         SDL_RenderTexture(GameEngine::renderer, morphTexture, nullptr, nullptr);
     }
 }
