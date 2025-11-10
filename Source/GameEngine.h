@@ -10,7 +10,6 @@ Purpose:
 */
 #pragma once
 #include "object.h"
-#include "Object.h"
 #include <vector>
 #include <memory>
 #include "system/system_utils.h"
@@ -67,11 +66,6 @@ class GameEngine: public Object
 
 		//-------------------------------------------------------------
 	public:
-		//EventManager& eventmanager = EventManager::GetInstance();
-		//InputsManager& inputsmanager = InputsManager::GetInstance();
-		//SystemMenu& systemmenu = SystemMenu::GetInstance();
-		//VideoGame& videogame = VideoGame::GetInstance();
-		//OptionsManager& optionsmanager = OptionsManager::GetInstance();
 
 		EventManager* ptr_eventmanager = nullptr;
 		InputsManager* ptr_inputsmanager = nullptr;

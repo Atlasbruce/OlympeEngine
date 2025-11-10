@@ -1,6 +1,6 @@
 #pragma once
 
-
+constexpr double k_PI = 3.14159265358979323846;
 
 enum class EventType
 {
