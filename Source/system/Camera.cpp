@@ -78,7 +78,7 @@ void Camera::Apply(SDL_Renderer* renderer)
     const auto& rects = Viewport::Get().GetViewRects();
     if (rects.size() > 0)
     {
-        const SDL_Rect& r = rects[0];
+		const SDL_Rect r = { (int)rects[0].x, (int)rects[0].y, (int)rects[0].w, (int)rects[0].h };
         SDL_SetRenderViewport(renderer, &r);
     }
 }

@@ -289,7 +289,7 @@ SDL_AppResult SDL_AppIterate(void* appstate)
         // for each viewport: transform points according to the camera assigned to the player (if any)
         for (size_t vi = 0; vi < rects.size(); ++vi)
         {
-            const SDL_Rect& vr = rects[vi];
+			const SDL_Rect vr = { (int)rects[vi].x, (int)rects[vi].y, (int)rects[vi].w, (int)rects[vi].h };
             SDL_SetRenderViewport(renderer, &vr);
 
             short playerID = 0;

@@ -9,10 +9,12 @@ VideoGame::VideoGame()
 	name = "VideoGame";
 
 	// Initialize viewport (default size)
-	//Viewport::Get().Initialize(GameEngine::screenWidth, GameEngine::screenHeight);
+	/* deprecated called in the Viewport::Viewport
+     Viewport::Get().Initialize(GameEngine::screenWidth, GameEngine::screenHeight);
+    /**/
 
 	// Create default player 0
-	//AddPlayer();
+	AddPlayer();
 
 	// Register to EventManager for game events
 	using EM = EventManager;
