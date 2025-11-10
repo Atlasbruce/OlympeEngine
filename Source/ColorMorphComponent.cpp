@@ -71,25 +71,35 @@ void ColorMorphComponent::Process()
 
 	//we can Draw on the texture now
     SDL_FColor mColor = { 1.f, 1.f, 1.f, 1.f };
-    SDL_FPoint mPos = { width / 2, height / 2 };
+    SDL_FPoint mPos = { width * 0.5f, height * 0.5f };
 
-	SDL_SetRenderDrawColor(GameEngine::renderer, 0xFF, 0xFF, 0xFF, 0x0F);
+	SDL_SetRenderDrawColor(GameEngine::renderer, 0xFF, 0xFF, 0xFF, 0x00);
 	SDL_RenderClear(GameEngine::renderer);
 
     //GenerateGradient();
     //ApplyBlur(2);
 
+  
+    Draw_FilledHexagon(GameEngine::renderer, mPos, 250.f, { 1.f, 0.5f, 0.3f, 1.f });
+	Draw_Hexagon(GameEngine::renderer, mPos, 300.f, { 255, 100, 128, 255 });
 
+    SDL_SetRenderDrawColor(GameEngine::renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    Draw_Triangle(GameEngine::renderer,
+        { mPos.x, mPos.y - 200.f },
+        { mPos.x - 173.2f, mPos.y + 100.f },
+		{ mPos.x + 173.2f, mPos.y + 100.f });
+
+    Draw_FilledTriangle(GameEngine::renderer,
+        { mPos.x, mPos.y - 150.f },
+        { mPos.x - 129.9f, mPos.y + 75.f },
+		{ mPos.x + 129.9f, mPos.y + 75.f },
+		{ 0.0f, 1.0f, 0.5f, 1.0f });
 
     SDL_SetRenderDrawColor(GameEngine::renderer, 0x00, 0xFF, 0x80, 0xFF);
-	Draw_Circle(GameEngine::renderer, width / 2, height / 2, width / 3);
+    Draw_Circle(GameEngine::renderer, width / 2, height / 2, width / 3);
 
     SDL_SetRenderDrawColor(GameEngine::renderer, 0x00, 0x80, 0xFF, 0xFF);
     Draw_FilledCircle(GameEngine::renderer, width / 2, height / 2, width / 20);
-
-  
-    Draw_FilledHexagon(GameEngine::renderer, mPos, 350.f, mColor);
-	Draw_Hexagon(GameEngine::renderer, mPos, 300.f, { 255, 0, 0, 255 });
 
     //SDL_SetRenderDrawColor(GameEngine::renderer, 255, 0, 255, SDL_ALPHA_OPAQUE);  /* red, full alpha */
     //gao->boundingBox = { gao->position.x, gao->position.y, gao->width, gao->height };

@@ -22,6 +22,7 @@
     <ClCompile Include="source\AI_Npc.cpp" />
     <ClCompile Include="Source\AI_Player.cpp" />
     <ClCompile Include="Source\ColorMorphComponent.cpp" />
+    <ClCompile Include="Source\drawing.cpp" />
     <ClCompile Include="source\drawing.h" />
     <ClCompile Include="Source\GameEngine.cpp" />
     <ClCompile Include="source\GameObject.cpp" />

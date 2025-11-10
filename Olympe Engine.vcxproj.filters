@@ -84,6 +84,15 @@
     <ClCompile Include="Source\SpriteComponent.cpp">
       <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ColorMorphComponent.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="source\drawing.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\drawing.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\system\EventManager.h">
@@ -108,12 +117,6 @@
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\InputsManager.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\json.hpp">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Singleton.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\ObjectComponent.h">
@@ -208,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="Source\VideoGame.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ColorMorphComponent.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
