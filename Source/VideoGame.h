@@ -76,6 +76,10 @@ public:
      // Event handler for EventManager messages registered in ctor
      void OnEvent(const Message& msg);
 
+     // Save / Load game state (slot optional)
+     bool SaveGame(int slot = 0) const;
+     bool LoadGame(int slot = 0);
+
 public:
 	World& world = World::GetInstance();
 	GameRules& gamerules = GameRules::GetInstance();

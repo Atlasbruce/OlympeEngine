@@ -335,3 +335,46 @@ bool DataManager::EnsureDirectoryExists(const std::string& dirpath) const
 
     return true;
 }
+
+bool DataManager::PreloadSystemResources(const std::string& configFilePath)
+{
+    std::string content;
+    if (!LoadTextFile(configFilePath, content))
+    {
+        SYSTEM_LOG << "DataManager: PreloadSystemResources failed to read '" << configFilePath << "'\n";
+        return false;
+    }
+
+    try
+    {
+        nlohmann::json root = nlohmann::json::parse(content);
+        if (!root.contains("system_resources")) return true; // nothing to do
+        const auto& arr = root["system_resources"];
+        if (!arr.is_array()) return false;
+        for (size_t i = 0; i < arr.size(); ++i)
+        {
+            const auto& item = arr[i];
+            if (!item.is_object()) continue;
+            std::string id = item.contains("id") ? item["id"].get<std::string>() : std::string();
+            std::string path = item.contains("path") ? item["path"].get<std::string>() : std::string();
+            std::string type = item.contains("type") ? item["type"].get<std::string>() : std::string();
+            if (id.empty() || path.empty()) continue;
+            if (type == "texture" || type == "sprite")
+            {
+                LoadTexture(id, path, ResourceCategory::System);
+            }
+            else
+            {
+                // other types can be handled here (sound, level, etc.)
+                LoadTexture(id, path, ResourceCategory::System);
+            }
+        }
+    }
+    catch (const std::exception& e)
+    {
+        SYSTEM_LOG << "DataManager: JSON parse error in PreloadSystemResources: " << e.what() << "\n";
+        return false;
+    }
+
+    return true;
+}

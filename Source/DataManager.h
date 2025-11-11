@@ -31,6 +31,7 @@ Notes:
 #include <memory>
 #include <mutex>
 #include <vector>
+#include "third_party/nlohmann/json.hpp"
 
 // Catégories et types de ressources
 enum class ResourceType : uint32_t
@@ -114,6 +115,11 @@ public:
 
     // Helper to build the standard game data path
     static std::string BuildGameDataPath(const std::string& videogameName, const std::string& objectName);
+
+    // Preload system resources from a configuration JSON file (e.g. "olympe.ini")
+    // Expected format:
+    // { "system_resources": [ { "id":"ui_icon", "path":"assets/ui/icon.bmp", "type":"texture" }, ... ] }
+    bool PreloadSystemResources(const std::string& configFilePath);
 
 private:
     mutable std::mutex m_mutex_;

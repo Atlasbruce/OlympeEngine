@@ -3,6 +3,11 @@ Purpose: Implementation of the VideoGame class, which represents a video game wi
 */
 
 #include "VideoGame.h"
+#include "DataManager.h"
+#include "GameObject.h"
+
+#include <sstream>
+#include <string>
 
 VideoGame::VideoGame()
 {
@@ -25,6 +30,8 @@ VideoGame::VideoGame()
 	EM::Get().Register(this, EventType::EventType_Game_AddPlayer, [this](const Message& m){ this->OnEvent(m); });
 	EM::Get().Register(this, EventType::EventType_Game_RemovePlayer, [this](const Message& m){ this->OnEvent(m); });
 	EM::Get().Register(this, EventType::EventType_Game_TakeScreenshot, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::EventType_Game_SaveState, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::EventType_Game_LoadState, [this](const Message& m){ this->OnEvent(m); });
 
 	// Ensure default state is running
 	GameStateManager::SetState(GameState::GameState_Running);
@@ -177,13 +184,15 @@ void VideoGame::OnEvent(const Message& msg)
     case EventType::EventType_Game_SaveState:
     {
         int slot = msg.controlId;
-        SYSTEM_LOG << "VideoGame: SaveState event slot=" << slot << " (not implemented)\n";
+        SYSTEM_LOG << "VideoGame: SaveState event slot=" << slot << "\n";
+        SaveGame(slot);
         break;
     }
     case EventType::EventType_Game_LoadState:
     {
         int slot = msg.controlId;
-        SYSTEM_LOG << "VideoGame: LoadState event slot=" << slot << " (not implemented)\n";
+        SYSTEM_LOG << "VideoGame: LoadState event slot=" << slot << "\n";
+        LoadGame(slot);
         break;
     }
     case EventType::EventType_Keyboard_KeyDown:
@@ -225,4 +234,121 @@ void VideoGame::OnEvent(const Message& msg)
     default:
         break;
     }
+}
+
+// Save full game state into a single JSON file per slot using DataManager
+bool VideoGame::SaveGame(int slot) const
+{
+    std::string vgName = name.empty() ? std::string("DefaultGame") : name;
+    std::ostringstream ss;
+    ss << "{\n";
+    ss << "  \"videogame\": \"" << vgName << "\",\n";
+    // players
+    ss << "  \"players\": [";
+    for (size_t i = 0; i < m_players.size(); ++i)
+    {
+        if (i) ss << ", "; ss << m_players[i];
+    }
+    ss << "],\n";
+
+    // world objects
+    ss << "  \"objects\": [\n";
+    const auto& list = World::Get().GetObjectList();
+    bool first = true;
+    for (auto obj : list)
+    {
+        GameObject* go = dynamic_cast<GameObject*>(obj);
+        if (!go) continue;
+        if (!first) ss << ",\n";
+        first = false;
+        ss << go->ToJSON();
+    }
+    ss << "\n  ]\n";
+    ss << "}\n";
+
+    std::string content = ss.str();
+    std::string slotName = "SaveSlot_" + std::to_string(slot);
+    bool ok = DataManager::Get().SaveJSONForObject(vgName, slotName, content);
+    SYSTEM_LOG << "VideoGame: SaveGame -> " << (ok ? "success" : "failed") << " to slot '" << slotName << "'\n";
+    return ok;
+}
+
+// Load game state from a slot file
+bool VideoGame::LoadGame(int slot)
+{
+    std::string vgName = name.empty() ? std::string("DefaultGame") : name;
+    std::string slotName = "SaveSlot_" + std::to_string(slot);
+    std::string content;
+    if (!DataManager::Get().LoadJSONForObject(vgName, slotName, content))
+    {
+        SYSTEM_LOG << "VideoGame: LoadGame failed to read slot '" << slotName << "'\n";
+        return false;
+    }
+
+    // Very small parser: extract objects array and re-create objects
+    size_t pos = content.find("\"objects\"");
+    if (pos == std::string::npos) return false;
+    size_t start = content.find('[', pos);
+    if (start == std::string::npos) return false;
+    size_t end = content.find(']', start);
+    if (end == std::string::npos) return false;
+    std::string arr = content.substr(start+1, end - start -1);
+
+    // naive split by '}{' boundaries: replace '},{' by '}|{' and split on '|'
+    std::string tmp = arr;
+    size_t p = 0;
+    while ((p = tmp.find("},{", p)) != std::string::npos) { tmp.replace(p, 3, "}|{"); p += 3; }
+    std::vector<std::string> entries;
+    size_t cur = 0;
+    while (cur < tmp.size()) {
+        size_t sep = tmp.find('|', cur);
+        if (sep == std::string::npos) sep = tmp.size();
+        std::string e = tmp.substr(cur, sep - cur);
+        // trim
+        size_t a = e.find_first_not_of(" \n\t\r");
+        size_t b = e.find_last_not_of(" \n\t\r");
+        if (a != std::string::npos && b != std::string::npos) e = e.substr(a, b - a + 1);
+        if (!e.empty()) entries.push_back(e);
+        cur = sep + 1;
+    }
+
+    // For simplicity: clear existing world objects (dangerous in real engine)
+    auto &list = World::Get().GetObjectList();
+    for (auto o : list) delete o;
+    list.clear();
+
+    for (auto &entry : entries)
+    {
+        // determine className
+        std::string className = "GameObject";
+        std::string extracted;
+        // look for "className": "..."
+        size_t cnpos = entry.find("\"className\"");
+        if (cnpos != std::string::npos)
+        {
+            size_t colon = entry.find(':', cnpos);
+            if (colon != std::string::npos)
+            {
+                size_t q1 = entry.find('"', colon);
+                if (q1 != std::string::npos)
+                {
+                    size_t q2 = entry.find('"', q1+1);
+                    if (q2 != std::string::npos && q2 > q1+1)
+                    {
+                        className = entry.substr(q1+1, q2 - q1 - 1);
+                    }
+                }
+            }
+        }
+
+        Object* o = Factory::Get().CreateObject(className);
+        GameObject* go = dynamic_cast<GameObject*>(o);
+        if (go)
+        {
+            go->FromJSON(entry);
+        }
+    }
+
+    SYSTEM_LOG << "VideoGame: LoadGame completed for slot '" << slotName << "'\n";
+    return true;
 }
