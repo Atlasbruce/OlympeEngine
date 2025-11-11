@@ -13,14 +13,15 @@ Purpose:
 #include <vector>
 #include <memory>
 #include "system/system_utils.h"
-#include "InputsManager.h"
-#include "system/SystemMenu.h"
-#include "VideoGame.h"
-#include "system/Camera.h"
-#include "OptionsManager.h"
+#include <SDL3/SDL.h>
 
-class VideoGame;
+// Forward declarations to avoid circular includes
 class EventManager;
+class InputsManager;
+class SystemMenu;
+class VideoGame;
+class OptionsManager;
+class DataManager;
 
 class GameEngine: public Object
 {
@@ -31,7 +32,7 @@ class GameEngine: public Object
 			name = "GameEngine";
 			SYSTEM_LOG << "GameEngine created and Initialized\n";
 		}
-		virtual ~GameEngine()	
+		virtual ~GameEngine() 	
 		{
 			SYSTEM_LOG << "GameEngine destroyed\n";
 		}
@@ -46,19 +47,6 @@ class GameEngine: public Object
 			return instance;
 		}
 		static GameEngine& Get() { return GetInstance(); }
-
-public:
-		EventManager* ptr_eventmanager = nullptr;
-		InputsManager* ptr_inputsmanager = nullptr;
-		SystemMenu* ptr_systemmenu = nullptr;
-		VideoGame* ptr_videogame = nullptr;
-		OptionsManager* ptr_optionsmanager = nullptr;
-
-		EventManager& eventmanager = *ptr_eventmanager;
-		InputsManager& inputsmanager = *ptr_inputsmanager;
-		SystemMenu& systemmenu = *ptr_systemmenu;
-		VideoGame& videogame = *ptr_videogame;
-		OptionsManager& optionsmanager = *ptr_optionsmanager;
 
 		void Initialize();
 
@@ -76,7 +64,19 @@ public:
 		//-------------------------------------------------------------
 	public:
 
+		EventManager* ptr_eventmanager = nullptr;
+		InputsManager* ptr_inputsmanager = nullptr;
+		SystemMenu* ptr_systemmenu = nullptr;
+		VideoGame* ptr_videogame = nullptr;
+		OptionsManager* ptr_optionsmanager = nullptr;
+		DataManager* ptr_datamanager = nullptr;
 
+		EventManager& eventmanager = *ptr_eventmanager;
+		InputsManager & inputsmanager = *ptr_inputsmanager;
+		SystemMenu& systemmenu = *ptr_systemmenu;
+		VideoGame& videogame = *ptr_videogame;
+		OptionsManager& optionsmanager = *ptr_optionsmanager;
+		DataManager& datamanager = *ptr_datamanager;
 
 		static float fDt; // Delta Time between frames
 		static int screenWidth;

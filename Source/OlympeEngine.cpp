@@ -20,6 +20,7 @@
 #include "system/Camera.h"
 #include "system/Viewport.h"
 #include "videogame.h"
+#include "DataManager.h"
 
 #include <fstream>
 #include <string>
@@ -50,6 +51,7 @@ static Uint64 last_time = 0;
       standard in 2D graphics. */
 static SDL_FPoint points[NUM_POINTS];
 static float point_speeds[NUM_POINTS];
+
 
 // Configuration: defaults
 static const int DEFAULT_WINDOW_WIDTH = 1280;
@@ -156,10 +158,15 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     SYSTEM_LOG << "----------- OLYMPE ENGINE V2 ------------" << endl;
     SYSTEM_LOG << "System Initialization\n" << endl;
 
+
+    // Initialize DataManager (load system resources if needed)
+	DataManager::Get().Initialize(); // DataManager must be initialized before GameEngine to enable loading resources during GameEngine init
+
     //Olympe Engine and all managers singleton Initialization Here
     GameEngine::renderer = renderer; // important: set main renderer for GameEngine before GetInstance
     GameEngine::GetInstance(); // create the GameEngine itself
     GameEngine::Get().Initialize(); // initialize all submanagers
+
     
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
@@ -326,6 +333,9 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 void SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     /* SDL will clean up the window/renderer for us. */
+
+    // Shutdown datamanager to ensure resources freed
+    DataManager::Get().Shutdown();
 
     SYSTEM_LOG << "----------- OLYMPE ENGINE V2 ------------" << endl;
     SYSTEM_LOG << "System shutdown completed\n" << endl;

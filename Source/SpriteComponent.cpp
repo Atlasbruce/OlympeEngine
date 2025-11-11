@@ -1,6 +1,8 @@
 #include "SpriteComponent.h"
 #include "Factory.h"
 #include "GameEngine.h"
+#include "GameObject.h"
+#include <SDL3/SDL_render.h>
 
 
 bool SpriteComponent::FactoryRegistered = Factory::Get().Register("SpriteComponent", SpriteComponent::Create);
