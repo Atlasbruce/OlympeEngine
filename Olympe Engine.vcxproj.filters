@@ -96,6 +96,9 @@
     <ClCompile Include="source\VideoGame.cpp">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClCompile>
+    <ClCompile Include="Source\DataManager.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\system\EventManager.h">
@@ -216,6 +219,9 @@
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\ColorMorphComponent.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataManager.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
