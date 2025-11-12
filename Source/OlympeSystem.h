@@ -24,6 +24,7 @@ class OlympeSystem : public ObjectComponent
 	// Specific ColorMorphComponent data
 	SDL_Texture* morphTexture = nullptr;
 	SDL_Texture* logoTexture = nullptr;
+	SDL_Texture* backgroundTexture = nullptr;
 
 	int width = 800, height = 600;
 	float time = 0.f;

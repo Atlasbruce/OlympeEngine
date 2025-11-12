@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <SDL3/SDL_render.h>
 #include <SDL3/SDL_surface.h>
-//#include <SDL3/SDL_image.h>
 #include "drawing.h"
 #include "DataManager.h"
 
@@ -99,6 +98,12 @@ void OlympeSystem::Initialize()
     {
         SYSTEM_LOG << "Failed to load logo texture from DataManager\n";
 	}
+
+	backgroundTexture = DataManager::Get().GetSprite("Olympe_Background", "Resources/background.jpg", ResourceCategory::GameObject);
+    if (!backgroundTexture) 
+    {
+        SYSTEM_LOG << "Failed to load background texture from DataManager\n";
+	}
 }
 
 void OlympeSystem::OnEvent(const Message& msg)
@@ -180,6 +185,9 @@ void OlympeSystem::Process()
     // Render the logo onto the morph texture
     //SDL_SetTextureBlendMode(logoTexture, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(GameEngine::renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+
+	SDL_RenderTexture(GameEngine::renderer, backgroundTexture, nullptr, nullptr);
+
   //  SDL_SetTextureAlphaMod(logoTexture, 200);
     SDL_FRect destRect = { (width - 200.f) / 2.f, (height - 100.f) / 2.f, 300.f, 121.f };
 	SDL_RenderTexture(GameEngine::renderer, logoTexture, nullptr, &destRect);
