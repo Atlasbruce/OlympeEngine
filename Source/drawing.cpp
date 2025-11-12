@@ -1,3 +1,4 @@
+#include "drawing.h"
 #include <SDL3/SDL.h>
 #include <cmath>
 
@@ -39,14 +40,14 @@ void Draw_Circle(SDL_Renderer* renderer, int cx, int cy, int radius)
 
     while (x >= y)
     {
-        SDL_RenderPoint(renderer, cx + x, cy + y);
-        SDL_RenderPoint(renderer, cx + y, cy + x);
-        SDL_RenderPoint(renderer, cx - y, cy + x);
-        SDL_RenderPoint(renderer, cx - x, cy + y);
-        SDL_RenderPoint(renderer, cx - x, cy - y);
-        SDL_RenderPoint(renderer, cx - y, cy - x);
-        SDL_RenderPoint(renderer, cx + y, cy - x);
-        SDL_RenderPoint(renderer, cx + x, cy - y);
+        SDL_RenderPoint(renderer, (float)cx + x, (float)cy + y);
+        SDL_RenderPoint(renderer, (float)cx + y, (float)cy + x);
+        SDL_RenderPoint(renderer, (float)cx - y, (float)cy + x);
+        SDL_RenderPoint(renderer, (float)cx - x, (float)cy + y);
+        SDL_RenderPoint(renderer, (float)cx - x, (float)cy - y);
+        SDL_RenderPoint(renderer, (float)cx - y, (float)cy - x);
+        SDL_RenderPoint(renderer, (float)cx + y, (float)cy - x);
+        SDL_RenderPoint(renderer, (float)cx + x, (float)cy - y);
 
         if (err <= 0)
         {
@@ -69,7 +70,7 @@ void Draw_FilledCircle(SDL_Renderer* renderer, int cx, int cy, int radius)
         int dx = static_cast<int>(sqrt(radius * radius - dy * dy));
         int x1 = cx - dx;
         int x2 = cx + dx;
-        SDL_RenderLine(renderer, x1, cy + dy, x2, cy + dy);
+        SDL_RenderLine(renderer, (float)x1, (float)cy + dy, (float)x2, (float)cy + dy);
     }
 }
 //----------------------------------------------------------

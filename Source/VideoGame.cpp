@@ -39,9 +39,9 @@ VideoGame::VideoGame()
 
 
 	testGao = (GameObject*)Factory::Get().CreateObject("GameObject");
-	testGao->name = "MorphingColor";
-	testGao->position = { 400.0f, 300.0f };
-	Factory::Get().AddComponent("ColorMorphComponent", testGao);
+	testGao->name = "OlympeSystem";
+	//testGao->position = { 400.0f, 300.0f };
+	Factory::Get().AddComponent("OlympeSystem", testGao);
 
 	SYSTEM_LOG << "VideoGame created\n";
 }
@@ -261,7 +261,7 @@ bool VideoGame::SaveGame(int slot) const
         if (!go) continue;
         if (!first) ss << ",\n";
         first = false;
-        ss << go->ToJSON();
+        ss << go->Save();
     }
     ss << "\n  ]\n";
     ss << "}\n";
@@ -345,7 +345,7 @@ bool VideoGame::LoadGame(int slot)
         GameObject* go = dynamic_cast<GameObject*>(o);
         if (go)
         {
-            go->FromJSON(entry);
+            go->Load(entry);
         }
     }
 

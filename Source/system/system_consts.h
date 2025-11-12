@@ -2,6 +2,10 @@
 
 constexpr double k_PI = 3.14159265358979323846;
 
+// Configuration: defaults
+static const int DEFAULT_WINDOW_WIDTH = 1280;
+static const int DEFAULT_WINDOW_HEIGHT = 720;
+
 enum class EventType
 {
     EventType_Default = -1,

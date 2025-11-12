@@ -81,11 +81,8 @@
     <ClCompile Include="source\AI_Npc.cpp">
       <Filter>Fichiers d%27en-tête\AI</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SpriteComponent.cpp">
+    <ClCompile Include="Source\Sprite.cpp">
       <Filter>Fichiers d%27en-tête\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ColorMorphComponent.cpp">
-      <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="source\drawing.h">
       <Filter>Fichiers d%27en-tête</Filter>
@@ -98,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="Source\DataManager.cpp">
       <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OlympeSystem.cpp">
+      <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -209,7 +209,7 @@
     <ClInclude Include="source\AI_Npc.h">
       <Filter>Fichiers d%27en-tête\AI</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SpriteComponent.h">
+    <ClInclude Include="Source\Sprite.h">
       <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClInclude>
     <ClInclude Include="Source\OptionsManager.h">
@@ -218,11 +218,11 @@
     <ClInclude Include="Source\VideoGame.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ColorMorphComponent.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Source\DataManager.h">
       <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OlympeSystem.h">
+      <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -63,8 +63,8 @@ public:
 	void Render() { SYSTEM_LOG << " WARNING GameObject::Render call: the visual component should handling the GameObject rendering (sprite, a,imation etc..) invalid call for GameObject: " << name << " at (" << position.x << ", " << position.y << ")\n"; }
 
     // Serialization to/from JSON (simple implementation)
-    std::string ToJSON() const;
-    bool FromJSON(const std::string& json);
+    std::string Save() const;
+    bool Load(const std::string& json);
 
 protected:
     

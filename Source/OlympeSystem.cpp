@@ -1,4 +1,4 @@
-#include "ColorMorphComponent.h"
+#include "OlympeSystem.h"
 #include "Factory.h"
 #include "GameEngine.h"
 #include <cmath>
@@ -8,10 +8,26 @@
 //#include <SDL3/SDL_image.h>
 #include "drawing.h"
 
-bool ColorMorphComponent::FactoryRegistered = Factory::Get().Register("ColorMorphComponent", ColorMorphComponent::Create);
-ObjectComponent* ColorMorphComponent::Create()
+
+#define NUM_POINTS 500
+#define MIN_PIXELS_PER_SECOND 30  /* move at least this many pixels per second. */
+#define MAX_PIXELS_PER_SECOND 60  /* move this many pixels per second at most. */
+
+/* (track everything as parallel arrays instead of a array of structs,
+   so we can pass the coordinates to the renderer in a single function call.) */
+
+   /* Points are plotted as a set of X and Y coordinates.
+      (0, 0) is the top left of the window, and larger numbers go down
+      and to the right. This isn't how geometry works, but this is pretty
+      standard in 2D graphics. */
+static SDL_FPoint snowpoints[NUM_POINTS];
+static float snowpoint_speeds[NUM_POINTS];
+
+
+bool OlympeSystem::FactoryRegistered = Factory::Get().Register("OlympeSystem", OlympeSystem::Create);
+ObjectComponent* OlympeSystem::Create()
 {
-	return new ColorMorphComponent();
+	return new OlympeSystem();
 }
 
 //---------------------------------------------------------
@@ -21,7 +37,7 @@ static Uint8 LerpColor(Uint8 a, Uint8 b, float t)
     return static_cast<Uint8>(a + (b - a) * t);
 }
 
-ColorMorphComponent::ColorMorphComponent()
+OlympeSystem::OlympeSystem()
 {
     width = GameEngine::screenWidth;
     height = GameEngine::screenHeight;
@@ -31,13 +47,22 @@ ColorMorphComponent::ColorMorphComponent()
     Initialize();
 }
 
-ColorMorphComponent::~ColorMorphComponent()
+OlympeSystem::~OlympeSystem()
 {
     SDL_DestroyTexture(morphTexture);
 }
 
-void ColorMorphComponent::Initialize()
+void OlympeSystem::Initialize()
 {
+    //animation of snow points
+    /* set up the data for a bunch of points. */
+    for (int i = 0; i < SDL_arraysize(snowpoints); i++) {
+        snowpoints[i].x = SDL_randf() * ((float)GameEngine::screenWidth);
+        snowpoints[i].y = SDL_randf() * ((float)GameEngine::screenHeight);
+        snowpoint_speeds[i] = MIN_PIXELS_PER_SECOND + (SDL_randf() * (MAX_PIXELS_PER_SECOND - MIN_PIXELS_PER_SECOND));
+    }
+
+
     // Initialize a few random color points
     points.clear();
     for (int i = 0; i < 4; ++i) {
@@ -69,13 +94,34 @@ void ColorMorphComponent::Initialize()
 	}
 }
 
-void ColorMorphComponent::OnEvent(const Message& msg)
+void OlympeSystem::OnEvent(const Message& msg)
 {
 	// Handle events if needed (e.g., reset colors on specific event)
 }
 
-void ColorMorphComponent::Process()
+void OlympeSystem::Process()
 {
+	// move and animate snow points
+    /* let's move all our points a little for a new frame. */
+    for (int i = 0; i < SDL_arraysize(snowpoints); i++) {
+        const float distance = GameEngine::fDt * snowpoint_speeds[i];
+        snowpoints[i].x += distance;
+        snowpoints[i].y += distance;
+        if ((snowpoints[i].x >= GameEngine::screenWidth) || (snowpoints[i].y >= GameEngine::screenHeight)) {
+            /* off the screen; restart it elsewhere! */
+            if (SDL_rand(2)) {
+                snowpoints[i].x = SDL_randf() * ((float)GameEngine::screenWidth);
+                snowpoints[i].y = 0.0f;
+            }
+            else {
+                snowpoints[i].x = 0.0f;
+                snowpoints[i].y = SDL_randf() * ((float)GameEngine::screenHeight);
+            }
+            snowpoint_speeds[i] = MIN_PIXELS_PER_SECOND + (SDL_randf() * (MAX_PIXELS_PER_SECOND - MIN_PIXELS_PER_SECOND));
+        }
+    }
+
+
     // Slowly animate color positions and hues
     time += fDt * 0.5f;
     for (auto& cp : points) {
@@ -135,13 +181,17 @@ void ColorMorphComponent::Process()
     SDL_SetRenderTarget(GameEngine::renderer, nullptr);
 }
 
-void ColorMorphComponent::Render()
+void OlympeSystem::Render()
 {
+	// render the snow points on top of the morph texture
+    SDL_SetRenderDrawColor(GameEngine::renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+    SDL_RenderPoints(GameEngine::renderer, snowpoints, SDL_arraysize(snowpoints));
+
     // Copy our texture onto the main renderer
     SDL_RenderTexture(GameEngine::renderer, morphTexture, nullptr, nullptr);
 }
 
-void ColorMorphComponent::GenerateGradient()
+void OlympeSystem::GenerateGradient()
 {
     // Fill texture with interpolated colors based on color points
     const int steps = 6;
@@ -156,7 +206,7 @@ void ColorMorphComponent::GenerateGradient()
     }
 }
 
-void ColorMorphComponent::ApplyBlur(int passes)
+void OlympeSystem::ApplyBlur(int passes)
 {
     // Simple blur: multiple passes with semi-transparent overlays
     SDL_SetTextureBlendMode(morphTexture, SDL_BLENDMODE_ADD);

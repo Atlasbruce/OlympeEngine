@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="source\AI_Npc.cpp" />
     <ClCompile Include="Source\AI_Player.cpp" />
-    <ClCompile Include="Source\ColorMorphComponent.cpp" />
+    <ClCompile Include="Source\OlympeSystem.cpp" />
     <ClCompile Include="Source\DataManager.cpp" />
     <ClCompile Include="Source\drawing.cpp" />
     <ClCompile Include="source\drawing.h" />
@@ -32,7 +32,7 @@
     <ClCompile Include="Source\GameState.cpp" />
     <ClCompile Include="Source\OlympeEngine.cpp" />
     <ClCompile Include="source\Player.cpp" />
-    <ClCompile Include="Source\SpriteComponent.cpp" />
+    <ClCompile Include="Source\Sprite.cpp" />
     <ClCompile Include="Source\system\Camera.cpp" />
     <ClCompile Include="Source\system\GameMenu.cpp" />
     <ClCompile Include="Source\system\JoystickManager.cpp" />
@@ -47,7 +47,7 @@
     <ClInclude Include="source\AI_Npc.h" />
     <ClInclude Include="Source\AI_Player.h" />
     <ClInclude Include="Source\CollisionMap.h" />
-    <ClInclude Include="Source\ColorMorphComponent.h" />
+    <ClInclude Include="Source\OlympeSystem.h" />
     <ClInclude Include="Source\DataManager.h" />
     <ClInclude Include="Source\Factory.h" />
     <ClInclude Include="Source\GameEngine.h" />
@@ -68,7 +68,7 @@
     <ClInclude Include="source\resource.h" />
     <ClInclude Include="Source\Sector.h" />
     <ClInclude Include="Source\Serialization.h" />
-    <ClInclude Include="Source\SpriteComponent.h" />
+    <ClInclude Include="Source\Sprite.h" />
     <ClInclude Include="Source\system\Camera.h" />
     <ClInclude Include="Source\system\EventManager.h" />
     <ClInclude Include="Source\system\GameMenu.h" />

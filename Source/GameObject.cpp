@@ -16,28 +16,7 @@ Object* GameObject::Create()
 	return new GameObject();
 }
 
-static std::string escape_json_string(const std::string& s)
-{
-    std::string out;
-    out.reserve(s.size()+4);
-    for (char c : s)
-    {
-        switch (c)
-        {
-            case '\\': out += "\\\\"; break;
-            case '"': out += "\\\""; break;
-            case '\b': out += "\\b"; break;
-            case '\f': out += "\\f"; break;
-            case '\n': out += "\\n"; break;
-            case '\r': out += "\\r"; break;
-            case '\t': out += "\\t"; break;
-            default: out += c; break;
-        }
-    }
-    return out;
-}
-
-std::string GameObject::ToJSON() const
+std::string GameObject::Save() const
 {
     std::ostringstream ss;
     ss << std::fixed << std::setprecision(6);
@@ -54,68 +33,7 @@ std::string GameObject::ToJSON() const
     return ss.str();
 }
 
-// Very small and permissive JSON extractors (not robust but sufficient for simple saved files)
-static bool extract_json_string(const std::string& json, const std::string& key, std::string& out)
-{
-    size_t pos = json.find('"' + key + '"');
-    if (pos == std::string::npos) pos = json.find(key);
-    if (pos == std::string::npos) return false;
-    pos = json.find(':', pos);
-    if (pos == std::string::npos) return false;
-    ++pos;
-    // skip spaces
-    while (pos < json.size() && isspace(static_cast<unsigned char>(json[pos]))) ++pos;
-    if (pos < json.size() && json[pos] == '"') ++pos;
-    size_t start = pos;
-    while (pos < json.size() && json[pos] != '"' && json[pos] != '\n' && json[pos] != '\r') ++pos;
-    if (pos <= start) return false;
-    out = json.substr(start, pos - start);
-    return true;
-}
-
-static bool extract_json_double(const std::string& json, const std::string& key, double& out)
-{
-    size_t pos = json.find('"' + key + '"');
-    if (pos == std::string::npos) pos = json.find(key);
-    if (pos == std::string::npos) return false;
-    pos = json.find(':', pos);
-    if (pos == std::string::npos) return false;
-    ++pos;
-    // skip spaces
-    while (pos < json.size() && isspace(static_cast<unsigned char>(json[pos]))) ++pos;
-    size_t start = pos;
-    // accept digits, +, -, ., e, E
-    while (pos < json.size() && (isdigit(static_cast<unsigned char>(json[pos])) || json[pos] == '+' || json[pos] == '-' || json[pos] == '.' || json[pos] == 'e' || json[pos] == 'E')) ++pos;
-    if (pos <= start) return false;
-    try {
-        out = std::stod(json.substr(start, pos - start));
-        return true;
-    } catch(...) { return false; }
-}
-
-static bool extract_json_int(const std::string& json, const std::string& key, int& out)
-{
-    double d;
-    if (!extract_json_double(json, key, d)) return false;
-    out = static_cast<int>(d);
-    return true;
-}
-
-static bool extract_json_bool(const std::string& json, const std::string& key, bool& out)
-{
-    size_t pos = json.find('"' + key + '"');
-    if (pos == std::string::npos) pos = json.find(key);
-    if (pos == std::string::npos) return false;
-    pos = json.find(':', pos);
-    if (pos == std::string::npos) return false;
-    ++pos;
-    while (pos < json.size() && isspace(static_cast<unsigned char>(json[pos]))) ++pos;
-    if (json.compare(pos, 4, "true") == 0) { out = true; return true; }
-    if (json.compare(pos, 5, "false") == 0) { out = false; return true; }
-    return false;
-}
-
-bool GameObject::FromJSON(const std::string& json)
+bool GameObject::Load(const std::string& json)
 {
     std::string s;
     if (extract_json_string(json, "name", s)) name = s;

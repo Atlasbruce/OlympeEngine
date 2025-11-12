@@ -1,7 +1,7 @@
 /*
 purpose: This file contains functions related to drawing shapes and images on the screen.
 */
-
+#pragma once
 #include <SDL3/SDL.h>
 
 

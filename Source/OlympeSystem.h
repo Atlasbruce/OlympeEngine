@@ -3,14 +3,14 @@
 #include <SDL3/SDL.h>
 #include <vector>
 
-class ColorMorphComponent : public ObjectComponent
+class OlympeSystem : public ObjectComponent
 {
 	public:
 	static bool FactoryRegistered;
 	static ObjectComponent* Create();
 
-	ColorMorphComponent();
-	virtual ~ColorMorphComponent();
+	OlympeSystem();
+	virtual ~OlympeSystem();
 
 	virtual ComponentType GetComponentType() const override { return ComponentType::Visual; }
 

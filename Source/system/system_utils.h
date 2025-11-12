@@ -14,6 +14,7 @@
 #include <mutex>
 #include <iostream>
 #include <string>
+#include "system_consts.h"
 
 namespace SystemUtils
 {
@@ -138,3 +139,123 @@ namespace SystemUtils
 
 // Convenience macro
 #define SYSTEM_LOG ::SystemUtils::Logger()
+
+
+static std::string escape_json_string(const std::string& s)
+{
+	std::string out;
+	out.reserve(s.size() + 4);
+	for (char c : s)
+	{
+		switch (c)
+		{
+		case '\\': out += "\\\\"; break;
+		case '"': out += "\\\""; break;
+		case '\b': out += "\\b"; break;
+		case '\f': out += "\\f"; break;
+		case '\n': out += "\\n"; break;
+		case '\r': out += "\\r"; break;
+		case '\t': out += "\\t"; break;
+		default: out += c; break;
+		}
+	}
+	return out;
+}
+// Very small and permissive JSON extractors (not robust but sufficient for simple saved files)
+static bool extract_json_string(const std::string& json, const std::string& key, std::string& out)
+{
+	size_t pos = json.find('"' + key + '"');
+	if (pos == std::string::npos) pos = json.find(key);
+	if (pos == std::string::npos) return false;
+	pos = json.find(':', pos);
+	if (pos == std::string::npos) return false;
+	++pos;
+	// skip spaces
+	while (pos < json.size() && isspace(static_cast<unsigned char>(json[pos]))) ++pos;
+	if (pos < json.size() && json[pos] == '"') ++pos;
+	size_t start = pos;
+	while (pos < json.size() && json[pos] != '"' && json[pos] != '\n' && json[pos] != '\r') ++pos;
+	if (pos <= start) return false;
+	out = json.substr(start, pos - start);
+	return true;
+}
+
+static bool extract_json_double(const std::string& json, const std::string& key, double& out)
+{
+	size_t pos = json.find('"' + key + '"');
+	if (pos == std::string::npos) pos = json.find(key);
+	if (pos == std::string::npos) return false;
+	pos = json.find(':', pos);
+	if (pos == std::string::npos) return false;
+	++pos;
+	// skip spaces
+	while (pos < json.size() && isspace(static_cast<unsigned char>(json[pos]))) ++pos;
+	size_t start = pos;
+	// accept digits, +, -, ., e, E
+	while (pos < json.size() && (isdigit(static_cast<unsigned char>(json[pos])) || json[pos] == '+' || json[pos] == '-' || json[pos] == '.' || json[pos] == 'e' || json[pos] == 'E')) ++pos;
+	if (pos <= start) return false;
+	try {
+		out = std::stod(json.substr(start, pos - start));
+		return true;
+	}
+	catch (...) { return false; }
+}
+
+static bool extract_json_int(const std::string& json, const std::string& key, int& out)
+{
+	double d;
+	if (!extract_json_double(json, key, d)) return false;
+	out = static_cast<int>(d);
+	return true;
+}
+
+static bool extract_json_bool(const std::string& json, const std::string& key, bool& out)
+{
+	size_t pos = json.find('"' + key + '"');
+	if (pos == std::string::npos) pos = json.find(key);
+	if (pos == std::string::npos) return false;
+	pos = json.find(':', pos);
+	if (pos == std::string::npos) return false;
+	++pos;
+	while (pos < json.size() && isspace(static_cast<unsigned char>(json[pos]))) ++pos;
+	if (json.compare(pos, 4, "true") == 0) { out = true; return true; }
+	if (json.compare(pos, 5, "false") == 0) { out = false; return true; }
+	return false;
+}
+//-------------------------------------------------------------
+// Load configuration from JSON file (simple parser)
+// Olympe GameEngine Loader - looks for screen_width and screen_height keys
+static void LoadConfigJSON(const char* filename, int& outW, int& outH)
+{
+	outW = DEFAULT_WINDOW_WIDTH;
+	outH = DEFAULT_WINDOW_HEIGHT;
+
+	std::ifstream ifs(filename);
+	if (!ifs) {
+		SYSTEM_LOG << "Config file '" << filename << "' not found — using defaults " << outW << "x" << outH << "\n";
+		return;
+	}
+
+	std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+
+	int w = outW;
+	int h = outH;
+
+	// try multiple possible keys and tolerate a common misspelling
+	if (extract_json_int(content, "screen_width", w) ||
+		extract_json_int(content, "screenWidth", w) ||
+		extract_json_int(content, "width", w)) {
+		// ok
+	}
+	if (extract_json_int(content, "screen_height", h) ||
+		extract_json_int(content, "screenHeight", h) ||
+		extract_json_int(content, "screen_heigth", h) || // tolerate misspelling
+		extract_json_int(content, "height", h)) {
+		// ok
+	}
+
+	if (w > 0) outW = w;
+	if (h > 0) outH = h;
+
+	SYSTEM_LOG << "Config loaded from '" << filename << "': " << outW << "x" << outH << "\n";
+}
