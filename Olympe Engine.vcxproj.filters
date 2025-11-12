@@ -31,11 +31,23 @@
     <Filter Include="Fichiers d%27en-tête\GameSystem">
       <UniqueIdentifier>{993d385c-c1cc-447d-b603-55ce21173592}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fichiers d%27en-tête\Helpers">
+      <UniqueIdentifier>{d0159c18-c274-43b1-809e-3c469963281f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Rendering">
+      <UniqueIdentifier>{5c8281db-50ab-4825-b865-0c1309b369f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Inputs">
+      <UniqueIdentifier>{841c4f31-7cef-4e3d-987b-76f3d68a8599}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Data">
+      <UniqueIdentifier>{4affccaa-0dff-45a8-a975-528c87ffd116}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Messages">
+      <UniqueIdentifier>{9299da2e-ab55-41b2-ac58-56896f290d5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\system\SystemMenu.cpp">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GameEngine.cpp">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClCompile>
@@ -57,21 +69,6 @@
     <ClCompile Include="Source\system\GameMenu.cpp">
       <Filter>Fichiers d%27en-tête\GameSystem</Filter>
     </ClCompile>
-    <ClCompile Include="Source\system\Camera.cpp">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\system\JoystickManager.cpp">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\system\KeyboardManager.cpp">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\system\MouseManager.cpp">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\system\Viewport.cpp">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClCompile>
     <ClCompile Include="Source\GameState.cpp">
       <Filter>Fichiers d%27en-tête\GameSystem</Filter>
     </ClCompile>
@@ -84,29 +81,41 @@
     <ClCompile Include="Source\Sprite.cpp">
       <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClCompile>
-    <ClCompile Include="source\drawing.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\drawing.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="source\VideoGame.cpp">
       <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\DataManager.cpp">
-      <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="Source\OlympeSystem.cpp">
       <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClCompile>
+    <ClCompile Include="source\drawing.h">
+      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\drawing.cpp">
+      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\Camera.cpp">
+      <Filter>Fichiers d%27en-tête\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\SystemMenu.cpp">
+      <Filter>Fichiers d%27en-tête\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\Viewport.cpp">
+      <Filter>Fichiers d%27en-tête\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\MouseManager.cpp">
+      <Filter>Fichiers d%27en-tête\Inputs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\KeyboardManager.cpp">
+      <Filter>Fichiers d%27en-tête\Inputs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\system\JoystickManager.cpp">
+      <Filter>Fichiers d%27en-tête\Inputs</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DataManager.cpp">
+      <Filter>Fichiers d%27en-tête\Data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\system\EventManager.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Factory.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
     <ClInclude Include="Source\GameEngine.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
@@ -119,26 +128,14 @@
     <ClInclude Include="Source\Npc.h">
       <Filter>Fichiers d%27en-tête\Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Source\system\message.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\InputsManager.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ObjectComponent.h">
       <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClInclude>
     <ClInclude Include="source\system\system_consts.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
-    <ClInclude Include="Source\system\SystemMenu.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
     <ClInclude Include="Source\World.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Serialization.h">
-      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="Source\AI_Player.h">
       <Filter>Fichiers d%27en-tête\AI</Filter>
@@ -148,27 +145,6 @@
     </ClInclude>
     <ClInclude Include="Source\system\GameMenu.h">
       <Filter>Fichiers d%27en-tête\GameSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\system\Camera.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\system\JoystickManager.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\third_party\nlohmann\json.hpp">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\system\KeyboardManager.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\system\MouseManager.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\system\system_utils.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\system\Viewport.h">
-      <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\GameRules.h">
       <Filter>Fichiers d%27en-tête\GameSystem</Filter>
@@ -218,11 +194,50 @@
     <ClInclude Include="Source\VideoGame.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
-    <ClInclude Include="Source\DataManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Source\OlympeSystem.h">
       <Filter>Fichiers d%27en-tête\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Factory.h">
+      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\third_party\nlohmann\json.hpp">
+      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\system\system_utils.h">
+      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Serialization.h">
+      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\system\Camera.h">
+      <Filter>Fichiers d%27en-tête\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\system\SystemMenu.h">
+      <Filter>Fichiers d%27en-tête\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\system\Viewport.h">
+      <Filter>Fichiers d%27en-tête\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\system\MouseManager.h">
+      <Filter>Fichiers d%27en-tête\Inputs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\system\KeyboardManager.h">
+      <Filter>Fichiers d%27en-tête\Inputs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\system\JoystickManager.h">
+      <Filter>Fichiers d%27en-tête\Inputs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\InputsManager.h">
+      <Filter>Fichiers d%27en-tête\Inputs</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DataManager.h">
+      <Filter>Fichiers d%27en-tête\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\system\EventManager.h">
+      <Filter>Fichiers d%27en-tête\Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\system\message.h">
+      <Filter>Fichiers d%27en-tête\Messages</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

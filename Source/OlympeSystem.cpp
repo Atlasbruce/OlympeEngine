@@ -7,6 +7,7 @@
 #include <SDL3/SDL_surface.h>
 //#include <SDL3/SDL_image.h>
 #include "drawing.h"
+#include "DataManager.h"
 
 
 #define NUM_POINTS 500
@@ -73,24 +74,30 @@ void OlympeSystem::Initialize()
         points.push_back(cp);
     }
 
-    SDL_Surface *Olympe_Logo = SDL_LoadBMP(".\\Resources\\olympe_logo.bmp");
-    if (Olympe_Logo) 
-    {
-        SDL_Texture* logoTexture = SDL_CreateTextureFromSurface(GameEngine::renderer, Olympe_Logo);
-        SDL_DestroySurface(Olympe_Logo);
+ //   SDL_Surface *Olympe_Logo = SDL_LoadBMP(".\\Resources\\olympe_logo.bmp");
+ //   if (Olympe_Logo) 
+ //   {
+ //       SDL_Texture* logoTexture = SDL_CreateTextureFromSurface(GameEngine::renderer, Olympe_Logo);
+ //       SDL_DestroySurface(Olympe_Logo);
 
-        if (!logoTexture) 
-        {
-            SYSTEM_LOG << "Failed to create logo texture from surface: " << SDL_GetError() << "\n";
-        }
-        else 
-        {
-			this->logoTexture = logoTexture;
-        }
-	}
-    else 
+ //       if (!logoTexture) 
+ //       {
+ //           SYSTEM_LOG << "Failed to create logo texture from surface: " << SDL_GetError() << "\n";
+ //       }
+ //       else 
+ //       {
+	//		this->logoTexture = logoTexture;
+ //       }
+	//}
+ //   else 
+ //   {
+ //       SYSTEM_LOG << "Failed to load logo image: " << SDL_GetError() << "\n";
+	//}
+
+	logoTexture = DataManager::Get().GetSprite("Olympe_Logo", "Resources/olympe_logo.png", ResourceCategory::GameObject);
+    if (!logoTexture) 
     {
-        SYSTEM_LOG << "Failed to load logo image: " << SDL_GetError() << "\n";
+        SYSTEM_LOG << "Failed to load logo texture from DataManager\n";
 	}
 }
 
@@ -133,9 +140,10 @@ void OlympeSystem::Process()
     }
 /**/
 
+     
     // Set the texture as render target
     SDL_SetRenderTarget(GameEngine::renderer, morphTexture);
-
+/*
 	//we can Draw on the texture now
     SDL_FColor mColor = { 1.f, 1.f, 1.f, 1.f };
     SDL_FPoint mPos = { width * 0.5f, height * 0.5f };
@@ -164,16 +172,17 @@ void OlympeSystem::Process()
 
     SDL_SetRenderDrawColor(GameEngine::renderer, 0x00, 0x80, 0xFF, 0xFF);
     Draw_FilledCircle(GameEngine::renderer, width / 2, height / 2, width / 20);
+    
 
     //GenerateGradient();
     //ApplyBlur(2);
-
+    /**/
     // Render the logo onto the morph texture
-    SDL_SetTextureBlendMode(logoTexture, SDL_BLENDMODE_BLEND);
+    //SDL_SetTextureBlendMode(logoTexture, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(GameEngine::renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_SetTextureAlphaMod(logoTexture, 200);
-    SDL_FRect destRect = { (width - 200.f) / 2.f, (height - 100.f) / 2.f, 200.f, 100.f };
-    SDL_RenderTexture(GameEngine::renderer, logoTexture, nullptr, &destRect);
+  //  SDL_SetTextureAlphaMod(logoTexture, 200);
+    SDL_FRect destRect = { (width - 200.f) / 2.f, (height - 100.f) / 2.f, 300.f, 121.f };
+	SDL_RenderTexture(GameEngine::renderer, logoTexture, nullptr, &destRect);
 
 
 

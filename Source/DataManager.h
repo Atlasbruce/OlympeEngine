@@ -90,8 +90,11 @@ public:
 
     // Texture loading / retrieval / release
     bool LoadTexture(const std::string& id, const std::string& path, ResourceCategory category = ResourceCategory::System);
+	bool LoadSprite(const std::string& id, const std::string& path, ResourceCategory category = ResourceCategory::GameObject);
     SDL_Texture* GetTexture(const std::string& id) const;
+	SDL_Texture* GetSprite(const std::string& id, const std::string& path, ResourceCategory category = ResourceCategory::GameObject);
     bool ReleaseResource(const std::string& id);
+
 
     // Resource helpers
     void UnloadAll();

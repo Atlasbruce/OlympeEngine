@@ -26,6 +26,7 @@ Notes:
 #include <sstream>
 #include <algorithm>
 #include <cerrno>
+#include "sdl3_image/sdl_image.h"
 
 #ifdef _WIN32
 #include <direct.h>
@@ -76,10 +77,11 @@ bool DataManager::LoadTexture(const std::string& id, const std::string& path, Re
     }
 
     // try to load BMP surface first (no external deps required)
-    SDL_Surface* surf = SDL_LoadBMP(path.c_str());
+    SDL_Surface* surf = IMG_Load(path.c_str()); //SDL_LoadBMP(path.c_str());
+
     if (!surf)
     {
-        SYSTEM_LOG << "DataManager: SDL_LoadBMP failed for '" << path << "' : " << SDL_GetError() << "\n";
+        SYSTEM_LOG << "DataManager: IMG_Load failed for '" << path << "' : " << SDL_GetError() << "\n";
         return false;
     }
 
@@ -123,6 +125,11 @@ bool DataManager::LoadTexture(const std::string& id, const std::string& path, Re
     return true;
 }
 
+bool DataManager::LoadSprite(const std::string& id, const std::string& path, ResourceCategory category)
+{
+	return LoadTexture(id, path, category);
+}
+
 SDL_Texture* DataManager::GetTexture(const std::string& id) const
 {
     std::lock_guard<std::mutex> lock(m_mutex_);
@@ -154,6 +161,19 @@ SDL_Texture* DataManager::GetTexture(const std::string& id) const
         }
     }
 
+    return nullptr;
+}
+
+SDL_Texture* DataManager::GetSprite(const std::string& id, const std::string& path, ResourceCategory category)
+{
+    // Try to get existing sprite
+    SDL_Texture* tex = GetTexture(id);
+    if (tex) return tex;
+    // Not found, try to load it
+    if (LoadSprite(id, path, category))
+    {
+        return GetTexture(id);
+    }
     return nullptr;
 }
 
