@@ -80,7 +80,6 @@ private:
 
     void CreatePanel(const std::string& id, const std::string& title);
 
-
     std::unordered_map<std::string, Panel> m_panels_;
     std::vector<std::string> m_pendingLogs_; // logs received before the UI control exists
 
