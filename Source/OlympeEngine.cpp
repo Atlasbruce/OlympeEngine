@@ -152,25 +152,6 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     /* figure out how long it's been since the last frame. */
     GameEngine::Get().Process();
 
-    ///* let's move all our points a little for a new frame. */
-    //for (int i = 0; i < SDL_arraysize(points); i++) {
-    //    const float distance = GameEngine::fDt * point_speeds[i];
-    //    points[i].x += distance;
-    //    points[i].y += distance;
-    //    if ((points[i].x >= GameEngine::screenWidth) || (points[i].y >= GameEngine::screenHeight)) {
-    //        /* off the screen; restart it elsewhere! */
-    //        if (SDL_rand(2)) {
-    //            points[i].x = SDL_randf() * ((float)GameEngine::screenWidth);
-    //            points[i].y = 0.0f;
-    //        }
-    //        else {
-    //            points[i].x = 0.0f;
-    //            points[i].y = SDL_randf() * ((float)GameEngine::screenHeight);
-    //        }
-    //        point_speeds[i] = MIN_PIXELS_PER_SECOND + (SDL_randf() * (MAX_PIXELS_PER_SECOND - MIN_PIXELS_PER_SECOND));
-    //    }
-    //}
-
     // If game state requests quit, end the application loop
     if (GameStateManager::GetState() == GameState::GameState_Quit)
     {
