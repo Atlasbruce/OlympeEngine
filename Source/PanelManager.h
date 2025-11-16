@@ -27,6 +27,8 @@ Notes:
 #include <windows.h>
 #endif
 
+#include <SDL3/SDL.h>
+
 class PanelManager : public Object
 {
 public:
@@ -52,6 +54,12 @@ public:
     void HidePanel(const std::string& id);
     bool IsPanelVisible(const std::string& id) const;
 
+    // Append text to the log window (thread-safe)
+    void AppendLog(const std::string& text);
+
+    // Attach a menu to the SDL main window (Windows only)
+    void AttachToSDLWindow(SDL_Window* sdlWindow);
+
     // Process internal tasks (on Windows: pump messages for tool windows)
     void Process();
 
@@ -63,6 +71,7 @@ private:
         bool visible = false;
 #ifdef _WIN32
         HWND hwnd = nullptr;
+        HWND hwndChild = nullptr; // child control (e.g. edit for log)
 #else
         void* hwnd = nullptr; // stub
 #endif
@@ -70,11 +79,22 @@ private:
 
     void CreatePanel(const std::string& id, const std::string& title);
 
-    mutable std::mutex m_mutex_;
+   // mutable std::mutex m_mutex_;
     std::unordered_map<std::string, Panel> m_panels_;
 
 #ifdef _WIN32
     ATOM m_wndClassAtom = 0;
+    HWND m_mainHwnd = nullptr;
+    HMENU m_mainMenu = nullptr;
+
     static LRESULT CALLBACK PanelWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+    // menu command IDs
+    enum MenuIDs
+    {
+        IDM_PANEL_LOG = 40001,
+        IDM_PANEL_INSPECTOR = 40002,
+        IDM_PANEL_TREE = 40003
+    };
 #endif
 };
