@@ -5,6 +5,7 @@
 #include "VideoGame.h"
 #include "OptionsManager.h"
 #include "DataManager.h"
+#include "PanelManager.h"
 
 float GameEngine::fDt = 0.0f;
 SDL_Renderer* GameEngine::renderer = nullptr;
@@ -19,4 +20,14 @@ void GameEngine::Initialize()
 	ptr_videogame = &VideoGame::GetInstance();
 	ptr_optionsmanager = &OptionsManager::GetInstance();
 	ptr_datamanager = &DataManager::GetInstance();
+
+	// Preload system resources from olymp.ini
+	DataManager::Get().PreloadSystemResources("./olympe.ini");
+
+	// Create and initialize panel manager
+	PanelManager::Get().Initialize();
+	PanelManager::Get().CreateLogWindow();
+	PanelManager::Get().CreateObjectInspectorWindow();
+	PanelManager::Get().CreateTreeViewWindow();
+	// By default keep them hidden; can be shown by the UI later
 }

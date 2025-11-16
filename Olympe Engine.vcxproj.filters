@@ -114,6 +114,9 @@
     <ClCompile Include="Source\DataManager.cpp">
       <Filter>Fichiers d%27en-tête\Data</Filter>
     </ClCompile>
+    <ClCompile Include="Source\PanelManager.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\GameEngine.h">
@@ -238,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="Source\system\message.h">
       <Filter>Fichiers d%27en-tête\Messages</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PanelManager.h">
+      <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

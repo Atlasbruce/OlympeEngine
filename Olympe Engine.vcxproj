@@ -31,6 +31,7 @@
     <ClCompile Include="Source\ObjectComponent.cpp" />
     <ClCompile Include="Source\GameState.cpp" />
     <ClCompile Include="Source\OlympeEngine.cpp" />
+    <ClCompile Include="Source\PanelManager.cpp" />
     <ClCompile Include="source\Player.cpp" />
     <ClCompile Include="Source\Sprite.cpp" />
     <ClCompile Include="Source\system\Camera.cpp" />
@@ -62,6 +63,7 @@
     <ClInclude Include="Source\Object.h" />
     <ClInclude Include="Source\Objective.h" />
     <ClInclude Include="Source\OptionsManager.h" />
+    <ClInclude Include="Source\PanelManager.h" />
     <ClInclude Include="Source\Player.h" />
     <ClInclude Include="Source\Quest.h" />
     <ClInclude Include="Source\QuestManager.h" />
