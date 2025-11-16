@@ -58,6 +58,8 @@ void AI_Player::Process()
     //m_posY += vy * fDt;
     gao->position.x += vx * fDt;
     gao->position.y += vy * fDt;
+
+	SYSTEM_LOG << "AI_Player::Process: Moving player to (" << gao->position.x << ", " << gao->position.y << ")\n";
 }
 
 void AI_Player::OnEvent(const Message& msg)

@@ -22,6 +22,7 @@ Notes:
 #include <string>
 #include <unordered_map>
 #include <mutex>
+#include <vector>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -79,8 +80,9 @@ private:
 
     void CreatePanel(const std::string& id, const std::string& title);
 
-   // mutable std::mutex m_mutex_;
+
     std::unordered_map<std::string, Panel> m_panels_;
+    std::vector<std::string> m_pendingLogs_; // logs received before the UI control exists
 
 #ifdef _WIN32
     ATOM m_wndClassAtom = 0;
