@@ -125,17 +125,27 @@ namespace SystemUtils
         std::string buffer_;
     };
 
+    // Global accessors for the logger instance and init flag
+    inline TeeStream& GetGlobalTeeStream()
+    {
+        static TeeStream s_stream;
+        return s_stream;
+    }
+
+    inline bool& GetLoggerInitializedFlag()
+    {
+        static bool s_inited = false;
+        return s_inited;
+    }
+
     //----------------------------------------------------------------------------------
     // Initialize the global logger. Returns true if file opened successfully (or already initialized).
     inline bool InitSystemLogger(const std::string& filename = "olympe.log")
     {
-        // static locals ensure single instance across translation units
-        static std::unique_ptr<std::ofstream> s_file;
-        static std::unique_ptr<TeeStream> s_stream;
-        static TeeStream*& s_instance = *([]()->TeeStream**{ static TeeStream* p = nullptr; return &p; })();
-        static std::unique_ptr<PanelStreamBuf> s_panel_buf;
+        if (GetLoggerInitializedFlag()) return true;
 
-        if (s_stream) return true; // already initialized
+        static std::unique_ptr<std::ofstream> s_file;
+        static std::unique_ptr<PanelStreamBuf> s_panel_buf;
 
         s_file.reset(new std::ofstream(filename.c_str(), std::ios::app));
         if (!s_file->is_open())
@@ -144,45 +154,41 @@ namespace SystemUtils
             s_file.reset();
         }
 
-        s_stream.reset(new TeeStream());
-        s_stream->addBuf(std::cout.rdbuf());
-        s_stream->addBuf(std::clog.rdbuf());
-        if (s_file) s_stream->addBuf(s_file->rdbuf());
+        // add buffers to global tee stream
+        TeeStream& g = GetGlobalTeeStream();
+        g.addBuf(std::cout.rdbuf());
+        g.addBuf(std::clog.rdbuf());
+        if (s_file) g.addBuf(s_file->rdbuf());
 
-        // add panel stream buffer so log lines are forwarded to the UI log window
         s_panel_buf.reset(new PanelStreamBuf());
-        s_stream->addBuf(s_panel_buf.get());
+        g.addBuf(s_panel_buf.get());
 
-        s_instance = s_stream.get();
+        GetLoggerInitializedFlag() = true;
         return true;
     }
     //----------------------------------------------------------------------------------
     // Shutdown logger (close file and reset instances)
     inline void ShutdownSystemLogger()
     {
-        static std::unique_ptr<std::ofstream>* s_file_ptr = nullptr;
-        // access the same statics as Init via local static trick
-        // Note: we only need to close the file; stream objects will be destroyed on program exit
-        // We'll locate the file by recreating a static unique in Init's scope is not trivial here,
-        // so simply flush cout/clog. The file ofstream will be closed automatically at exit.
+        // flush streams
         std::fflush(nullptr);
+        GetLoggerInitializedFlag() = false;
     }
     //----------------------------------------------------------------------------------
-    // Get the logger stream. If not initialized, returns std::cout.
+    // Get the logger stream. If not initialized, returns std::clog.
     inline std::ostream& Logger()
     {
-        // access the instance pointer created in InitSystemLogger
-        static TeeStream*& s_instance = *([]()->TeeStream**{ static TeeStream* p = nullptr; return &p; })();
-        if (s_instance) 
-            return *s_instance;
-        else
-            return std::clog;
+        if (GetLoggerInitializedFlag()) return GetGlobalTeeStream();
+        return std::clog;
      }
 }
 
 // Convenience macro
 #define SYSTEM_LOG ::SystemUtils::Logger()
 
+
+//-------------------------------------------------------------
+// Simple JSON string escaper and extractor (not a full JSON parser)
 
 static std::string escape_json_string(const std::string& s)
 {
