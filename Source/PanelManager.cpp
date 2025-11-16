@@ -25,7 +25,7 @@ Notes:
 PanelManager::PanelManager()
 {
     name = "PanelManager";
-    //SYSTEM_LOG << "PanelManager created\n";
+	//SYSTEM_LOG << "PanelManager created\n"; // do not log too early the panel log window may not be created yet
 }
 
 PanelManager::~PanelManager()
