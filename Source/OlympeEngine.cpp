@@ -22,7 +22,6 @@
 #include "videogame.h"
 #include "DataManager.h"
 #include "system/system_utils.h"
-//#include "system/system_consts.h"
 
 #include <fstream>
 #include <string>
@@ -56,13 +55,6 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
         return SDL_APP_FAILURE;
     }
     SDL_SetRenderLogicalPresentation(renderer, GameEngine::screenWidth, GameEngine::screenHeight, SDL_LOGICAL_PRESENTATION_LETTERBOX);
-
-    ///* set up the data for a bunch of points. */
-    //for (i = 0; i < SDL_arraysize(points); i++) {
-    //    points[i].x = SDL_randf() * ((float)GameEngine::screenWidth);
-    //    points[i].y = SDL_randf() * ((float)GameEngine::screenHeight);
-    //    point_speeds[i] = MIN_PIXELS_PER_SECOND + (SDL_randf() * (MAX_PIXELS_PER_SECOND - MIN_PIXELS_PER_SECOND));
-    //}
 
     last_time = SDL_GetTicks();
     SYSTEM_LOG << "----------- OLYMPE ENGINE V2 ------------" << endl;
@@ -166,49 +158,6 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     /* as you can see from this, rendering draws over whatever was drawn before it. */
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
     SDL_RenderClear(renderer);  /* start with a blank canvas. */
-
-  /*  // Multi-viewport rendering: for each viewport, set SDL viewport and draw scene
-    const auto& rects = Viewport::Get().GetViewRects();
-    const auto& players = Viewport::Get().GetPlayers();
-
-    if (rects.empty())
-    {
-        // fallback single full render
-        SDL_SetRenderViewport(renderer, nullptr);
-        Camera::Get().Apply(renderer);
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-        SDL_RenderPoints(renderer, points, SDL_arraysize(points));
-    }
-    else
-    {
-        // for each viewport: transform points according to the camera assigned to the player (if any)
-        for (size_t vi = 0; vi < rects.size(); ++vi)
-        {
-			const SDL_Rect vr = { (int)rects[vi].x, (int)rects[vi].y, (int)rects[vi].w, (int)rects[vi].h };
-            SDL_SetRenderViewport(renderer, &vr);
-
-            short playerID = 0;
-            if (vi < players.size()) playerID = players[vi];
-
-            auto cam = Camera::Get().GetCameraForPlayer(playerID);
-
-            // transform points to camera space (top-left world coordinates stored in cam.x/cam.y)
-            static SDL_FPoint transformed[NUM_POINTS];
-            for (int p = 0; p < NUM_POINTS; ++p)
-            {
-                float tx = (points[p].x - cam.x) * cam.zoom; // apply zoom
-                float ty = (points[p].y - cam.y) * cam.zoom;
-                transformed[p].x = tx;
-                transformed[p].y = ty;
-            }
-
-            SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
-            SDL_RenderPoints(renderer, transformed, SDL_arraysize(points));
-        }
-
-        // reset viewport to full for any UI overlays
-        SDL_SetRenderViewport(renderer, nullptr);
-    }/**/
 
     World::Get().Render();
 
