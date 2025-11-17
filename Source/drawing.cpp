@@ -5,6 +5,26 @@
 // Portable pi definition for C++14 (avoids M_PI reliance)
 static const float PI = static_cast<float>(std::acos(-1.0));
 
+// Pre-calculated hexagon vertices (unit circle) for performance optimization
+// These are the normalized positions for a regular hexagon
+static const float HEXAGON_COS_ANGLES[6] = {
+    1.0f,           // 0°
+    0.5f,           // 60°
+    -0.5f,          // 120°
+    -1.0f,          // 180°
+    -0.5f,          // 240°
+    0.5f            // 300°
+};
+
+static const float HEXAGON_SIN_ANGLES[6] = {
+    0.0f,           // 0°
+    0.866025404f,   // 60° (sqrt(3)/2)
+    0.866025404f,   // 120°
+    0.0f,           // 180°
+    -0.866025404f,  // 240°
+    -0.866025404f   // 300°
+};
+
 // Color conversion helpers
 static inline SDL_FColor ToFColor(const SDL_Color& c)
 {
@@ -63,11 +83,17 @@ void Draw_Circle(SDL_Renderer* renderer, int cx, int cy, int radius)
 }
 //----------------------------------------------------------
 // Draws a filled circle using horizontal scanlines
+// Optimized: use integer arithmetic to avoid sqrt in loop
 void Draw_FilledCircle(SDL_Renderer* renderer, int cx, int cy, int radius)
 {
+    int r2 = radius * radius;
     for (int dy = -radius; dy <= radius; ++dy)
     {
-        int dx = static_cast<int>(sqrt(radius * radius - dy * dy));
+        // Use integer arithmetic: dx^2 = r^2 - dy^2
+        int dy2 = dy * dy;
+        int dx2 = r2 - dy2;
+        // Only compute sqrt once per scanline
+        int dx = static_cast<int>(std::sqrt(static_cast<float>(dx2)));
         int x1 = cx - dx;
         int x2 = cx + dx;
         SDL_RenderLine(renderer, (float)x1, (float)cy + dy, (float)x2, (float)cy + dy);
@@ -121,18 +147,17 @@ void Draw_FilledHexagon(SDL_Renderer* renderer,
     vertices[0].color = color;
     vertices[0].tex_coord = { 0, 0 };
 
-    // Calcul des sommets sur le cercle
+    // Calcul des sommets sur le cercle avec valeurs pré-calculées
     for (int i = 0; i < numSides; ++i) {
-        float angle = (float)i / numSides * 2.0f * PI;
         vertices[i + 1].position = {
-            center.x + radius * std::cosf(angle),
-            center.y + radius * std::sinf(angle)
+            center.x + radius * HEXAGON_COS_ANGLES[i],
+            center.y + radius * HEXAGON_SIN_ANGLES[i]
         };
         vertices[i + 1].color = color;
         vertices[i + 1].tex_coord = { 0, 0 };
     }
 
-    // Cr�e 6 triangles reliant le centre et les sommets du bord
+    // Cr�e 6 triangles reliant le centre et les sommets du bord
     for (int i = 0; i < numSides; ++i) {
         int next = (i + 1) % numSides;
         indices[i * 3 + 0] = 0;           // centre
@@ -140,7 +165,7 @@ void Draw_FilledHexagon(SDL_Renderer* renderer,
         indices[i * 3 + 2] = next + 1;    // sommet suivant
     }
 
-    // Rendu de la g�om�trie
+    // Rendu de la g�om�trie
     SDL_RenderGeometry(renderer, nullptr, vertices, numSides + 1, indices, numSides * 3);
 }
 //----------------------------------------------------------
@@ -149,10 +174,10 @@ void Draw_Hexagon(SDL_Renderer* renderer, SDL_FPoint center, float radius, SDL_C
 {
     const int numSides = 6;
     SDL_FPoint verts[numSides];
+    // Use pre-calculated trig values for performance
     for (int i = 0; i < numSides; ++i) {
-        float angle = (float)i / numSides * 2.0f * PI;
-        verts[i].x = center.x + radius * std::cosf(angle);
-        verts[i].y = center.y + radius * std::sinf(angle);
+        verts[i].x = center.x + radius * HEXAGON_COS_ANGLES[i];
+        verts[i].y = center.y + radius * HEXAGON_SIN_ANGLES[i];
     }
 
     // Apply color

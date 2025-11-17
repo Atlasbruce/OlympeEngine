@@ -233,6 +233,8 @@ std::vector<std::string> DataManager::ListResourcesByType(ResourceType type) con
 {
     std::vector<std::string> out;
     std::lock_guard<std::mutex> lock(m_mutex_);
+    // Reserve capacity to avoid reallocations
+    out.reserve(m_resources_.size());
     for (const auto& kv : m_resources_)
     {
         if (kv.second->type == type) out.push_back(kv.first);
@@ -244,6 +246,8 @@ std::vector<std::string> DataManager::ListResourcesByCategory(ResourceCategory c
 {
     std::vector<std::string> out;
     std::lock_guard<std::mutex> lock(m_mutex_);
+    // Reserve capacity to avoid reallocations
+    out.reserve(m_resources_.size());
     for (const auto& kv : m_resources_)
     {
         if (kv.second->category == category) out.push_back(kv.first);
