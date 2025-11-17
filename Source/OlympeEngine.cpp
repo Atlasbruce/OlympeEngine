@@ -46,8 +46,6 @@ using namespace std;
  /* We will use this renderer to draw into this window every frame. */
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
-//static Uint64 last_time = 0;
-
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
@@ -75,7 +73,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     }
     SDL_SetRenderLogicalPresentation(renderer, GameEngine::screenWidth, GameEngine::screenHeight, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
-    //last_time = SDL_GetTicks();
+	// Create and initialize PanelManager (for debug panels)
+	PanelManager::Get().Initialize();
 
     // Initialize DataManager (load system resources if needed)
 	DataManager::Get().Initialize(); // DataManager must be initialized before GameEngine to enable loading resources during GameEngine init
