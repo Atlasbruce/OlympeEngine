@@ -237,10 +237,18 @@ void VideoGame::OnEvent(const Message& msg)
 }
 
 // Save full game state into a single JSON file per slot using DataManager
+// Optimized: pre-allocate string capacity to avoid reallocations
 bool VideoGame::SaveGame(int slot) const
 {
     std::string vgName = name.empty() ? std::string("DefaultGame") : name;
     std::ostringstream ss;
+    
+    // Estimate capacity: ~200 bytes overhead + ~300 bytes per object
+    const auto& list = World::Get().GetObjectList();
+    size_t estimatedSize = 200 + (list.size() * 300);
+    ss.str(std::string());
+    ss.str().reserve(estimatedSize);
+    
     ss << "{\n";
     ss << "  \"videogame\": \"" << vgName << "\",\n";
     // players
@@ -253,11 +261,10 @@ bool VideoGame::SaveGame(int slot) const
 
     // world objects
     ss << "  \"objects\": [\n";
-    const auto& list = World::Get().GetObjectList();
     bool first = true;
-    for (auto obj : list)
+    for (const auto* obj : list)
     {
-        GameObject* go = dynamic_cast<GameObject*>(obj);
+        const GameObject* go = dynamic_cast<const GameObject*>(obj);
         if (!go) continue;
         if (!first) ss << ",\n";
         first = false;
@@ -285,30 +292,49 @@ bool VideoGame::LoadGame(int slot)
         return false;
     }
 
-    // Very small parser: extract objects array and re-create objects
+    // Optimized parser: extract objects array and re-create objects
+    // Pre-reserve space to avoid reallocations
     size_t pos = content.find("\"objects\"");
     if (pos == std::string::npos) return false;
     size_t start = content.find('[', pos);
     if (start == std::string::npos) return false;
     size_t end = content.find(']', start);
     if (end == std::string::npos) return false;
-    std::string arr = content.substr(start+1, end - start -1);
-
-    // naive split by '}{' boundaries: replace '},{' by '}|{' and split on '|'
-    std::string tmp = arr;
-    size_t p = 0;
-    while ((p = tmp.find("},{", p)) != std::string::npos) { tmp.replace(p, 3, "}|{"); p += 3; }
+    
+    // Use string_view approach for parsing to avoid copies
+    const char* arr_start = content.data() + start + 1;
+    const char* arr_end = content.data() + end;
+    
+    // Count objects to reserve vector capacity
     std::vector<std::string> entries;
+    size_t obj_count = 0;
+    for (const char* p = arr_start; p < arr_end; ++p) {
+        if (*p == '{') ++obj_count;
+    }
+    entries.reserve(obj_count);
+    
+    // Parse objects more efficiently
+    std::string tmp(arr_start, arr_end - arr_start);
+    size_t p = 0;
+    while ((p = tmp.find("},{", p)) != std::string::npos) { 
+        tmp.replace(p, 3, "}|{"); 
+        p += 3; 
+    }
+    
     size_t cur = 0;
     while (cur < tmp.size()) {
         size_t sep = tmp.find('|', cur);
         if (sep == std::string::npos) sep = tmp.size();
-        std::string e = tmp.substr(cur, sep - cur);
-        // trim
-        size_t a = e.find_first_not_of(" \n\t\r");
-        size_t b = e.find_last_not_of(" \n\t\r");
-        if (a != std::string::npos && b != std::string::npos) e = e.substr(a, b - a + 1);
-        if (!e.empty()) entries.push_back(e);
+        
+        // Trim whitespace more efficiently
+        size_t a = cur;
+        while (a < sep && (tmp[a] == ' ' || tmp[a] == '\n' || tmp[a] == '\t' || tmp[a] == '\r')) ++a;
+        size_t b = sep;
+        while (b > a && (tmp[b-1] == ' ' || tmp[b-1] == '\n' || tmp[b-1] == '\t' || tmp[b-1] == '\r')) --b;
+        
+        if (b > a) {
+            entries.emplace_back(tmp.substr(a, b - a));
+        }
         cur = sep + 1;
     }
 

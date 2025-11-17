@@ -166,10 +166,16 @@ SDL_Texture* DataManager::GetTexture(const std::string& id) const
 
 SDL_Texture* DataManager::GetSprite(const std::string& id, const std::string& path, ResourceCategory category)
 {
-    // Try to get existing sprite
-    SDL_Texture* tex = GetTexture(id);
-    if (tex) return tex;
-    // Not found, try to load it
+    // Optimized: Check existence without locking twice
+    {
+        std::lock_guard<std::mutex> lock(m_mutex_);
+        auto it = m_resources_.find(id);
+        if (it != m_resources_.end() && it->second->texture) {
+            return it->second->texture;
+        }
+    }
+    
+    // Not found or texture not ready, try to load it
     if (LoadSprite(id, path, category))
     {
         return GetTexture(id);
@@ -233,6 +239,8 @@ std::vector<std::string> DataManager::ListResourcesByType(ResourceType type) con
 {
     std::vector<std::string> out;
     std::lock_guard<std::mutex> lock(m_mutex_);
+    // Reserve capacity to avoid reallocations
+    out.reserve(m_resources_.size());
     for (const auto& kv : m_resources_)
     {
         if (kv.second->type == type) out.push_back(kv.first);
@@ -244,6 +252,8 @@ std::vector<std::string> DataManager::ListResourcesByCategory(ResourceCategory c
 {
     std::vector<std::string> out;
     std::lock_guard<std::mutex> lock(m_mutex_);
+    // Reserve capacity to avoid reallocations
+    out.reserve(m_resources_.size());
     for (const auto& kv : m_resources_)
     {
         if (kv.second->category == category) out.push_back(kv.first);
