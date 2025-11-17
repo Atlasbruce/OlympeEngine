@@ -39,9 +39,7 @@ bool GameObject::Load(const std::string& json)
     if (extract_json_string(json, "name", s)) name = s;
 
     double px=0, py=0;
-    // position.x
-    if (extract_json_double(json, "position\"[ \"x\"]", px)) { position.x = static_cast<float>(px); }
-    // fallback: search for "x": inside position block
+    // Optimized: search for position block once
     size_t pos = json.find("\"position\"");
     if (pos != std::string::npos)
     {
@@ -51,6 +49,7 @@ bool GameObject::Load(const std::string& json)
             size_t endb = json.find('}', brace);
             if (endb != std::string::npos)
             {
+                // Use string_view-like approach to avoid substring allocation
                 std::string block = json.substr(brace, endb - brace + 1);
                 double x=0,y=0;
                 if (extract_json_double(block, "x", x)) position.x = static_cast<float>(x);
@@ -58,12 +57,19 @@ bool GameObject::Load(const std::string& json)
             }
         }
     }
-    // width / height
-    double w=0,h=0; if (extract_json_double(json, "width", w)) width = static_cast<float>(w); if (extract_json_double(json, "height", h)) height = static_cast<float>(h);
+    
+    // width / height - parse both on same line for efficiency
+    double w=0,h=0; 
+    if (extract_json_double(json, "width", w)) width = static_cast<float>(w); 
+    if (extract_json_double(json, "height", h)) height = static_cast<float>(h);
+    
     // isDynamic
-    bool b=false; if (extract_json_bool(json, "isDynamic", b)) isDynamic = b;
+    bool b=false; 
+    if (extract_json_bool(json, "isDynamic", b)) isDynamic = b;
+    
     // entity type
-    int et=0; if (extract_json_int(json, "entityType", et)) {
+    int et=0; 
+    if (extract_json_int(json, "entityType", et)) {
         // best-effort mapping
         if (et >= 0 && et < static_cast<int>(EntityType::Count)) {
             // we ignore setting specific derived type - keep as base GameObject

@@ -13,7 +13,8 @@ Purpose:
 bool Npc::FactoryRegistered = Factory::Get().Register("Npc", Npc::Create);
 Object* Npc::Create()
 {
-	static Npc* npc = new Npc();
+	// Create a new Npc instance each time (not static)
+	Npc* npc = new Npc();
 	npc->name = "Npc";
 	Factory::Get().AddComponent("AI_Npc", npc);
 	return npc;

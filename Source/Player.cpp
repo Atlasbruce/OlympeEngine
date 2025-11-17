@@ -15,7 +15,8 @@ Purpose:
 bool Player::FactoryRegistered = Factory::Get().Register("Player", Player::Create);
 Object* Player::Create()
 {
-	static Player *player = new Player();
+	// Create a new Player instance each time (not static)
+	Player *player = new Player();
 	player->name = "Player";
 	Factory::Get().AddComponent("AI_Player", player);
 	Factory::Get().AddComponent("Sprite", player);
