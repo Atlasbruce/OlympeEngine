@@ -28,6 +28,12 @@ Notes:
 #include "videogame.h"
 #include "DataManager.h"
 #include "system/system_utils.h"
+#include "PanelManager.h"
+
+// Avoid Win32 macro collisions: PostMessage is a Win32 macro expanding to PostMessageW/A
+#ifdef PostMessage
+#undef PostMessage
+#endif
 
 #include <fstream>
 #include <string>
@@ -40,7 +46,7 @@ using namespace std;
  /* We will use this renderer to draw into this window every frame. */
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
-static Uint64 last_time = 0;
+//static Uint64 last_time = 0;
 
 
 /* This function runs once at startup. */
@@ -69,7 +75,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     }
     SDL_SetRenderLogicalPresentation(renderer, GameEngine::screenWidth, GameEngine::screenHeight, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
-    last_time = SDL_GetTicks();
+    //last_time = SDL_GetTicks();
 
     // Initialize DataManager (load system resources if needed)
 	DataManager::Get().Initialize(); // DataManager must be initialized before GameEngine to enable loading resources during GameEngine init
@@ -78,6 +84,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     GameEngine::renderer = renderer; // important: set main renderer for GameEngine before GetInstance
     GameEngine::GetInstance(); // create the GameEngine itself
     GameEngine::Get().Initialize(); // initialize all submanagers
+
+    // Attach panels/menu to main SDL window (Windows only)
+    PanelManager::Get().AttachToSDLWindow(window);
 
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }

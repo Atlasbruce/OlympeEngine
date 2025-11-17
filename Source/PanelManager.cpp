@@ -16,10 +16,18 @@ Notes:
 #include "PanelManager.h"
 #include "GameEngine.h"
 #include "system/log_sink.h"
+#include <mutex>
 
 #ifdef _WIN32
 #include <strsafe.h>
-// Note: SDL_syswm.h may not be available in all SDKs/environments; don't include it here
+// Attempt to include SDL_syswm.h only if available
+#if defined(__has_include)
+  #if __has_include(<SDL3/SDL_syswm.h>)
+    #include <SDL3/SDL_syswm.h>
+    #define HAVE_SDL_SYSWM 1
+  #endif
+#endif
+// Note: SDL_syswm.h may not be available in all SDKs/environments; handle fallback
 #endif
 
 //----------------------------------------------------------------------
@@ -235,19 +243,37 @@ void PanelManager::Process()
     while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
         // Intercept menu commands from main window if attached
-        if (msg.message == WM_COMMAND && m_mainHwnd != nullptr && msg.hwnd == m_mainHwnd)
+        if (msg.message == WM_COMMAND && m_mainHwnd != nullptr && (msg.hwnd == m_mainHwnd || msg.hwnd == nullptr))
         {
             int id = LOWORD(msg.wParam);
             switch (id)
             {
             case IDM_PANEL_LOG:
+            case IDM_WINDOW_LOG:
                 if (IsPanelVisible("log_window")) HidePanel("log_window"); else ShowPanel("log_window");
                 continue; // do not dispatch
             case IDM_PANEL_INSPECTOR:
+            case IDM_WINDOW_OBJECT_INSPECTOR:
                 if (IsPanelVisible("object_inspector")) HidePanel("object_inspector"); else ShowPanel("object_inspector");
                 continue;
             case IDM_PANEL_TREE:
+            case IDM_WINDOW_OBJECT_HIERARCHY:
                 if (IsPanelVisible("tree_view")) HidePanel("tree_view"); else ShowPanel("tree_view");
+                continue;
+            case IDM_FILE_NEW:
+                // TODO: implement new level/object creation
+                SYSTEM_LOG << "Menu: File->New selected (not implemented)\n";
+                continue;
+            case IDM_FILE_LOAD:
+                SYSTEM_LOG << "Menu: File->Load selected (not implemented)\n";
+                continue;
+            case IDM_FILE_SAVE:
+                SYSTEM_LOG << "Menu: File->Save selected (not implemented)\n";
+                continue;
+            case IDM_ABOUT:
+                {
+                    MessageBoxA(m_mainHwnd, "Olympe Engine V2\n\nNicolas Chereau - 2025-2026\n\n n chereau@gmail.com\nhttps://github.com/Atlasbruce/Olympe-Engine/", "About Olympe Engine", MB_OK | MB_ICONINFORMATION);
+                }
                 continue;
             default:
                 break;
@@ -261,13 +287,54 @@ void PanelManager::Process()
 }
 
 #ifdef _WIN32
-void PanelManager::AttachToSDLWindow(SDL_Window* /*sdlWindow*/)
+void PanelManager::AttachToSDLWindow(SDL_Window* sdlWindow)
 {
-    // AttachToSDLWindow is a no-op in this build (SDL syswm not available)
-    // If SDL_syswm.h is available, this method can be extended to obtain
-    // the native HWND and attach a menu to the SDL window.
-}
+#ifdef HAVE_SDL_SYSWM
+    if (!sdlWindow) return;
+    SDL_SysWMinfo wmi;
+    SDL_VERSION(&wmi.version);
+    if (!SDL_GetWindowWMInfo(sdlWindow, &wmi)) {
+        // fallback: can't attach
+        return;
+    }
 
+    HWND hwnd = (HWND)wmi.info.win.window;
+    if (!hwnd) return;
+
+    m_mainHwnd = hwnd;
+
+    // create File submenu
+    HMENU hFile = CreatePopupMenu();
+    AppendMenuA(hFile, MF_STRING, IDM_FILE_NEW, "New\tCtrl+N");
+    AppendMenuA(hFile, MF_STRING, IDM_FILE_LOAD, "Load\tCtrl+L");
+    AppendMenuA(hFile, MF_STRING, IDM_FILE_SAVE, "Save\tCtrl+S");
+
+    // create Window submenu
+    HMENU hWindow = CreatePopupMenu();
+    AppendMenuA(hWindow, MF_STRING, IDM_WINDOW_OBJECT_INSPECTOR, "Object Inspector\tF2");
+    AppendMenuA(hWindow, MF_STRING, IDM_WINDOW_OBJECT_HIERARCHY, "Object Hierarchy\tF3");
+    AppendMenuA(hWindow, MF_STRING, IDM_WINDOW_LOG, "Log\tF1");
+
+    // create About submenu
+    HMENU hAbout = CreatePopupMenu();
+    AppendMenuA(hAbout, MF_STRING, IDM_ABOUT, "About Olympe Engine");
+
+    // create main menu
+    HMENU hMenu = CreateMenu();
+    AppendMenuA(hMenu, MF_POPUP, (UINT_PTR)hFile, "File");
+    AppendMenuA(hMenu, MF_POPUP, (UINT_PTR)hWindow, "Window");
+    AppendMenuA(hMenu, MF_POPUP, (UINT_PTR)hAbout, "About");
+
+    SetMenu(hwnd, hMenu);
+    m_mainMenu = hMenu;
+#else
+    (void)sdlWindow; // no-op when SDL_syswm not available
+#endif
+}
+#endif
+
+
+#if defined(_WIN32)
 LRESULT CALLBACK PanelManager::PanelWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
@@ -279,7 +346,7 @@ LRESULT CALLBACK PanelManager::PanelWndProc(HWND hwnd, UINT msg, WPARAM wParam, 
     {
         // resize child content if present
         PanelManager& mgr = PanelManager::GetInstance();
-       // std::lock_guard<std::mutex> lock(mgr.m_mutex_);
+        std::lock_guard<std::mutex> lock(mgr.m_mutex_);
         for (auto &kv : mgr.m_panels_)
         {
             if (kv.second.hwnd == hwnd)
@@ -301,6 +368,7 @@ LRESULT CALLBACK PanelManager::PanelWndProc(HWND hwnd, UINT msg, WPARAM wParam, 
         return DefWindowProc(hwnd, msg, wParam, lParam);
     }
 }
+#endif
 
 // bridge for the log sink to call into PanelManager implementation
 namespace SystemLogSink
@@ -310,5 +378,3 @@ namespace SystemLogSink
         PanelManager::GetInstance().AppendLog(text);
     }
 }
-
-#endif
