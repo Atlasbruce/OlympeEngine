@@ -1,11 +1,17 @@
-/* points.c ... */
-
 /*
- * This example creates an SDL window and renderer, and then draws some points
- * to it every frame.
- *
- * This code is public domain. Feel free to use it for any purpose!
- */
+Olympe Engine V2 2025
+Nicolas Chereau
+nchereau@gmail.com
+
+Purpose:
+- Main application file for Olympe Engine V2 using SDL3.
+Notes:
+- This file implements the SDL_App* callbacks to initialize, run, and shutdown
+  the engine using SDL3's application framework.
+- GameEngine and its submanagers are initialized here: EventManager, InputsManager,
+  DataManager, VideoGame, etc.
+
+*/
 
 #define SDL_MAIN_USE_CALLBACKS 1  /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
@@ -40,13 +46,17 @@ static Uint64 last_time = 0;
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 {
+    SYSTEM_LOG << "----------- OLYMPE ENGINE V2 ------------" << endl;
+    SYSTEM_LOG << "System Initialization\n" << endl;
+
+    // Load configuration (JSON inside "olympe.ini"). Defaults used if not present.
+    LoadOlympeConfig("olympe.ini");
+
     SDL_SetAppMetadata("Olympe Game Engine", "2.0", "com.googlesites.olympeengine");
 
     // Initialize system logger so SYSTEM_LOG forwards to UI (if available)
     Logging::InitLogger();
 
-    // Load configuration (JSON inside "olympe.ini"). Defaults used if not present.
-    LoadConfigJSON("olympe.ini", GameEngine::screenWidth, GameEngine::screenHeight);
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
@@ -60,8 +70,6 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     SDL_SetRenderLogicalPresentation(renderer, GameEngine::screenWidth, GameEngine::screenHeight, SDL_LOGICAL_PRESENTATION_LETTERBOX);
 
     last_time = SDL_GetTicks();
-    SYSTEM_LOG << "----------- OLYMPE ENGINE V2 ------------" << endl;
-    SYSTEM_LOG << "System Initialization\n" << endl;
 
     // Initialize DataManager (load system resources if needed)
 	DataManager::Get().Initialize(); // DataManager must be initialized before GameEngine to enable loading resources during GameEngine init

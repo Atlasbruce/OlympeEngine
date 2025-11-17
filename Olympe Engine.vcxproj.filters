@@ -31,9 +31,6 @@
     <Filter Include="Fichiers d%27en-tête\GameSystem">
       <UniqueIdentifier>{993d385c-c1cc-447d-b603-55ce21173592}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\Helpers">
-      <UniqueIdentifier>{d0159c18-c274-43b1-809e-3c469963281f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fichiers d%27en-tête\Rendering">
       <UniqueIdentifier>{5c8281db-50ab-4825-b865-0c1309b369f8}</UniqueIdentifier>
     </Filter>
@@ -45,6 +42,12 @@
     </Filter>
     <Filter Include="Fichiers d%27en-tête\Messages">
       <UniqueIdentifier>{9299da2e-ab55-41b2-ac58-56896f290d5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Panels">
+      <UniqueIdentifier>{60560b5d-fef9-4357-889d-c42f0d5b855e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\System Helpers">
+      <UniqueIdentifier>{d0159c18-c274-43b1-809e-3c469963281f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -88,10 +91,10 @@
       <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClCompile>
     <ClCompile Include="source\drawing.h">
-      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+      <Filter>Fichiers d%27en-tête\System Helpers</Filter>
     </ClCompile>
     <ClCompile Include="Source\drawing.cpp">
-      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+      <Filter>Fichiers d%27en-tête\System Helpers</Filter>
     </ClCompile>
     <ClCompile Include="Source\system\Camera.cpp">
       <Filter>Fichiers d%27en-tête\Rendering</Filter>
@@ -115,7 +118,10 @@
       <Filter>Fichiers d%27en-tête\Data</Filter>
     </ClCompile>
     <ClCompile Include="Source\PanelManager.cpp">
-      <Filter>Fichiers sources</Filter>
+      <Filter>Fichiers d%27en-tête\Panels</Filter>
+    </ClCompile>
+    <ClCompile Include="source\system\system_utils.cpp">
+      <Filter>Fichiers d%27en-tête\System Helpers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -201,16 +207,16 @@
       <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClInclude>
     <ClInclude Include="Source\Factory.h">
-      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+      <Filter>Fichiers d%27en-tête\System Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Source\third_party\nlohmann\json.hpp">
-      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+      <Filter>Fichiers d%27en-tête\System Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\system_utils.h">
-      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+      <Filter>Fichiers d%27en-tête\System Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Serialization.h">
-      <Filter>Fichiers d%27en-tête\Helpers</Filter>
+      <Filter>Fichiers d%27en-tête\System Helpers</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\Camera.h">
       <Filter>Fichiers d%27en-tête\Rendering</Filter>
@@ -242,11 +248,11 @@
     <ClInclude Include="Source\system\message.h">
       <Filter>Fichiers d%27en-tête\Messages</Filter>
     </ClInclude>
-    <ClInclude Include="Source\PanelManager.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="Source\system\log_sink.h">
-      <Filter>Fichiers d%27en-tête</Filter>
+      <Filter>Fichiers d%27en-tête\System Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PanelManager.h">
+      <Filter>Fichiers d%27en-tête\Panels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -261,5 +267,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="olympe.ini">
+      <Filter>Fichiers sources</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="olympe.log" />
   </ItemGroup>
 </Project>

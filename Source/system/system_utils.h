@@ -108,10 +108,10 @@ namespace Logging
                 std::cout << s;
                 std::cout.flush();
             }
-            if (outputs_ & Out_Clog) {
+            /*if (outputs_ & Out_Clog) {
                 std::clog << s;
                 std::clog.flush();
-            }
+            }/**/
             if ((outputs_ & Out_File) && file_open_) {
                 file_ << s;
                 file_.flush();
@@ -178,12 +178,14 @@ namespace Logging
         Logger().Shutdown();
     }
 }
-
+//-------------------------------------------------------------
 // Convenience macro (keeps existing code using SYSTEM_LOG)
 #define SYSTEM_LOG ::Logging::Logger()
 
-// JSON helpers (kept here for compatibility with existing code)
 
+//-------------------------------------------------------------
+// JSON helpers (kept here for compatibility with existing code)
+//
 static std::string escape_json_string(const std::string& s)
 {
     std::string out;
@@ -204,7 +206,7 @@ static std::string escape_json_string(const std::string& s)
     }
     return out;
 }
-
+//-------------------------------------------------------------
 static bool extract_json_string(const std::string& json, const std::string& key, std::string& out)
 {
     size_t pos = json.find('"' + key + '"');
@@ -221,7 +223,7 @@ static bool extract_json_string(const std::string& json, const std::string& key,
     out = json.substr(start, pos - start);
     return true;
 }
-
+//-------------------------------------------------------------
 static bool extract_json_double(const std::string& json, const std::string& key, double& out)
 {
     size_t pos = json.find('"' + key + '"');
@@ -237,7 +239,7 @@ static bool extract_json_double(const std::string& json, const std::string& key,
     try { out = std::stod(json.substr(start, pos - start)); return true; }
     catch (...) { return false; }
 }
-
+//-------------------------------------------------------------
 static bool extract_json_int(const std::string& json, const std::string& key, int& out)
 {
     double d;
@@ -245,7 +247,7 @@ static bool extract_json_int(const std::string& json, const std::string& key, in
     out = static_cast<int>(d);
     return true;
 }
-
+//-------------------------------------------------------------
 static bool extract_json_bool(const std::string& json, const std::string& key, bool& out)
 {
     size_t pos = json.find('"' + key + '"');
@@ -260,28 +262,7 @@ static bool extract_json_bool(const std::string& json, const std::string& key, b
     return false;
 }
 
+//-------------------------------------------------------------
 // Load configuration from JSON file (keeps previous behavior)
-static void LoadConfigJSON(const char* filename, int& outW, int& outH)
-{
-    outW = DEFAULT_WINDOW_WIDTH;
-    outH = DEFAULT_WINDOW_HEIGHT;
-
-    std::ifstream ifs(filename);
-    if (!ifs) {
-        SYSTEM_LOG << "Config file '" << filename << "' not found — using defaults " << outW << "x" << outH << "\n";
-        return;
-    }
-
-    std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
-
-    int w = outW;
-    int h = outH;
-
-    if (extract_json_int(content, "screen_width", w) || extract_json_int(content, "screenWidth", w) || extract_json_int(content, "width", w)) {}
-    if (extract_json_int(content, "screen_height", h) || extract_json_int(content, "screenHeight", h) || extract_json_int(content, "screen_heigth", h) || extract_json_int(content, "height", h)) {}
-
-    if (w > 0) outW = w;
-    if (h > 0) outH = h;
-
-    SYSTEM_LOG << "Config loaded from '" << filename << "': " << outW << "x" << outH << "\n";
-}
+void LoadOlympeConfig(const char* filename);
+//-------------------------------------------------------------

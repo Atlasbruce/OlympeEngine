@@ -64,7 +64,22 @@ public:
     // Process internal tasks (on Windows: pump messages for tool windows)
     void Process();
 
-private:
+	static int LogPanelWidth;
+	static int LogPanelHeight;
+	static int LogPanelPosX;
+    static int LogPanelPosY;
+
+	static int InspectorPanelWidth;
+	static int InspectorPanelHeight;
+	static int InspectorPanelPosX;
+    static int InspectorPanelPosY;
+
+	static int TreeViewPanelWidth;
+	static int TreeViewPanelHeight;
+	static int TreeViewPanelPosX;
+    static int TreeViewPanelPosY;
+
+    private:
     struct Panel
     {
         std::string id;

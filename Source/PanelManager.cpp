@@ -22,6 +22,22 @@ Notes:
 // Note: SDL_syswm.h may not be available in all SDKs/environments; don't include it here
 #endif
 
+//----------------------------------------------------------------------
+// initialize static vairables for panel sizes and positions
+int PanelManager::LogPanelWidth = 400;
+int PanelManager::LogPanelHeight = 200;
+int PanelManager::LogPanelPosX = 50;
+int PanelManager::LogPanelPosY = 50;
+int PanelManager::InspectorPanelWidth = 300;
+int PanelManager::InspectorPanelHeight = 400;
+int PanelManager::InspectorPanelPosX = 100;
+int PanelManager::InspectorPanelPosY = 100;
+int PanelManager::TreeViewPanelWidth = 300;
+int PanelManager::TreeViewPanelHeight = 400;
+int PanelManager::TreeViewPanelPosX = 150;
+int PanelManager::TreeViewPanelPosY = 150;
+
+//----------------------------------------------------------------------
 PanelManager::PanelManager()
 {
     name = "PanelManager";
@@ -130,6 +146,23 @@ void PanelManager::CreatePanel(const std::string& id, const std::string& title)
 void PanelManager::CreateLogWindow()
 {
     CreatePanel("log_window", "Log Window");
+#ifdef _WIN32
+    auto it = m_panels_.find("log_window");
+    if (it != m_panels_.end() && it->second.hwnd)
+    {
+        HWND hwnd = it->second.hwnd;
+		// Set size from static variables
+        SetWindowPos(hwnd, nullptr, 0, 0, LogPanelWidth, LogPanelHeight, SWP_NOMOVE | SWP_NOZORDER | SWP_SHOWWINDOW);
+        // Resize child edit control to fit client area
+        if (it->second.hwndChild)
+        {
+            RECT rc; GetClientRect(hwnd, &rc);
+            MoveWindow(it->second.hwndChild, 0, 0, rc.right - rc.left, rc.bottom - rc.top, TRUE);
+			// Set child window position from static variables
+			SetWindowPos(hwnd, nullptr, LogPanelPosX, LogPanelPosY, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
+        }
+    }
+#endif
 }
 
 void PanelManager::CreateObjectInspectorWindow()

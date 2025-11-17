@@ -40,6 +40,7 @@
     <ClCompile Include="Source\system\KeyboardManager.cpp" />
     <ClCompile Include="Source\system\MouseManager.cpp" />
     <ClCompile Include="Source\system\SystemMenu.cpp" />
+    <ClCompile Include="source\system\system_utils.cpp" />
     <ClCompile Include="Source\system\Viewport.cpp" />
     <ClCompile Include="source\VideoGame.cpp" />
   </ItemGroup>
@@ -90,12 +91,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="olympe.ini" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\olympe.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Olympe Engine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="olympe.log" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
