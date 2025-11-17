@@ -43,7 +43,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     SDL_SetAppMetadata("Olympe Game Engine", "2.0", "com.googlesites.olympeengine");
 
     // Initialize system logger so SYSTEM_LOG forwards to UI (if available)
-    SystemUtils::InitSystemLogger();
+    Logging::InitLogger();
 
     // Load configuration (JSON inside "olympe.ini"). Defaults used if not present.
     LoadConfigJSON("olympe.ini", GameEngine::screenWidth, GameEngine::screenHeight);

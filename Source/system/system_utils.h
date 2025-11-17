@@ -1,10 +1,10 @@
 #pragma once
 
-// "system_utils.h"
-// Centralized logger that duplicates output to std::cout, std::clog and to a file (olympe.log).
-// Usage:
-// SystemUtils::InitSystemLogger();
-// SYSTEM_LOG << "Hello world" << std::endl;
+// "system_utils.h" -> simplified logging implementation
+// Centralized logger that duplicates output to std::cout, std::clog, to a file (olympe.log)
+// and to the UI log window. Use:
+// Logging::InitLogger();
+// SYSTEM_LOG << "Hello" << std::endl;
 
 #include <streambuf>
 #include <ostream>
@@ -14,181 +14,175 @@
 #include <mutex>
 #include <iostream>
 #include <string>
+#include <sstream>
 #include "system_consts.h"
 #include "log_sink.h"
 
-namespace SystemUtils
+namespace Logging
 {
-    // small streambuf that forwards everything to multiple underlying streambufs
-    class TeeBuf : public std::streambuf
+    // Output destinations flags
+    enum Outputs : unsigned
     {
-        public:
-        TeeBuf() = default;
-        ~TeeBuf() = default;
+        Out_Cout  = 1u << 0,
+        Out_Clog  = 1u << 1,
+        Out_File  = 1u << 2,
+        Out_Panel = 1u << 3
+    };
 
-        void addBuf(std::streambuf* b)
+    // Simple line-buffering logger with operator<< overloads
+    class Log
+    {
+    public:
+        Log() : outputs_(Out_Cout | Out_Clog | Out_Panel), file_open_(false) {}
+
+        // Initialize file logging (optional). Safe to call multiple times.
+        bool Init(const std::string& filename = "olympe.log")
         {
-            if (b)
-            {
-                std::lock_guard<std::mutex> lock(m_mutex);
-                m_bufs.push_back(b);
-            }
+            std::lock_guard<std::mutex> lock(m_);
+            if (file_open_) return true;
+            file_.open(filename.c_str(), std::ios::app);
+            if (file_.is_open()) file_open_ = true;
+            // ensure panel sink exists (log_sink handles buffering until UI attached)
+            return true;
         }
 
-     protected:
-        // single character
-        virtual int overflow(int c) override
+        void Shutdown()
         {
-            if (c == EOF) return !EOF;
-            std::lock_guard<std::mutex> lock(m_mutex);
-            for (auto b : m_bufs) 
-            {
-                if (b->sputc(static_cast<char>(c)) == EOF) return EOF;
-            }
-            return c;
+            std::lock_guard<std::mutex> lock(m_);
+            if (file_.is_open()) { file_.flush(); file_.close(); }
+            file_open_ = false;
         }
 
-        // block write
-        virtual std::streamsize xsputn(const char* s, std::streamsize n) override
+        void SetOutputs(unsigned flags)
         {
-            std::lock_guard<std::mutex> lock(m_mutex);
-            for (auto b : m_bufs) 
+            std::lock_guard<std::mutex> lock(m_);
+            outputs_ = flags;
+        }
+
+        unsigned GetOutputs() const { return outputs_; }
+
+        // Generic stream insertion
+        template<typename T>
+        Log& operator<<(const T& v)
+        {
             {
-                if (b->sputn(s, n) != n) 
+                std::lock_guard<std::mutex> lock(m_);
+                buffer_ << v;
+            }
+            flushCompleteLinesIfAny();
+            return *this;
+        }
+
+        // Manipulators like std::endl
+        using Manip = std::ostream& (*)(std::ostream&);
+        Log& operator<<(Manip m)
+        {
+            if (m == static_cast<Manip>(&std::endl))
+            {
+                // endl inserts newline and flushes
                 {
-                    // continue trying others, but still report shorter write
+                    std::lock_guard<std::mutex> lock(m_);
+                    buffer_ << m;
                 }
+                flushCompleteLinesIfAny();
+                flushRemaining();
             }
-            return n;
-        }
-
-        // sync all
-        virtual int sync() override
-        {
-            std::lock_guard<std::mutex> lock(m_mutex);
-            int err =0;
-            for (auto b : m_bufs) 
+            else if (m == static_cast<Manip>(&std::flush))
             {
-                if (b->pubsync() !=0) err = -1;
+                flushRemaining();
             }
-            return err;
-        }
-
-     private:
-        std::vector<std::streambuf*> m_bufs;
-        std::mutex m_mutex;
-    };
-    //----------------------------------------------------------------------------------
-    // ostream that uses TeeBuf
-    class TeeStream : public std::ostream
-    {
-    public:
-        TeeStream() : std::ostream(&m_buf) {}
-        void addBuf(std::streambuf* b) { m_buf.addBuf(b); }
-     private:
-        TeeBuf m_buf;
-    };
-
-    // streambuf that forwards output lines to the Panel Log Window
-    class PanelStreamBuf : public std::streambuf
-    {
-    public:
-        PanelStreamBuf() {}
-        ~PanelStreamBuf() { sync(); }
-    protected:
-        using int_type = std::streambuf::int_type;
-        using traits_type = std::streambuf::traits_type;
-
-        virtual int_type overflow(int_type ch) override
-        {
-            if (traits_type::eq_int_type(ch, traits_type::eof())) return traits_type::not_eof(ch);
-            char c = traits_type::to_char_type(ch);
-            buffer_.push_back(c);
-            if (c == '\n') flushBuffer();
-            return ch;
-        }
-
-        virtual int sync() override
-        {
-            flushBuffer();
-            return 0;
+            else
+            {
+                // other manipulators forward into buffer
+                std::lock_guard<std::mutex> lock(m_);
+                buffer_ << m;
+            }
+            return *this;
         }
 
     private:
-        void flushBuffer()
+        void writeToOutputs(const std::string& s)
         {
-            if (buffer_.empty()) return;
-            SystemLogSink::AppendToLogWindow(buffer_);
-            buffer_.clear();
+            // write to each enabled output (no duplication)
+            if (outputs_ & Out_Cout) {
+                std::cout << s;
+                std::cout.flush();
+            }
+            if (outputs_ & Out_Clog) {
+                std::clog << s;
+                std::clog.flush();
+            }
+            if ((outputs_ & Out_File) && file_open_) {
+                file_ << s;
+                file_.flush();
+            }
+            if (outputs_ & Out_Panel) {
+                // send to UI log sink (thread-safe buffered)
+                SystemLogSink::AppendToLogWindow(s);
+            }
         }
 
-        std::string buffer_;
+        void flushCompleteLinesIfAny()
+        {
+            std::lock_guard<std::mutex> lock(m_);
+            std::string s = buffer_.str();
+            size_t pos = 0;
+            while ((pos = s.find('\n')) != std::string::npos)
+            {
+                std::string line = s.substr(0, pos + 1);
+                writeToOutputs(line);
+                s.erase(0, pos + 1);
+            }
+            buffer_.str(""); buffer_.clear();
+            buffer_ << s;
+        }
+
+        void flushRemaining()
+        {
+            std::lock_guard<std::mutex> lock(m_);
+            std::string s = buffer_.str();
+            if (!s.empty())
+            {
+                writeToOutputs(s);
+                buffer_.str(""); buffer_.clear();
+            }
+        }
+
+    private:
+        mutable std::mutex m_;
+        std::ostringstream buffer_;
+        unsigned outputs_;
+        std::ofstream file_;
+        bool file_open_;
     };
 
-    // Global accessors for the logger instance and init flag
-    inline TeeStream& GetGlobalTeeStream()
+    // Access global logger instance
+    inline Log& Logger()
     {
-        static TeeStream s_stream;
-        return s_stream;
+        static Log s_logger;
+        return s_logger;
     }
 
-    inline bool& GetLoggerInitializedFlag()
+    // Convenience init/shutdown
+    inline bool InitLogger(const std::string& filename = "olympe.log")
     {
-        static bool s_inited = false;
-        return s_inited;
+        bool res = Logger().Init(filename);
+        // enable file output only if file opened
+        if (!Logger().GetOutputs()) {}
+        // by default, keep cout, clog and panel enabled; file enabled if opened
+        return res;
     }
 
-    //----------------------------------------------------------------------------------
-    // Initialize the global logger. Returns true if file opened successfully (or already initialized).
-    inline bool InitSystemLogger(const std::string& filename = "olympe.log")
+    inline void ShutdownLogger()
     {
-        if (GetLoggerInitializedFlag()) return true;
-
-        static std::unique_ptr<std::ofstream> s_file;
-        static std::unique_ptr<PanelStreamBuf> s_panel_buf;
-
-        s_file.reset(new std::ofstream(filename.c_str(), std::ios::app));
-        if (!s_file->is_open())
-        {
-            // fallback: do not set file but still log to cout/clog
-            s_file.reset();
-        }
-
-        // add buffers to global tee stream
-        TeeStream& g = GetGlobalTeeStream();
-        g.addBuf(std::cout.rdbuf());
-        g.addBuf(std::clog.rdbuf());
-        if (s_file) g.addBuf(s_file->rdbuf());
-
-        s_panel_buf.reset(new PanelStreamBuf());
-        g.addBuf(s_panel_buf.get());
-
-        GetLoggerInitializedFlag() = true;
-        return true;
+        Logger().Shutdown();
     }
-    //----------------------------------------------------------------------------------
-    // Shutdown logger (close file and reset instances)
-    inline void ShutdownSystemLogger()
-    {
-        // flush streams
-        std::fflush(nullptr);
-        GetLoggerInitializedFlag() = false;
-    }
-    //----------------------------------------------------------------------------------
-    // Get the logger stream. If not initialized, returns std::clog.
-    inline std::ostream& Logger()
-    {
-        if (GetLoggerInitializedFlag()) return GetGlobalTeeStream();
-        return std::clog;
-     }
 }
 
-// Convenience macro
-#define SYSTEM_LOG ::SystemUtils::Logger()
+// Convenience macro (keeps existing code using SYSTEM_LOG)
+#define SYSTEM_LOG ::Logging::Logger()
 
-
-//-------------------------------------------------------------
-// Simple JSON string escaper and extractor (not a full JSON parser)
+// JSON helpers (kept here for compatibility with existing code)
 
 static std::string escape_json_string(const std::string& s)
 {
@@ -210,7 +204,7 @@ static std::string escape_json_string(const std::string& s)
     }
     return out;
 }
-// Very small and permissive JSON extractors (not robust but sufficient for simple saved files)
+
 static bool extract_json_string(const std::string& json, const std::string& key, std::string& out)
 {
     size_t pos = json.find('"' + key + '"');
@@ -219,7 +213,6 @@ static bool extract_json_string(const std::string& json, const std::string& key,
     pos = json.find(':', pos);
     if (pos == std::string::npos) return false;
     ++pos;
-    // skip spaces
     while (pos < json.size() && isspace(static_cast<unsigned char>(json[pos]))) ++pos;
     if (pos < json.size() && json[pos] == '"') ++pos;
     size_t start = pos;
@@ -237,16 +230,11 @@ static bool extract_json_double(const std::string& json, const std::string& key,
     pos = json.find(':', pos);
     if (pos == std::string::npos) return false;
     ++pos;
-    // skip spaces
     while (pos < json.size() && isspace(static_cast<unsigned char>(json[pos]))) ++pos;
     size_t start = pos;
-    // accept digits, +, -, ., e, E
     while (pos < json.size() && (isdigit(static_cast<unsigned char>(json[pos])) || json[pos] == '+' || json[pos] == '-' || json[pos] == '.' || json[pos] == 'e' || json[pos] == 'E')) ++pos;
     if (pos <= start) return false;
-    try {
-        out = std::stod(json.substr(start, pos - start));
-        return true;
-    }
+    try { out = std::stod(json.substr(start, pos - start)); return true; }
     catch (...) { return false; }
 }
 
@@ -271,40 +259,29 @@ static bool extract_json_bool(const std::string& json, const std::string& key, b
     if (json.compare(pos, 5, "false") == 0) { out = false; return true; }
     return false;
 }
-//-------------------------------------------------------------
-// Load configuration from JSON file (simple parser)
-// Olympe GameEngine Loader - looks for screen_width and screen_height keys
+
+// Load configuration from JSON file (keeps previous behavior)
 static void LoadConfigJSON(const char* filename, int& outW, int& outH)
 {
-	outW = DEFAULT_WINDOW_WIDTH;
-	outH = DEFAULT_WINDOW_HEIGHT;
+    outW = DEFAULT_WINDOW_WIDTH;
+    outH = DEFAULT_WINDOW_HEIGHT;
 
-	std::ifstream ifs(filename);
-	if (!ifs) {
-		SYSTEM_LOG << "Config file '" << filename << "' not found — using defaults " << outW << "x" << outH << "\n";
-		return;
-	}
+    std::ifstream ifs(filename);
+    if (!ifs) {
+        SYSTEM_LOG << "Config file '" << filename << "' not found — using defaults " << outW << "x" << outH << "\n";
+        return;
+    }
 
-	std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+    std::string content((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 
-	int w = outW;
-	int h = outH;
+    int w = outW;
+    int h = outH;
 
-	// try multiple possible keys and tolerate a common misspelling
-	if (extract_json_int(content, "screen_width", w) ||
-		extract_json_int(content, "screenWidth", w) ||
-		extract_json_int(content, "width", w)) {
-		// ok
-	}
-	if (extract_json_int(content, "screen_height", h) ||
-		extract_json_int(content, "screenHeight", h) ||
-		extract_json_int(content, "screen_heigth", h) || // tolerate misspelling
-		extract_json_int(content, "height", h)) {
-		// ok
-	}
+    if (extract_json_int(content, "screen_width", w) || extract_json_int(content, "screenWidth", w) || extract_json_int(content, "width", w)) {}
+    if (extract_json_int(content, "screen_height", h) || extract_json_int(content, "screenHeight", h) || extract_json_int(content, "screen_heigth", h) || extract_json_int(content, "height", h)) {}
 
-	if (w > 0) outW = w;
-	if (h > 0) outH = h;
+    if (w > 0) outW = w;
+    if (h > 0) outH = h;
 
-	SYSTEM_LOG << "Config loaded from '" << filename << "': " << outW << "x" << outH << "\n";
+    SYSTEM_LOG << "Config loaded from '" << filename << "': " << outW << "x" << outH << "\n";
 }
