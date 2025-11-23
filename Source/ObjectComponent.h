@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "system/message.h"
+//#include "system/system_consts.h"
 #include <memory>
 #include "system/system_utils.h"
 
@@ -38,7 +39,7 @@ public:
     virtual void RenderDebug() {}
 
     // Called when a message is delivered to this property (via owner forwarding)
-    virtual void OnEvent(const Message& /*msg*/) {}
+    virtual void OnEvent(const Message& /*msg*/);
 
 	// Set the owner object of this component
 	virtual void SetOwner(Object* _owner)
@@ -63,10 +64,8 @@ public:
     explicit PhysicsComponent() = default;
     virtual ~PhysicsComponent() override = default;
     virtual ComponentType GetComponentType() const override { return ComponentType::Physics; }
-    virtual void Process() override
-    {
-        // Basic physics integration should be implemented by project-specific code.
-    }
+    virtual void Process() override {/* Basic physics integration should be implemented by project-specific code.*/ }
+    virtual void OnEvent(const Message& msg) override;
 };
 //---------------------------------------------------------------------------------------------
 class AIComponent : public ObjectComponent
@@ -77,6 +76,7 @@ public:
     virtual ComponentType GetComponentType() const override { return ComponentType::AI; }
     virtual void SetOwner(Object* _owner) override;
     virtual void Process() override {/*AI logic goes here.*/ }
+    virtual void OnEvent(const Message& msg) override;
 
     float m_speed = 120.0f; // for tests to be removed
 protected:
@@ -84,7 +84,6 @@ protected:
     float* fRef_posY;
     float& m_posX = *fRef_posX;
     float& m_posY = *fRef_posY;
-
 };
 //---------------------------------------------------------------------------------------------
 class VisualComponent : public ObjectComponent
@@ -93,10 +92,8 @@ public:
 	explicit VisualComponent() = default;
     virtual ~VisualComponent() override = default;
     virtual ComponentType GetComponentType() const override { return ComponentType::Visual; }
-    virtual void Render() override
-    {
-        // Drawing logic goes here.
-    }
+    virtual void Render() override{/* Drawing logic goes here.*/}
+    virtual void OnEvent(const Message & msg) override;
 };
 //---------------------------------------------------------------------------------------------
 class AudioComponent : public ObjectComponent
@@ -105,8 +102,6 @@ public:
 	explicit AudioComponent() = default;
     virtual ~AudioComponent() override = default;
     virtual ComponentType GetComponentType() const override { return ComponentType::Audio; }
-    virtual void Process() override
-    {
-        // Audio update logic goes here.
-    }
+    virtual void Process() override{/* Audio update logic goes here. */}
+    virtual void OnEvent(const Message & msg) override;
 };

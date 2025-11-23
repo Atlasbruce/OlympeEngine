@@ -41,24 +41,21 @@ public:
 	virtual ObjectType GetObjectType() const override { return ObjectType::Entity; }
 	virtual EntityType GetEntityType() const { return EntityType::None; }
 
-    //---------------------------------------------------------------------------------------------
-	// GameObject Properties--------------------------
-    public:
-		// position
-		SDL_FPoint position = { 0., 0. };
-        // Size
-        float width = 100.0f;
-        float height = 150.0f;
-        // Bounding Box
-	    SDL_FRect boundingBox = { 0.0f, 0.0f, 0.0f, 0.0f };
-		// static or dynamic
-        bool isDynamic = false;
+//---------------------------------------------------------------------------------------------
+// GameObject Properties--------------------------
+public:
+	// position
+	SDL_FPoint position = { 0., 0. };
+    // Size
+    float width = 100.0f;
+    float height = 150.0f;
+    // Bounding Box
+	SDL_FRect boundingBox = { 0.0f, 0.0f, 0.0f, 0.0f };
+	// static or dynamic
+    bool isDynamic = false;
 
     // Forward received messages to properties (default behavior)
-    virtual void OnEvent(const Message& msg) override
-    {
-       // World::Get().DispatchToProperties(this, msg);
-    }
+    virtual void OnEvent(const Message& msg) override;
 
 	void Render() { SYSTEM_LOG << " WARNING GameObject::Render call: the visual component should handling the GameObject rendering (sprite, a,imation etc..) invalid call for GameObject: " << name << " at (" << position.x << ", " << position.y << ")\n"; }
 

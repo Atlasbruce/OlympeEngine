@@ -43,7 +43,7 @@ public:
     static EventManager& Get() { return GetInstance(); }
 
     // Post a message to be dispatched during the next Process() call.
-    void PostMessage(const Message& msg)
+    void AddMessage(const Message& msg)
     {
         std::lock_guard<std::mutex> lock(m_queueMutex);
         m_queue.push(msg);
@@ -55,7 +55,7 @@ public:
         std::vector<ListenerEntry> listenersCopy;
         {
             std::lock_guard<std::mutex> lock(m_listenersMutex);
-            auto it = m_listeners.find(msg.type);
+            auto it = m_listeners.find(msg.msg_type);
             if (it != m_listeners.end())
                 listenersCopy = it->second; // copy under lock
         }

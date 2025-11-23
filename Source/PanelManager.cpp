@@ -15,7 +15,7 @@ Notes:
 
 #include "PanelManager.h"
 #include "GameEngine.h"
-#include "system/log_sink.h"
+#include "system/EventManager.h"
 #include <mutex>
 
 #ifdef _WIN32
@@ -63,6 +63,8 @@ PanelManager& PanelManager::GetInstance()
 
 void PanelManager::Initialize()
 {
+    EventManager::Get().Register(this, EventType::Olympe_EventType_System_Any);
+
 #ifdef _WIN32
     // Register a small window class for panels
     WNDCLASSEX wc = {};
@@ -255,7 +257,7 @@ void PanelManager::AppendLog(const std::string& text)
 #endif
 }
 
-void PanelManager::Process()
+void PanelManager::HandleEvent(const SDL_Event* ev)
 {
 #ifdef _WIN32
     MSG msg;

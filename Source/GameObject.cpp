@@ -3,6 +3,7 @@
 #include "system/system_utils.h"
 #include <sstream>
 #include <iomanip>
+#include "system/system_consts.h"
 
 //for tests
 //#include <SDL3/SDL_render.h>
@@ -15,7 +16,16 @@ Object* GameObject::Create()
 {
 	return new GameObject();
 }
-
+//-------------------------------------------------------------
+void GameObject::OnEvent(const Message& msg)
+{
+    if (msg.struct_type == EventStructType::EventStructType_System_Windows)
+    {
+		SYSTEM_LOG << "Warning GameObject::OnEvent: received Windows event for GameObject: " << name << endl;
+        return;
+    }
+}
+//-------------------------------------------------------------
 std::string GameObject::Save() const
 {
     std::ostringstream ss;

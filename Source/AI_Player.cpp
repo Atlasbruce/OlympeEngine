@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Factory.h"
 #include "system/EventManager.h"
+#include "system/system_consts.h"
 #include <iostream>
 #include <cmath>
 
@@ -14,11 +15,11 @@ ObjectComponent* AI_Player::Create()
 AI_Player::AI_Player()
 {
     // Register to input-related events
-    EventManager::Get().Register(this, EventType::EventType_Joystick_AxisMotion, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Joystick_ButtonDown, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Joystick_ButtonUp, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Keyboard_KeyDown, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Keyboard_KeyUp, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Joystick_AxisMotion, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Joystick_ButtonDown, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Joystick_ButtonUp, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyDown, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyUp, [this](const Message& m){ this->OnEvent(m); });
 }
 
 AI_Player::~AI_Player()
@@ -65,32 +66,47 @@ void AI_Player::OnEvent(const Message& msg)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
-    switch (msg.type)
+    switch (msg.struct_type)
     {
-        case EventType::EventType_Joystick_AxisMotion:
+        case EventStructType::EventStructType_System_Windows:
         {
-            // controlId = axis index, value = normalized [-1..1]
-            if (msg.controlId == 0)
-                m_axisX = msg.value;
-            else if (msg.controlId == 1)
-                m_axisY = msg.value;
+            // Not handled here
             break;
         }
-
-        case EventType::EventType_Joystick_ButtonDown:
-        case EventType::EventType_Joystick_ButtonUp:
+        case EventStructType::EventStructType_SDL:
         {
-            // optionally map buttons to movement (e.g. dpad) if desired
-            // msg.controlId is button index, msg.state 1=down 0=up
-            // Not implemented here.
+            // Not handled here
             break;
         }
-
-        case EventType::EventType_Keyboard_KeyDown:
+        case EventStructType::EventStructType_Olympe:
         {
-            // msg.controlId contains SDL_Scancode
-            switch (static_cast<SDL_Scancode>(msg.controlId))
+            switch (msg.msg_type)
             {
+
+            case EventType::Olympe_EventType_Joystick_AxisMotion:
+            {
+                // controlId = axis index, value = normalized [-1..1]
+                if (msg.controlId == 0)
+                    m_axisX = msg.value;
+                else if (msg.controlId == 1)
+                    m_axisY = msg.value;
+                break;
+            }
+
+            case EventType::Olympe_EventType_Joystick_ButtonDown:
+            case EventType::Olympe_EventType_Joystick_ButtonUp:
+            {
+                // optionally map buttons to movement (e.g. dpad) if desired
+                // msg.controlId is button index, msg.state 1=down 0=up
+                // Not implemented here.
+                break;
+            }
+
+            case EventType::Olympe_EventType_Keyboard_KeyDown:
+            {
+                // msg.controlId contains SDL_Scancode
+                switch (static_cast<SDL_Scancode>(msg.controlId))
+                {
                 case SDL_SCANCODE_W:
                 case SDL_SCANCODE_UP:
                     m_keyUp = true; break;
@@ -105,14 +121,14 @@ void AI_Player::OnEvent(const Message& msg)
                     m_keyRight = true; break;
                 default:
                     break;
+                }
+                break;
             }
-            break;
-        }
 
-        case EventType::EventType_Keyboard_KeyUp:
-        {
-            switch (static_cast<SDL_Scancode>(msg.controlId))
+            case EventType::Olympe_EventType_Keyboard_KeyUp:
             {
+                switch (static_cast<SDL_Scancode>(msg.controlId))
+                {
                 case SDL_SCANCODE_W:
                 case SDL_SCANCODE_UP:
                     m_keyUp = false; break;
@@ -127,11 +143,13 @@ void AI_Player::OnEvent(const Message& msg)
                     m_keyRight = false; break;
                 default:
                     break;
+                }
+                break;
             }
-            break;
-        }
 
-        default:
-            break;
+            default:
+                break;
+            }
+        }
     }
 }

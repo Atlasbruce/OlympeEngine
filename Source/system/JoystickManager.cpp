@@ -163,18 +163,22 @@ void JoystickManager::CloseJoystick(SDL_JoystickID instance_id)
 //---------------------------------------------------------------------------------------------
 void JoystickManager::PostJoystickButtonEvent(SDL_JoystickID which, int button, bool down)
 {
-    Message msg(down ? EventType::EventType_Joystick_ButtonDown : EventType::EventType_Joystick_ButtonUp, this);
+    Message msg;
+    msg.msg_type = down ? EventType::Olympe_EventType_Joystick_ButtonDown : EventType::Olympe_EventType_Joystick_ButtonUp;
+    msg.sender = this;
     msg.deviceId = static_cast<int>(which);
     msg.controlId = button;
     msg.state = down ?1 :0;
     msg.value = down ?1.0f :0.0f;
 
-    EventManager::Get().PostMessage(msg);
+    EventManager::Get().AddMessage(msg);
 }
 //---------------------------------------------------------------------------------------------
 void JoystickManager::PostJoystickAxisEvent(SDL_JoystickID which, int axis, Sint16 value)
 {
-    Message msg(EventType::EventType_Joystick_AxisMotion, this);
+    Message msg;
+    msg.msg_type = EventType::Olympe_EventType_Joystick_AxisMotion;
+    msg.sender = this;
     msg.deviceId = static_cast<int>(which);
     msg.controlId = axis;
     msg.state =0;
@@ -184,5 +188,5 @@ void JoystickManager::PostJoystickAxisEvent(SDL_JoystickID which, int axis, Sint
     else normalized = (value /32768.0f);
     msg.value = normalized;
 
-    EventManager::Get().PostMessage(msg);
+    EventManager::Get().AddMessage(msg);
 }

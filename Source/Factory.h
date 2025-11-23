@@ -32,18 +32,18 @@ public:
 		name = "Factory";
 		SYSTEM_LOG << "Factory created and Initialized\n";
 		// register to event manager to receive object events
-		EventManager::Get().Register(this, EventType::EventType_Object_Create);
-		EventManager::Get().Register(this, EventType::EventType_Object_Destroy);
-		EventManager::Get().Register(this, EventType::EventType_Property_Add);
-		EventManager::Get().Register(this, EventType::EventType_Property_Remove);
+		EventManager::Get().Register(this, EventType::Olympe_EventType_Object_Create);
+		EventManager::Get().Register(this, EventType::Olympe_EventType_Object_Destroy);
+		EventManager::Get().Register(this, EventType::Olympe_EventType_Property_Add);
+		EventManager::Get().Register(this, EventType::Olympe_EventType_Property_Remove);
     };
     virtual ~Factory()
     {
         SYSTEM_LOG << "Factory destroyed\n";
-		EventManager::Get().Unregister(this, EventType::EventType_Object_Create);
-		EventManager::Get().Unregister(this, EventType::EventType_Object_Destroy);
-		EventManager::Get().Unregister(this, EventType::EventType_Property_Add);
-		EventManager::Get().Unregister(this, EventType::EventType_Property_Remove);
+		EventManager::Get().Unregister(this, EventType::Olympe_EventType_Object_Create);
+		EventManager::Get().Unregister(this, EventType::Olympe_EventType_Object_Destroy);
+		EventManager::Get().Unregister(this, EventType::Olympe_EventType_Property_Add);
+		EventManager::Get().Unregister(this, EventType::Olympe_EventType_Property_Remove);
 	}
 
     virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
@@ -117,9 +117,15 @@ public:
     // Event handling: respond to create/destroy/property messages
     virtual void OnEvent(const Message& msg) override
     {
-        switch (msg.type)
+        if (msg.struct_type != EventStructType::EventStructType_Olympe)
         {
-        case EventType::EventType_Object_Create:
+			SYSTEM_LOG << "Error Factory::OnEvent: received non-Olympe event, ignoring.\n";
+            return;
+        }
+
+        switch (msg.msg_type)
+        {
+        case EventType::Olympe_EventType_Object_Create:
             {
                 if (!msg.className.empty())
                 {
@@ -129,16 +135,18 @@ public:
                         if (!msg.objectName.empty()) o->name = msg.objectName;
                         // return the created object's UID via payload pointer (not ideal but works)
                         // we can't push directly a message back synchronously here; instead post a system message
-                        Message res(EventType::EventType_Default, this);
+                        Message res;
+                        res.msg_type = EventType::Olympe_EventType_Default;
+                        res.sender = this;
                         res.targetUid = o->GetUID();
                         res.objectName = o->name;
-                        EventManager::Get().PostMessage(res);
+                        EventManager::Get().AddMessage(res);
                         SYSTEM_LOG << "Factory created object '" << o->name << "' uid=" << o->GetUID() << "\n";
                     }
                 }
                 break;
             }
-        case EventType::EventType_Object_Destroy:
+        case EventType::Olympe_EventType_Object_Destroy:
             {
                 uint64_t uid = msg.targetUid;
                 if (uid !=0)
@@ -161,7 +169,7 @@ public:
                 }
                 break;
             }
-        case EventType::EventType_Property_Add:
+        case EventType::Olympe_EventType_Property_Add:
             {
                 uint64_t uid = msg.targetUid;
                 if (uid !=0 && !msg.ComponentType.empty())
@@ -174,7 +182,7 @@ public:
                 }
                 break;
             }
-        case EventType::EventType_Property_Remove:
+        case EventType::Olympe_EventType_Property_Remove:
             {
                 // Not implemented: requires property type lookup and removal API in World
                 SYSTEM_LOG << "Factory received Property_Remove for uid=" << msg.targetUid << " (not implemented)\n";

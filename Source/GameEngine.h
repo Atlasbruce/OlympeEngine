@@ -51,15 +51,7 @@ class GameEngine: public Object
 		void Initialize();
 
 		//-------------------------------------------------------------
-		void Process() override
-		{
-			// Calculate Delta Time for th entire engine cycle
-			const Uint64 now = SDL_GetTicks();
-			static Uint64 last_time = 0;
-			fDt = ((float)(now - last_time)) / 1000.0f;  /* seconds since last iteration */
-			last_time = now;
-
-		}
+		void Process() override;
 
 		//-------------------------------------------------------------
 	public:

@@ -23,15 +23,15 @@ VideoGame::VideoGame()
 
 	// Register to EventManager for game events
 	using EM = EventManager;
-	EM::Get().Register(this, EventType::EventType_Game_Pause, [this](const Message& m){ this->OnEvent(m); });
-	EM::Get().Register(this, EventType::EventType_Game_Resume, [this](const Message& m){ this->OnEvent(m); });
-	EM::Get().Register(this, EventType::EventType_Game_Quit, [this](const Message& m){ this->OnEvent(m); });
-	EM::Get().Register(this, EventType::EventType_Game_Restart, [this](const Message& m){ this->OnEvent(m); });
-	EM::Get().Register(this, EventType::EventType_Game_AddPlayer, [this](const Message& m){ this->OnEvent(m); });
-	EM::Get().Register(this, EventType::EventType_Game_RemovePlayer, [this](const Message& m){ this->OnEvent(m); });
-	EM::Get().Register(this, EventType::EventType_Game_TakeScreenshot, [this](const Message& m){ this->OnEvent(m); });
-	EM::Get().Register(this, EventType::EventType_Game_SaveState, [this](const Message& m){ this->OnEvent(m); });
-	EM::Get().Register(this, EventType::EventType_Game_LoadState, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_Pause, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_Resume, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_Quit, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_Restart, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_AddPlayer, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_RemovePlayer, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_TakeScreenshot, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_SaveState, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_LoadState, [this](const Message& m){ this->OnEvent(m); });
 
 	// Ensure default state is running
 	GameStateManager::SetState(GameState::GameState_Running);
@@ -124,25 +124,25 @@ bool VideoGame::RemovePlayer(const short PlayerID)
 // Event handler for EventManager messages registered in ctor
 void VideoGame::OnEvent(const Message& msg)
 {
-    switch (msg.type)
+    switch (msg.msg_type)
     {
-    case EventType::EventType_Game_Pause:
+    case EventType::Olympe_EventType_Game_Pause:
         Pause();
         SYSTEM_LOG << "VideoGame: Paused via event\n";
         break;
-    case EventType::EventType_Game_Resume:
+    case EventType::Olympe_EventType_Game_Resume:
         Resume();
         SYSTEM_LOG << "VideoGame: Resumed via event\n";
         break;
-    case EventType::EventType_Game_Quit:
+    case EventType::Olympe_EventType_Game_Quit:
         RequestQuit();
         SYSTEM_LOG << "VideoGame: Quit requested via event\n";
         break;
-    case EventType::EventType_Game_Restart:
+    case EventType::Olympe_EventType_Game_Restart:
         // Placeholder: restart current level (not implemented fully)
         SYSTEM_LOG << "VideoGame: Restart requested via event (not implemented)\n";
         break;
-    case EventType::EventType_Game_AddPlayer:
+    case EventType::Olympe_EventType_Game_AddPlayer:
     {
         // controlId (if provided) may request a specific player id; otherwise add next
         bool ok = false;
@@ -167,7 +167,7 @@ void VideoGame::OnEvent(const Message& msg)
         SYSTEM_LOG << "VideoGame: AddPlayer event -> " << (ok ? "success" : "failed") << "\n";
         break;
     }
-    case EventType::EventType_Game_RemovePlayer:
+    case EventType::Olympe_EventType_Game_RemovePlayer:
     {
         if (msg.controlId >= 0)
         {
@@ -177,25 +177,25 @@ void VideoGame::OnEvent(const Message& msg)
         }
         break;
     }
-    case EventType::EventType_Game_TakeScreenshot:
+    case EventType::Olympe_EventType_Game_TakeScreenshot:
         // Not implemented: placeholder
         SYSTEM_LOG << "VideoGame: TakeScreenshot event (not implemented)\n";
         break;
-    case EventType::EventType_Game_SaveState:
+    case EventType::Olympe_EventType_Game_SaveState:
     {
         int slot = msg.controlId;
         SYSTEM_LOG << "VideoGame: SaveState event slot=" << slot << "\n";
         SaveGame(slot);
         break;
     }
-    case EventType::EventType_Game_LoadState:
+    case EventType::Olympe_EventType_Game_LoadState:
     {
         int slot = msg.controlId;
         SYSTEM_LOG << "VideoGame: LoadState event slot=" << slot << "\n";
         LoadGame(slot);
         break;
     }
-    case EventType::EventType_Keyboard_KeyDown:
+    case EventType::Olympe_EventType_Keyboard_KeyDown:
     {
         // msg.controlId contains SDL_Scancode
         auto sc = static_cast<SDL_Scancode>(msg.controlId);
@@ -224,7 +224,7 @@ void VideoGame::OnEvent(const Message& msg)
         }
         break;
     }
-    case EventType::EventType_Keyboard_KeyUp:
+    case EventType::Olympe_EventType_Keyboard_KeyUp:
     {
         auto sc = static_cast<SDL_Scancode>(msg.controlId);
         if (sc == SDL_SCANCODE_KP_PLUS) m_kpPlusPressed = false;

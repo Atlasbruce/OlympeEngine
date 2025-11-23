@@ -3,15 +3,27 @@
 #include "system_consts.h"
 #include <string>
 #include <cstdint>
+#include "SDL_events.h"
+#include "windows.h"
 
-// Message struct in the global namespace. It contains an EventType so
+// Message struct in the global namespace. It contains an EventStructType so
 // existing code that uses "msg.type" continues to work. Additional fields
 // are provided for input events (joystick/keyboard/mouse) so message payload
 // can be transported via the EventManager.
 struct Message
 {
-    EventType type;
+	EventStructType struct_type = EventStructType::EventStructType_System_Windows;
+	EventType msg_type = EventType::Olympe_EventType_Any; // optional message identifier (e.g. OlympeMessage)
+	MSG *msg = nullptr; // optional Win32 MSG structure
+	SDL_Event* sdlEvent = nullptr; // optional SDL_Event structure
+
+    // Additional convenience fields for engine-level messages
     void* sender = nullptr; // optional sender pointer
+    uint64_t targetUid = 0; // target object UID for operations (create/destroy/add property)
+    std::string className; // class to create (for object creation)
+    std::string objectName; // desired object name
+    std::string ComponentType; // property type identifier (for property add/remove)
+    std::string propertyParams; // optional params serialized as string
 
     // Generic integer / float payload fields. For input events these are used as:
     //  - deviceId : joystick instance id, keyboard id, mouse id
@@ -26,14 +38,4 @@ struct Message
     float value2 = 0.0f;
 
     void* payload = nullptr; // optional pointer for extended data
-
-    // Additional convenience fields for engine-level messages
-    uint64_t targetUid = 0; // target object UID for operations (create/destroy/add property)
-    std::string className; // class to create (for object creation)
-    std::string objectName; // desired object name
-    std::string ComponentType; // property type identifier (for property add/remove)
-    std::string propertyParams; // optional params serialized as string
-
-    Message(EventType t = EventType::EventType_Default, void* s = nullptr)
-        : type(t), sender(s), deviceId(-1), controlId(-1), state(0), value(0.0f), value2(0.0f), payload(nullptr), targetUid(0) {}
 };

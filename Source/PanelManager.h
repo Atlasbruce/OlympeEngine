@@ -18,11 +18,12 @@ Notes:
 #pragma once
 
 #include "object.h"
-#include "system/system_utils.h"
+//#include "system/system_utils.h"
 #include <string>
 #include <unordered_map>
 #include <mutex>
 #include <vector>
+#include <SDL3/SDL.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -63,7 +64,7 @@ public:
     void AttachToSDLWindow(SDL_Window* sdlWindow);
 
     // Process internal tasks (on Windows: pump messages for tool windows)
-    void Process();
+    void HandleEvent(const SDL_Event* ev);
 
 	static int LogPanelWidth;
 	static int LogPanelHeight;

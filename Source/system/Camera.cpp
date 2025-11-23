@@ -11,22 +11,22 @@ void Camera::Initialize()
     CreateCameraForPlayer(0);
 
     // Register to camera-related events
-    EventManager::Get().Register(this, EventType::EventType_Camera_Shake, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Teleport, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_MoveToPosition, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_ZoomTo, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Reset, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Mode_SetBounds, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Mode_2D, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Mode_2_5D, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Mode_Isometric, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Target_Follow, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Target_Unfollow, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Target_SetOffset, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Target_ClearOffset, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Viewport_Add, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Viewport_Remove, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::EventType_Camera_Viewport_Clear, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Shake, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Teleport, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_MoveToPosition, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_ZoomTo, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Reset, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_SetBounds, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_2D, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_2_5D, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_Isometric, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_Follow, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_Unfollow, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_SetOffset, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_ClearOffset, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Viewport_Add, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Viewport_Remove, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Viewport_Clear, [this](const Message& m){ this->OnEvent(m); });
 
 	name = "Camera";
 
@@ -100,9 +100,9 @@ void Camera::OnEvent(const Message& msg)
     }
     CameraInstance& cam = it->second;
 
-    switch (msg.type)
+    switch (msg.msg_type)
     {
-        case EventType::EventType_Camera_Teleport:
+        case EventType::Olympe_EventType_Camera_Teleport:
         {
             // instant move camera to position (msg.value,msg.value2) or payload SDL_Point*
             if (msg.payload)
@@ -118,24 +118,24 @@ void Camera::OnEvent(const Message& msg)
             }
             break;
         }
-        case EventType::EventType_Camera_MoveToPosition:
+        case EventType::Olympe_EventType_Camera_MoveToPosition:
         {
             // For now perform instant move (no blending) - could be extended
             cam.x = msg.value;
             cam.y = msg.value2;
             break;
         }
-        case EventType::EventType_Camera_ZoomTo:
+        case EventType::Olympe_EventType_Camera_ZoomTo:
         {
             cam.zoom = msg.value;
             break;
         }
-        case EventType::EventType_Camera_Reset:
+        case EventType::Olympe_EventType_Camera_Reset:
         {
             cam.x = 0; cam.y = 0; cam.zoom = 1.0f; cam.offset = {0,0}; cam.followTarget = false; cam.targetUid = -1;
             break;
         }
-        case EventType::EventType_Camera_Mode_SetBounds:
+        case EventType::Olympe_EventType_Camera_Mode_SetBounds:
         {
             // bounds passed via payload pointer to SDL_Rect or via value/value2+controlId
             if (msg.payload)
@@ -153,13 +153,13 @@ void Camera::OnEvent(const Message& msg)
             }
             break;
         }
-        case EventType::EventType_Camera_Mode_2D:
+        case EventType::Olympe_EventType_Camera_Mode_2D:
             cam.mode = CameraInstance::Mode::Mode2D; break;
-        case EventType::EventType_Camera_Mode_2_5D:
+        case EventType::Olympe_EventType_Camera_Mode_2_5D:
             cam.mode = CameraInstance::Mode::Mode2_5D; break;
-        case EventType::EventType_Camera_Mode_Isometric:
+        case EventType::Olympe_EventType_Camera_Mode_Isometric:
             cam.mode = CameraInstance::Mode::ModeIsometric; break;
-        case EventType::EventType_Camera_Target_Follow:
+        case EventType::Olympe_EventType_Camera_Target_Follow:
         {
             // follow target specified by msg.controlId as UID or payload pointer to Object*
             cam.followTarget = true;
@@ -167,19 +167,19 @@ void Camera::OnEvent(const Message& msg)
             else if (msg.payload) cam.targetUid = *reinterpret_cast<int*>(msg.payload);
             break;
         }
-        case EventType::EventType_Camera_Target_Unfollow:
+        case EventType::Olympe_EventType_Camera_Target_Unfollow:
             cam.followTarget = false; cam.targetUid = -1; break;
-        case EventType::EventType_Camera_Target_SetOffset:
+        case EventType::Olympe_EventType_Camera_Target_SetOffset:
         {
             cam.offset.x = static_cast<int>(msg.value);
             cam.offset.y = static_cast<int>(msg.value2);
             break;
         }
-        case EventType::EventType_Camera_Target_ClearOffset:
+        case EventType::Olympe_EventType_Camera_Target_ClearOffset:
             cam.offset = {0,0}; break;
-        case EventType::EventType_Camera_Viewport_Add:
-        case EventType::EventType_Camera_Viewport_Remove:
-        case EventType::EventType_Camera_Viewport_Clear:
+        case EventType::Olympe_EventType_Camera_Viewport_Add:
+        case EventType::Olympe_EventType_Camera_Viewport_Remove:
+        case EventType::Olympe_EventType_Camera_Viewport_Clear:
             // viewport layout is handled by Viewport; nothing to do here by default
             break;
         default:

@@ -95,11 +95,16 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 {
     if (!event) return SDL_APP_CONTINUE;
 
-    // Forward to input submanagers (they will post EventManager messages)
-    JoystickManager::Get().HandleEvent(event);
-    KeyboardManager::Get().HandleEvent(event);
-    MouseManager::Get().HandleEvent(event);
-    EventManager::Get().PostMessage (EventManager::Message(static_cast<EventType>(event->type)));
+    //// Forward to input submanagers (they will post EventManager messages)
+    //JoystickManager::Get().HandleEvent(event);
+    //KeyboardManager::Get().HandleEvent(event);
+    //MouseManager::Get().HandleEvent(event);
+    //EventManager::Get().PostMessage (EventManager::Message(static_cast<EventType>(event->type)));
+
+    Message m;
+    m.struct_type = EventStructType::EventStructType_SDL;
+    m.sdlEvent = event;
+	EventManager::Get().AddMessage(m); // forward SDL event to EventManager
 
     switch (event->type)
     {
@@ -160,19 +165,77 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult SDL_AppIterate(void* appstate)
 {
-    /* figure out how long it's been since the last frame. */
-    GameEngine::Get().Process();
+    //-------------------------------------------------------------------
+	// PROCESSING PHASE -------------------------------------------------
+    //-------------------------------------------------------------------
+    
+    #ifdef _WIN32
+        // Poll and dispatch Win32 messages here and forward to EventManager
+        {
+            MSG msg;
+            while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+
+                Message m;
+                m.struct_type= EventStructType::EventStructType_System_Windows;
+                m.msg = &msg;
+
+				EventManager::Get().DispatchImmediate(m); // forward Win32 message to EventManager immediately because we are in a loop
+                /*
+                switch (msg.message)
+                {
+                case WM_KEYDOWN:
+                    m.type = EventType::Olympe_EventType_Keyboard_KeyDown;
+                    m.controlId = (int)msg.wParam;
+                    break;
+                case WM_KEYUP:
+                    m.type = EventType::Olympe_EventType_Keyboard_KeyUp;
+                    m.controlId = (int)msg.wParam;
+                    break;
+                case WM_LBUTTONDOWN:
+                case WM_RBUTTONDOWN:
+                case WM_MBUTTONDOWN:
+                    m.type = EventType::Olympe_EventType_Mouse_ButtonDown;
+                    m.deviceId = LOWORD(msg.lParam);
+                    m.controlId = HIWORD(msg.lParam);
+                    m.state = (int)msg.wParam;
+                    break;
+                case WM_LBUTTONUP:
+                case WM_RBUTTONUP:
+                case WM_MBUTTONUP:
+                    m.type = EventType::Olympe_EventType_Mouse_ButtonUp;
+                    m.deviceId = LOWORD(msg.lParam);
+                    m.controlId = HIWORD(msg.lParam);
+                    m.state = (int)msg.wParam;
+                    break;
+                case WM_MOUSEMOVE:
+                    m.type = EventType::Olympe_EventType_Mouse_Motion;
+                    m.deviceId = LOWORD(msg.lParam);
+                    m.controlId = HIWORD(msg.lParam);
+                    m.state = (int)msg.wParam;
+                    break;
+                default:
+                    break;
+                }
+            
+                EventManager::Get().DispatchImmediate(m);
+                /**/
+            }
+        }
+    #endif
+
+	GameEngine::Get().Process(); // update fDt here for all managers
+	World::Get().Process(); // process all world objects/components
+	EventManager::Get().Process(); // ensure queued events are dispatched to all registered listeners
 
     // If game state requests quit, end the application loop
-    if (GameStateManager::GetState() == GameState::GameState_Quit)
-    {
-        return SDL_APP_SUCCESS;
-    }
+    if (GameStateManager::GetState() == GameState::GameState_Quit) { return SDL_APP_SUCCESS; }
 
-    // Update world properties (events already processed inside World::Process)
-    
-    World::Get().Process();
-    EventManager::Get().Process();
+    //-------------------------------------------------------------------
+	// RENDER PHASE -----------------------------------------------------
+	//-------------------------------------------------------------------
 
     /* as you can see from this, rendering draws over whatever was drawn before it. */
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
