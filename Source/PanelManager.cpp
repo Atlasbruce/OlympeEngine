@@ -64,6 +64,8 @@ PanelManager& PanelManager::GetInstance()
 void PanelManager::Initialize()
 {
     EventManager::Get().Register(this, EventType::Olympe_EventType_System_Any);
+   // EventManager::Get().Register(this, EventType::Olympe_EventType_
+	EventManager::Get().Register(this, (EventType) IDM_PANEL_LOG);
 
 #ifdef _WIN32
     // Register a small window class for panels
@@ -341,6 +343,59 @@ void PanelManager::HandleEvent(const SDL_Event* ev)
 
 }
 
+void PanelManager::OnEvent(const Message& msg)
+{
+    switch (msg.struct_type)
+    {
+        case EventStructType::EventStructType_System_Windows:
+        {
+            switch (msg.msg_type)
+            {
+                case (EventType)IDM_PANEL_LOG:
+                case (EventType)IDM_WINDOW_LOG:
+                    if (IsPanelVisible("log_window")) HidePanel("log_window"); else ShowPanel("log_window");
+                    if (m_mainMenu) CheckMenuItem(m_mainMenu, IDM_WINDOW_LOG, MF_BYCOMMAND | (IsPanelVisible("log_window") ? MF_CHECKED : MF_UNCHECKED));
+                    break;
+                default:
+                    break;
+            }
+            break;
+		}
+        case EventStructType::EventStructType_SDL:
+        {
+            switch (msg.msg_type)
+            {
+                case (EventType)SDL_EVENT_JOYSTICK_ADDED:
+                {
+                    if (IsPanelVisible("inputs_inspector"))
+                    {
+                        auto pit = m_panels_.find("inputs_inspector");
+                        if (pit != m_panels_.end() && pit->second.hwndChild)
+                        {
+                            // call helper to update UI in InputsInspectorPanel.cpp
+                            extern void UpdateInputsInspectorUI(HWND hwndEdit);
+                            UpdateInputsInspectorUI(pit->second.hwndChild);
+                        }
+                    }
+                    break;
+                }
+            default:
+                break;
+            }
+		}
+		case EventStructType::EventStructType_Olympe:
+        {
+            switch (msg.msg_type)
+            {
+               
+            default:
+                break;
+            }
+        }
+	    default:
+            break;
+    }
+}
 #ifdef _WIN32
 void PanelManager::AttachToSDLWindow(SDL_Window* sdlWindow)
 {
