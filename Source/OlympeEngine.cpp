@@ -95,16 +95,19 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 {
     if (!event) return SDL_APP_CONTINUE;
 
-    //// Forward to input submanagers (they will post EventManager messages)
+    // Forward to input submanagers (they will post EventManager messages)
     //JoystickManager::Get().HandleEvent(event);
     //KeyboardManager::Get().HandleEvent(event);
     //MouseManager::Get().HandleEvent(event);
-    //EventManager::Get().PostMessage (EventManager::Message(static_cast<EventType>(event->type)));
+    //EventManager::Get().AddMessage (EventManager::Message(static_cast<EventStructType>(event->type)));
 
-    Message m;
+   /* Message m;
     m.struct_type = EventStructType::EventStructType_SDL;
+    m.msg_type = (EventType) event->type;
     m.sdlEvent = event;
-	EventManager::Get().AddMessage(m); // forward SDL event to EventManager
+	EventManager::Get().AddMessage(m); // forward SDL event to EventManager/**/
+
+    InputsManager::Get().HandleEvent(event); //facto
 
     switch (event->type)
     {
@@ -180,48 +183,11 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 
                 Message m;
                 m.struct_type= EventStructType::EventStructType_System_Windows;
+                m.msg_type = (EventType) msg.message;
                 m.msg = &msg;
 
 				EventManager::Get().DispatchImmediate(m); // forward Win32 message to EventManager immediately because we are in a loop
-                /*
-                switch (msg.message)
-                {
-                case WM_KEYDOWN:
-                    m.type = EventType::Olympe_EventType_Keyboard_KeyDown;
-                    m.controlId = (int)msg.wParam;
-                    break;
-                case WM_KEYUP:
-                    m.type = EventType::Olympe_EventType_Keyboard_KeyUp;
-                    m.controlId = (int)msg.wParam;
-                    break;
-                case WM_LBUTTONDOWN:
-                case WM_RBUTTONDOWN:
-                case WM_MBUTTONDOWN:
-                    m.type = EventType::Olympe_EventType_Mouse_ButtonDown;
-                    m.deviceId = LOWORD(msg.lParam);
-                    m.controlId = HIWORD(msg.lParam);
-                    m.state = (int)msg.wParam;
-                    break;
-                case WM_LBUTTONUP:
-                case WM_RBUTTONUP:
-                case WM_MBUTTONUP:
-                    m.type = EventType::Olympe_EventType_Mouse_ButtonUp;
-                    m.deviceId = LOWORD(msg.lParam);
-                    m.controlId = HIWORD(msg.lParam);
-                    m.state = (int)msg.wParam;
-                    break;
-                case WM_MOUSEMOVE:
-                    m.type = EventType::Olympe_EventType_Mouse_Motion;
-                    m.deviceId = LOWORD(msg.lParam);
-                    m.controlId = HIWORD(msg.lParam);
-                    m.state = (int)msg.wParam;
-                    break;
-                default:
-                    break;
-                }
-            
-                EventManager::Get().DispatchImmediate(m);
-                /**/
+      
             }
         }
     #endif

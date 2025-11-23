@@ -38,6 +38,8 @@ public:
         m_keyboardAssigned = false;
     }
 
+    virtual void HandleEvent(const SDL_Event* ev);
+
     // Bind a controller (joystick id) or keyboard (-1) to a player
     bool BindControllerToPlayer(short playerID, SDL_JoystickID controller)
     {

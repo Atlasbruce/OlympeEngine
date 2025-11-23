@@ -22,7 +22,7 @@ void KeyboardManager::Shutdown()
 
 void KeyboardManager::HandleEvent(const SDL_Event* ev)
 {
-    if (!ev) return;
+   // if (!ev) return; // useless because it is tested before function call
     switch (ev->type)
     {
         case SDL_EVENT_KEY_DOWN:

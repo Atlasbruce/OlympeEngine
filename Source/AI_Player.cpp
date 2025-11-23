@@ -75,7 +75,76 @@ void AI_Player::OnEvent(const Message& msg)
         }
         case EventStructType::EventStructType_SDL:
         {
-            // Not handled here
+            switch ((int)msg.msg_type)
+            {
+
+            case SDL_EVENT_JOYSTICK_AXIS_MOTION:
+            {
+                // controlId = axis index, value = normalized [-1..1]
+                if (msg.controlId == 0)
+                    m_axisX = msg.value;
+                else if (msg.controlId == 1)
+                    m_axisY = msg.value;
+                break;
+            }
+
+            case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+            case SDL_EVENT_JOYSTICK_BUTTON_UP:
+            {
+                // optionally map buttons to movement (e.g. dpad) if desired
+                // msg.controlId is button index, msg.state 1=down 0=up
+                // Not implemented here.
+                break;
+            }
+
+            case SDL_EVENT_KEY_DOWN:
+            {
+                // msg.controlId contains SDL_Scancode
+                switch (static_cast<SDL_Scancode>(msg.controlId))
+                {
+                case SDL_SCANCODE_W:
+                case SDL_SCANCODE_UP:
+                    m_keyUp = true; break;
+                case SDL_SCANCODE_S:
+                case SDL_SCANCODE_DOWN:
+                    m_keyDown = true; break;
+                case SDL_SCANCODE_A:
+                case SDL_SCANCODE_LEFT:
+                    m_keyLeft = true; break;
+                case SDL_SCANCODE_D:
+                case SDL_SCANCODE_RIGHT:
+                    m_keyRight = true; break;
+                default:
+                    break;
+                }
+                break;
+            }
+
+            case SDL_EVENT_KEY_UP:
+            {
+                switch (static_cast<SDL_Scancode>(msg.controlId))
+                {
+                case SDL_SCANCODE_W:
+                case SDL_SCANCODE_UP:
+                    m_keyUp = false; break;
+                case SDL_SCANCODE_S:
+                case SDL_SCANCODE_DOWN:
+                    m_keyDown = false; break;
+                case SDL_SCANCODE_A:
+                case SDL_SCANCODE_LEFT:
+                    m_keyLeft = false; break;
+                case SDL_SCANCODE_D:
+                case SDL_SCANCODE_RIGHT:
+                    m_keyRight = false; break;
+                default:
+                    break;
+                }
+                break;
+            }
+
+            default:
+                break;
+            }
             break;
         }
         case EventStructType::EventStructType_Olympe:

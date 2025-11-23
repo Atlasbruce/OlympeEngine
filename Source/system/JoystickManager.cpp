@@ -53,7 +53,7 @@ void JoystickManager::Process(float /*dt*/)
 //---------------------------------------------------------------------------------------------
 void JoystickManager::HandleEvent(const SDL_Event* ev)
 {
-    if (!ev) return;
+    //if (!ev) return; // useless because it is tested before function call
 
     switch (ev->type)
     {

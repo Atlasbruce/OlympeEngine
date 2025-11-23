@@ -12,7 +12,7 @@
 // can be transported via the EventManager.
 struct Message
 {
-	EventStructType struct_type = EventStructType::EventStructType_System_Windows;
+	EventStructType struct_type = EventStructType::EventStructType_Olympe;
 	EventType msg_type = EventType::Olympe_EventType_Any; // optional message identifier (e.g. OlympeMessage)
 	MSG *msg = nullptr; // optional Win32 MSG structure
 	SDL_Event* sdlEvent = nullptr; // optional SDL_Event structure
