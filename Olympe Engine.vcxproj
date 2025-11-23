@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="source\AI_Npc.cpp" />
     <ClCompile Include="Source\AI_Player.cpp" />
+    <ClCompile Include="Source\InputsInspectorPanel.cpp" />
     <ClCompile Include="Source\InputsManager.cpp" />
     <ClCompile Include="Source\OlympeSystem.cpp" />
     <ClCompile Include="Source\DataManager.cpp" />

@@ -50,6 +50,7 @@ public:
     void CreateLogWindow();
     void CreateObjectInspectorWindow();
     void CreateTreeViewWindow();
+    void CreateInputsInspectorWindow();
     void CreateMainMenuWindow();
 
     // Show/hide panels
@@ -97,6 +98,7 @@ public:
     };
 
     void CreatePanel(const std::string& id, const std::string& title);
+    void UpdateInputsInspectorList();
 
     std::unordered_map<std::string, Panel> m_panels_;
     std::vector<std::string> m_pendingLogs_; // logs received before the UI control exists
@@ -115,12 +117,14 @@ public:
         IDM_PANEL_LOG = 40001,
         IDM_PANEL_INSPECTOR = 40002,
         IDM_PANEL_TREE = 40003,
+        IDM_PANEL_INPUTS = 40004,
         IDM_FILE_NEW = 40100,
         IDM_FILE_LOAD = 40101,
         IDM_FILE_SAVE = 40102,
         IDM_WINDOW_OBJECT_INSPECTOR = 40110,
         IDM_WINDOW_OBJECT_HIERARCHY = 40111,
         IDM_WINDOW_LOG = 40112,
+        IDM_WINDOW_INPUTS = 40113,
         IDM_ABOUT = 40200
     };
 #endif

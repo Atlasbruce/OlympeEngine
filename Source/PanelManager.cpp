@@ -138,6 +138,22 @@ void PanelManager::CreatePanel(const std::string& id, const std::string& title)
                 p.hwndChild = hEdit;
             }
         }
+        else if (id == "inputs_inspector")
+        {
+            // create a multiline edit control to display joystick list
+            HWND hEdit = CreateWindowEx(0, TEXT("EDIT"), TEXT(""),
+                WS_CHILD | WS_VISIBLE | WS_VSCROLL | ES_MULTILINE | ES_AUTOVSCROLL | ES_READONLY,
+                0, 0, 400, 300, hwnd, nullptr, GetModuleHandle(nullptr), nullptr);
+            if (hEdit)
+            {
+                HFONT hFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
+                SendMessage(hEdit, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE,0));
+                p.hwndChild = hEdit;
+                // populate initial list
+                std::string text = "(initializing)\r\n";
+                SetWindowTextA(hEdit, text.c_str());
+            }
+        }
 
         ShowWindow(hwnd, SW_SHOW);
         if (p.hwndChild) ShowWindow(p.hwndChild, SW_SHOW);
@@ -194,9 +210,11 @@ void PanelManager::CreateMainMenuWindow()
     UINT fl = IsPanelVisible("log_window") ? MF_CHECKED : MF_UNCHECKED;
     UINT fi = IsPanelVisible("object_inspector") ? MF_CHECKED : MF_UNCHECKED;
     UINT ft = IsPanelVisible("tree_view") ? MF_CHECKED : MF_UNCHECKED;
+    UINT fi2 = IsPanelVisible("inputs_inspector") ? MF_CHECKED : MF_UNCHECKED;
     AppendMenuA(hOptions, MF_STRING | fl, IDM_WINDOW_LOG, "Display Log Window");
     AppendMenuA(hOptions, MF_STRING | fi, IDM_WINDOW_OBJECT_INSPECTOR, "Display Object Inspector");
     AppendMenuA(hOptions, MF_STRING | ft, IDM_WINDOW_OBJECT_HIERARCHY, "Display Objects Hierarchy");
+    AppendMenuA(hOptions, MF_STRING | fi2, IDM_WINDOW_INPUTS, "Display Inputs Inspector");
 
     HMENU hAbout = CreatePopupMenu();
     AppendMenuA(hAbout, MF_STRING, IDM_ABOUT, "About Olympe Engine");
@@ -283,6 +301,20 @@ void PanelManager::HandleEvent(const SDL_Event* ev)
                 if (IsPanelVisible("tree_view")) HidePanel("tree_view"); else ShowPanel("tree_view");
                 if (m_mainMenu) CheckMenuItem(m_mainMenu, IDM_WINDOW_OBJECT_HIERARCHY, MF_BYCOMMAND | (IsPanelVisible("tree_view") ? MF_CHECKED : MF_UNCHECKED));
                 continue;
+            case IDM_PANEL_INPUTS:
+            case IDM_WINDOW_INPUTS:
+                if (IsPanelVisible("inputs_inspector")) HidePanel("inputs_inspector"); else ShowPanel("inputs_inspector");
+                if (m_mainMenu) CheckMenuItem(m_mainMenu, IDM_WINDOW_INPUTS, MF_BYCOMMAND | (IsPanelVisible("inputs_inspector") ? MF_CHECKED : MF_UNCHECKED));
+                // Update list when shown
+                if (IsPanelVisible("inputs_inspector")) {
+                    auto pit = m_panels_.find("inputs_inspector");
+                    if (pit != m_panels_.end() && pit->second.hwndChild) {
+                        // call helper to update UI in InputsInspectorPanel.cpp
+                        extern void UpdateInputsInspectorUI(HWND hwndEdit);
+                        UpdateInputsInspectorUI(pit->second.hwndChild);
+                    }
+                }
+                continue;
             case IDM_FILE_NEW:
                 SYSTEM_LOG << "Menu: File->New selected (not implemented)\n";
                 continue;
@@ -304,6 +336,9 @@ void PanelManager::HandleEvent(const SDL_Event* ev)
         DispatchMessage(&msg);
     }
 #endif
+
+    // Handle SDL_Event Message
+
 }
 
 #ifdef _WIN32
@@ -389,4 +424,39 @@ namespace SystemLogSink
     {
         PanelManager::GetInstance().AppendLog(text);
     }
+}
+
+void PanelManager::CreateInputsInspectorWindow()
+{
+    CreatePanel("inputs_inspector", "Inputs Inspector");
+#ifdef _WIN32
+    auto it = m_panels_.find("inputs_inspector");
+    if (it != m_panels_.end() && it->second.hwnd)
+    {
+        HWND hwnd = it->second.hwnd;
+        // default size similar to inspector
+        SetWindowPos(hwnd, nullptr, 0, 0, InspectorPanelWidth, InspectorPanelHeight, SWP_NOMOVE | SWP_NOZORDER | SWP_SHOWWINDOW);
+        if (it->second.hwndChild)
+        {
+            RECT rc; GetClientRect(hwnd, &rc);
+            MoveWindow(it->second.hwndChild, 0, 0, rc.right - rc.left, rc.bottom - rc.top, TRUE);
+            // Position the panel near inspector by default
+            SetWindowPos(hwnd, nullptr, InspectorPanelPosX + 30, InspectorPanelPosY + 30, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
+        }
+        // populate initial list
+        UpdateInputsInspectorList();
+    }
+#endif
+}
+
+void PanelManager::UpdateInputsInspectorList()
+{
+#ifdef _WIN32
+    auto it = m_panels_.find("inputs_inspector");
+    if (it == m_panels_.end()) return;
+    if (!it->second.hwndChild) return;
+    // call helper defined in InputsInspectorPanel.cpp
+    extern void UpdateInputsInspectorUI(HWND hwndEdit);
+    UpdateInputsInspectorUI(it->second.hwndChild);
+#endif
 }

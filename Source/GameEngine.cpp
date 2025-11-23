@@ -30,6 +30,7 @@ void GameEngine::Initialize()
 	PanelManager::Get().CreateLogWindow();
 	PanelManager::Get().CreateObjectInspectorWindow();
 	PanelManager::Get().CreateTreeViewWindow();	
+	PanelManager::Get().CreateInputsInspectorWindow();
 	// By default keep them hidden; can be shown by the UI later
 }
 //-------------------------------------------------------------
