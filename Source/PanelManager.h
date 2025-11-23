@@ -49,6 +49,7 @@ public:
     void CreateLogWindow();
     void CreateObjectInspectorWindow();
     void CreateTreeViewWindow();
+    void CreateMainMenuWindow();
 
     // Show/hide panels
     void ShowPanel(const std::string& id);
@@ -88,6 +89,7 @@ public:
 #ifdef _WIN32
         HWND hwnd = nullptr;
         HWND hwndChild = nullptr; // child control (e.g. edit for log)
+        HMENU hMenu = nullptr; // optional per-panel menu
 #else
         void* hwnd = nullptr; // stub
 #endif

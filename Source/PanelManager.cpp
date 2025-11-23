@@ -20,14 +20,12 @@ Notes:
 
 #ifdef _WIN32
 #include <strsafe.h>
-// Attempt to include SDL_syswm.h only if available
 #if defined(__has_include)
   #if __has_include(<SDL3/SDL_syswm.h>)
     #include <SDL3/SDL_syswm.h>
     #define HAVE_SDL_SYSWM 1
   #endif
 #endif
-// Note: SDL_syswm.h may not be available in all SDKs/environments; handle fallback
 #endif
 
 //----------------------------------------------------------------------
@@ -49,7 +47,6 @@ int PanelManager::TreeViewPanelPosY = 150;
 PanelManager::PanelManager()
 {
     name = "PanelManager";
-	//SYSTEM_LOG << "PanelManager created\n"; // do not log too early the panel log window may not be created yet
 }
 
 PanelManager::~PanelManager()
@@ -83,13 +80,16 @@ void PanelManager::Initialize()
 
 void PanelManager::Shutdown()
 {
-   // std::lock_guard<std::mutex> lock(m_mutex_);
 #ifdef _WIN32
     for (auto &kv : m_panels_)
     {
         if (kv.second.hwnd) DestroyWindow(kv.second.hwnd);
         kv.second.hwnd = nullptr;
         kv.second.hwndChild = nullptr;
+        if (kv.second.hMenu) {
+            DestroyMenu(kv.second.hMenu);
+            kv.second.hMenu = nullptr;
+        }
     }
     if (m_mainMenu && m_mainHwnd) {
         SetMenu(m_mainHwnd, nullptr);
@@ -105,29 +105,25 @@ void PanelManager::Shutdown()
 
 void PanelManager::CreatePanel(const std::string& id, const std::string& title)
 {
-   // std::lock_guard<std::mutex> lock(m_mutex_);
     auto it = m_panels_.find(id);
     if (it != m_panels_.end()) return; // already created
 
     Panel p;
     p.id = id;
     p.title = title;
-    p.visible = true; // Panels visible by default
+    p.visible = true;
 
 #ifdef _WIN32
-    // create an overlapped window for tools (initially visible)
-    HWND parent = nullptr; // top-level floating
+    HWND parent = nullptr;
     HWND hwnd = CreateWindowEx(WS_EX_TOOLWINDOW | WS_EX_WINDOWEDGE, TEXT("OlympePanelClass"), TEXT(""),
         WS_OVERLAPPEDWINDOW & ~WS_MAXIMIZEBOX & ~WS_MINIMIZEBOX,
         CW_USEDEFAULT, CW_USEDEFAULT, 400, 300,
         parent, nullptr, GetModuleHandle(nullptr), nullptr);
     if (hwnd)
     {
-        // set window title
         SetWindowTextA(hwnd, title.c_str());
         p.hwnd = hwnd;
 
-        // if this is the log window, create a child multiline edit control
         if (id == "log_window")
         {
             HWND hEdit = CreateWindowEx(0, TEXT("EDIT"), TEXT(""),
@@ -135,14 +131,12 @@ void PanelManager::CreatePanel(const std::string& id, const std::string& title)
                 0, 0, 400, 300, hwnd, nullptr, GetModuleHandle(nullptr), nullptr);
             if (hEdit)
             {
-                // set a readable font
                 HFONT hFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
                 SendMessage(hEdit, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE,0));
                 p.hwndChild = hEdit;
             }
         }
 
-        // show the panel window by default
         ShowWindow(hwnd, SW_SHOW);
         if (p.hwndChild) ShowWindow(p.hwndChild, SW_SHOW);
     }
@@ -159,15 +153,12 @@ void PanelManager::CreateLogWindow()
     if (it != m_panels_.end() && it->second.hwnd)
     {
         HWND hwnd = it->second.hwnd;
-		// Set size from static variables
         SetWindowPos(hwnd, nullptr, 0, 0, LogPanelWidth, LogPanelHeight, SWP_NOMOVE | SWP_NOZORDER | SWP_SHOWWINDOW);
-        // Resize child edit control to fit client area
         if (it->second.hwndChild)
         {
             RECT rc; GetClientRect(hwnd, &rc);
             MoveWindow(it->second.hwndChild, 0, 0, rc.right - rc.left, rc.bottom - rc.top, TRUE);
-			// Set child window position from static variables
-			SetWindowPos(hwnd, nullptr, LogPanelPosX, LogPanelPosY, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
+            SetWindowPos(hwnd, nullptr, LogPanelPosX, LogPanelPosY, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW);
         }
     }
 #endif
@@ -183,9 +174,45 @@ void PanelManager::CreateTreeViewWindow()
     CreatePanel("tree_view", "Tree View");
 }
 
+void PanelManager::CreateMainMenuWindow()
+{
+    CreatePanel("main_menu", "Olympe Main Menu");
+#ifdef _WIN32
+    auto it = m_panels_.find("main_menu");
+    if (it == m_panels_.end() || !it->second.hwnd) return;
+
+    HWND hwnd = it->second.hwnd;
+
+    HMENU hFile = CreatePopupMenu();
+    AppendMenuA(hFile, MF_STRING, IDM_FILE_NEW, "New\tCtrl+N");
+    AppendMenuA(hFile, MF_STRING, IDM_FILE_LOAD, "Load\tCtrl+L");
+    AppendMenuA(hFile, MF_STRING, IDM_FILE_SAVE, "Save\tCtrl+S");
+
+    HMENU hOptions = CreatePopupMenu();
+    UINT fl = IsPanelVisible("log_window") ? MF_CHECKED : MF_UNCHECKED;
+    UINT fi = IsPanelVisible("object_inspector") ? MF_CHECKED : MF_UNCHECKED;
+    UINT ft = IsPanelVisible("tree_view") ? MF_CHECKED : MF_UNCHECKED;
+    AppendMenuA(hOptions, MF_STRING | fl, IDM_WINDOW_LOG, "Display Log Window");
+    AppendMenuA(hOptions, MF_STRING | fi, IDM_WINDOW_OBJECT_INSPECTOR, "Display Object Inspector");
+    AppendMenuA(hOptions, MF_STRING | ft, IDM_WINDOW_OBJECT_HIERARCHY, "Display Objects Hierarchy");
+
+    HMENU hAbout = CreatePopupMenu();
+    AppendMenuA(hAbout, MF_STRING, IDM_ABOUT, "About Olympe Engine");
+
+    HMENU hMenu = CreateMenu();
+    AppendMenuA(hMenu, MF_POPUP, (UINT_PTR)hFile, "File");
+    AppendMenuA(hMenu, MF_POPUP, (UINT_PTR)hOptions, "Options");
+    AppendMenuA(hMenu, MF_POPUP, (UINT_PTR)hAbout, "About");
+
+    SetMenu(hwnd, hMenu);
+    it->second.hMenu = hMenu;
+    m_mainMenu = hMenu;
+    m_mainHwnd = hwnd;
+#endif
+}
+
 void PanelManager::ShowPanel(const std::string& id)
 {
-   // std::lock_guard<std::mutex> lock(m_mutex_);
     auto it = m_panels_.find(id);
     if (it == m_panels_.end()) return;
     it->second.visible = true;
@@ -197,7 +224,6 @@ void PanelManager::ShowPanel(const std::string& id)
 
 void PanelManager::HidePanel(const std::string& id)
 {
-   // std::lock_guard<std::mutex> lock(m_mutex_);
     auto it = m_panels_.find(id);
     if (it == m_panels_.end()) return;
     it->second.visible = false;
@@ -209,7 +235,6 @@ void PanelManager::HidePanel(const std::string& id)
 
 bool PanelManager::IsPanelVisible(const std::string& id) const
 {
-   // std::lock_guard<std::mutex> lock(m_mutex_);
     auto it = m_panels_.find(id);
     if (it == m_panels_.end()) return false;
     return it->second.visible;
@@ -217,20 +242,15 @@ bool PanelManager::IsPanelVisible(const std::string& id) const
 
 void PanelManager::AppendLog(const std::string& text)
 {
-    //std::lock_guard<std::mutex> lock(m_mutex_);
     auto it = m_panels_.find("log_window");
     if (it == m_panels_.end()) return;
 #ifdef _WIN32
     HWND hEdit = it->second.hwndChild;
     if (!hEdit) return;
-    // append text in a thread-safe way using EM_REPLACESEL
-    // ensure we append at the end
     int len = GetWindowTextLength(hEdit);
     SendMessage(hEdit, EM_SETSEL, (WPARAM)len, (LPARAM)len);
-    // Replace selection with new text
-    std::string s = text; // ensure null-terminated
+    std::string s = text;
     SendMessageA(hEdit, EM_REPLACESEL, FALSE, (LPARAM)s.c_str());
-    // scroll caret into view
     SendMessage(hEdit, EM_SCROLLCARET, 0, 0);
 #endif
 }
@@ -238,12 +258,10 @@ void PanelManager::AppendLog(const std::string& text)
 void PanelManager::Process()
 {
 #ifdef _WIN32
-    // simple message pump for panel windows (non-blocking)
     MSG msg;
     while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
-        // Intercept menu commands from main window if attached
-        if (msg.message == WM_COMMAND && m_mainHwnd != nullptr && (msg.hwnd == m_mainHwnd || msg.hwnd == nullptr))
+        if (msg.message == WM_COMMAND)
         {
             int id = LOWORD(msg.wParam);
             switch (id)
@@ -251,17 +269,19 @@ void PanelManager::Process()
             case IDM_PANEL_LOG:
             case IDM_WINDOW_LOG:
                 if (IsPanelVisible("log_window")) HidePanel("log_window"); else ShowPanel("log_window");
-                continue; // do not dispatch
+                if (m_mainMenu) CheckMenuItem(m_mainMenu, IDM_WINDOW_LOG, MF_BYCOMMAND | (IsPanelVisible("log_window") ? MF_CHECKED : MF_UNCHECKED));
+                continue;
             case IDM_PANEL_INSPECTOR:
             case IDM_WINDOW_OBJECT_INSPECTOR:
                 if (IsPanelVisible("object_inspector")) HidePanel("object_inspector"); else ShowPanel("object_inspector");
+                if (m_mainMenu) CheckMenuItem(m_mainMenu, IDM_WINDOW_OBJECT_INSPECTOR, MF_BYCOMMAND | (IsPanelVisible("object_inspector") ? MF_CHECKED : MF_UNCHECKED));
                 continue;
             case IDM_PANEL_TREE:
             case IDM_WINDOW_OBJECT_HIERARCHY:
                 if (IsPanelVisible("tree_view")) HidePanel("tree_view"); else ShowPanel("tree_view");
+                if (m_mainMenu) CheckMenuItem(m_mainMenu, IDM_WINDOW_OBJECT_HIERARCHY, MF_BYCOMMAND | (IsPanelVisible("tree_view") ? MF_CHECKED : MF_UNCHECKED));
                 continue;
             case IDM_FILE_NEW:
-                // TODO: implement new level/object creation
                 SYSTEM_LOG << "Menu: File->New selected (not implemented)\n";
                 continue;
             case IDM_FILE_LOAD:
@@ -271,9 +291,7 @@ void PanelManager::Process()
                 SYSTEM_LOG << "Menu: File->Save selected (not implemented)\n";
                 continue;
             case IDM_ABOUT:
-                {
-                    MessageBoxA(m_mainHwnd, "Olympe Engine V2\n\nNicolas Chereau - 2025-2026\n\n n chereau@gmail.com\nhttps://github.com/Atlasbruce/Olympe-Engine/", "About Olympe Engine", MB_OK | MB_ICONINFORMATION);
-                }
+                MessageBoxA(m_mainHwnd, "Olympe Engine V2\n\nNicolas Chereau - 2025-2026\n\n n chereau@gmail.com\nhttps://github.com/Atlasbruce/Olympe-Engine/", "About Olympe Engine", MB_OK | MB_ICONINFORMATION);
                 continue;
             default:
                 break;
@@ -294,7 +312,6 @@ void PanelManager::AttachToSDLWindow(SDL_Window* sdlWindow)
     SDL_SysWMinfo wmi;
     SDL_VERSION(&wmi.version);
     if (!SDL_GetWindowWMInfo(sdlWindow, &wmi)) {
-        // fallback: can't attach
         return;
     }
 
@@ -303,23 +320,19 @@ void PanelManager::AttachToSDLWindow(SDL_Window* sdlWindow)
 
     m_mainHwnd = hwnd;
 
-    // create File submenu
     HMENU hFile = CreatePopupMenu();
     AppendMenuA(hFile, MF_STRING, IDM_FILE_NEW, "New\tCtrl+N");
     AppendMenuA(hFile, MF_STRING, IDM_FILE_LOAD, "Load\tCtrl+L");
     AppendMenuA(hFile, MF_STRING, IDM_FILE_SAVE, "Save\tCtrl+S");
 
-    // create Window submenu
     HMENU hWindow = CreatePopupMenu();
     AppendMenuA(hWindow, MF_STRING, IDM_WINDOW_OBJECT_INSPECTOR, "Object Inspector\tF2");
     AppendMenuA(hWindow, MF_STRING, IDM_WINDOW_OBJECT_HIERARCHY, "Object Hierarchy\tF3");
     AppendMenuA(hWindow, MF_STRING, IDM_WINDOW_LOG, "Log\tF1");
 
-    // create About submenu
     HMENU hAbout = CreatePopupMenu();
     AppendMenuA(hAbout, MF_STRING, IDM_ABOUT, "About Olympe Engine");
 
-    // create main menu
     HMENU hMenu = CreateMenu();
     AppendMenuA(hMenu, MF_POPUP, (UINT_PTR)hFile, "File");
     AppendMenuA(hMenu, MF_POPUP, (UINT_PTR)hWindow, "Window");
@@ -328,11 +341,10 @@ void PanelManager::AttachToSDLWindow(SDL_Window* sdlWindow)
     SetMenu(hwnd, hMenu);
     m_mainMenu = hMenu;
 #else
-    (void)sdlWindow; // no-op when SDL_syswm not available
+    (void)sdlWindow;
 #endif
 }
 #endif
-
 
 #if defined(_WIN32)
 LRESULT CALLBACK PanelManager::PanelWndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -344,7 +356,6 @@ LRESULT CALLBACK PanelManager::PanelWndProc(HWND hwnd, UINT msg, WPARAM wParam, 
         return 0;
     case WM_SIZE:
     {
-        // resize child content if present
         PanelManager& mgr = PanelManager::GetInstance();
         std::lock_guard<std::mutex> lock(mgr.m_mutex_);
         for (auto &kv : mgr.m_panels_)
@@ -370,7 +381,6 @@ LRESULT CALLBACK PanelManager::PanelWndProc(HWND hwnd, UINT msg, WPARAM wParam, 
 }
 #endif
 
-// bridge for the log sink to call into PanelManager implementation
 namespace SystemLogSink
 {
     void AppendToLogWindow(const std::string& text)
