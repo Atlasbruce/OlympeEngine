@@ -63,8 +63,13 @@ PanelManager& PanelManager::GetInstance()
 
 void PanelManager::Initialize()
 {
-    EventManager::Get().Register(this, EventType::Olympe_EventType_System_Any);
-   // EventManager::Get().Register(this, EventType::Olympe_EventType_
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Joystick_Connected);
+	EventManager::Get().Register(this, EventType::Olympe_EventType_Joystick_Disconnected);
+	EventManager::Get().Register(this, EventType::Olympe_EventType_Keyboard_Connected);
+	EventManager::Get().Register(this, EventType::Olympe_EventType_Keyboard_Disconnected);
+	EventManager::Get().Register(this, EventType::Olympe_EventType_Mouse_Connected);
+	EventManager::Get().Register(this, EventType::Olympe_EventType_Mouse_Disconnected);
+
 	EventManager::Get().Register(this, (EventType) IDM_PANEL_LOG);
 
 #ifdef _WIN32
@@ -342,7 +347,7 @@ void PanelManager::HandleEvent(const SDL_Event* ev)
     // Handle SDL_Event Message
 
 }
-
+//----------------------------------------------------------------------
 void PanelManager::OnEvent(const Message& msg)
 {
     switch (msg.struct_type)
@@ -365,6 +370,7 @@ void PanelManager::OnEvent(const Message& msg)
         {
             switch (msg.msg_type)
             {
+                case (EventType) SDL_EVENT_JOYSTICK_REMOVED:
                 case (EventType)SDL_EVENT_JOYSTICK_ADDED:
                 {
                     if (IsPanelVisible("inputs_inspector"))

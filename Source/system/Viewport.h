@@ -12,6 +12,15 @@
 // 2 players: vertical split (2 columns)
 // 3 players: vertical split (3 columns)
 // 4 players: 2x2 grid
+enum class ViewportLayout
+{
+    ViewportLayout_Grid1x1,
+    ViewportLayout_Grid2x1,
+    ViewportLayout_Grid3x1,
+    ViewportLayout_Grid2x2,
+	ViewportLayout_Grid3x2,
+	ViewportLayout_Grid4x2
+};
 
 class Viewport : public Object
 {
@@ -32,7 +41,7 @@ public:
 
     void Initialize(int w, int h);
     void Shutdown();
-    bool AddPlayer(short playerID);
+    bool AddPlayer(short playerID, ViewportLayout viewportLayout);
     bool RemovePlayer(short playerID);
     void SetSize(int w, int h);
     int GetPlayerCount() const { return static_cast<int>(m_players.size() == 0 ? 1 : m_players.size()); }
@@ -51,4 +60,6 @@ private:
     std::vector<SDL_FRect> m_viewRects;
     std::vector<short> m_players; // ordered list of player ids
     std::unordered_map<short,int> m_playerIndexMap;
+
+	ViewportLayout m_currentLayout = ViewportLayout::ViewportLayout_Grid1x1;
 };

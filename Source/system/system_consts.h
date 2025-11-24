@@ -55,13 +55,21 @@ enum class EventType
 	Olympe_EventType_Joystick_AxisMotion,
 	Olympe_EventType_Joystick_ButtonDown,
 	Olympe_EventType_Joystick_ButtonUp,
+	Olympe_EventType_Joystick_Connected,
+	Olympe_EventType_Joystick_Disconnected,
 
 	Olympe_EventType_Keyboard_KeyDown,
 	Olympe_EventType_Keyboard_KeyUp,
+	Olympe_EventType_Keyboard_Connected,
+	Olympe_EventType_Keyboard_Disconnected,
+
 
 	Olympe_EventType_Mouse_ButtonDown,
 	Olympe_EventType_Mouse_ButtonUp,
 	Olympe_EventType_Mouse_Motion,
+	Olympe_EventType_Mouse_Wheel,
+	Olympe_EventType_Mouse_Connected,
+	Olympe_EventType_Mouse_Disconnected,
 
 	// -------- CAMERA EVENT ----------
 	Olympe_EventType_Camera_Shake, // shake camera with given parameters intensity, duration (milliseconds)

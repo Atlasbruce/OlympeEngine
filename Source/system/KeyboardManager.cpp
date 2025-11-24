@@ -36,7 +36,8 @@ void KeyboardManager::HandleEvent(const SDL_Event* ev)
 
 void KeyboardManager::PostKeyEvent(SDL_KeyboardEvent const& ke)
 {
-    Message msg; 
+    Message msg;
+    msg.struct_type = EventStructType::EventStructType_Olympe;
     msg.msg_type = ke.down ? EventType::Olympe_EventType_Keyboard_KeyDown : EventType::Olympe_EventType_Keyboard_KeyUp;
     msg.sender = this;
     msg.deviceId = static_cast<int>(ke.which);

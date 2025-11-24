@@ -13,7 +13,7 @@ JoystickManager& JoystickManager::GetInstance()
 //---------------------------------------------------------------------------------------------
 void JoystickManager::Initialize()
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
+  //  std::lock_guard<std::mutex> lock(m_mutex);
 
     // Enable joystick events so SDL will post them to the event queue
     SDL_SetJoystickEventsEnabled(true);
@@ -33,7 +33,7 @@ void JoystickManager::Initialize()
 //---------------------------------------------------------------------------------------------
 void JoystickManager::Shutdown()
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
+    //std::lock_guard<std::mutex> lock(m_mutex);
     for (auto &kv : m_joysticks)
     {
         if (kv.second.joystick)
@@ -57,6 +57,14 @@ void JoystickManager::HandleEvent(const SDL_Event* ev)
 
     switch (ev->type)
     {
+        case SDL_EVENT_GAMEPAD_ADDED:
+        {
+            // Gamepad added - we can open the underlying joystick if needed
+            SDL_JoystickID id = ev->gdevice.which;
+            OpenJoystick(id);
+            SYSTEM_LOG << "Gamepad added id=" << id << "\n";
+            break;
+		}
         case SDL_EVENT_JOYSTICK_ADDED:
         {
             SDL_JoystickID id = ev->jdevice.which;
@@ -64,6 +72,14 @@ void JoystickManager::HandleEvent(const SDL_Event* ev)
             SYSTEM_LOG << "Joystick added id=" << id << "\n";
             break;
         }
+        case SDL_EVENT_GAMEPAD_REMOVED:
+        {
+            // Gamepad removed - we can close the underlying joystick if needed
+            SDL_JoystickID id = ev->gdevice.which;
+            CloseJoystick(id);
+            SYSTEM_LOG << "Gamepad removed id=" << id << "\n";
+            break;
+		}
         case SDL_EVENT_JOYSTICK_REMOVED:
         {
             SDL_JoystickID id = ev->jdevice.which;
@@ -71,11 +87,27 @@ void JoystickManager::HandleEvent(const SDL_Event* ev)
             SYSTEM_LOG << "Joystick removed id=" << id << "\n";
             break;
         }
+        case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+        {
+            SDL_JoystickID which = ev->gbutton.which;
+            int button = ev->gbutton.button;
+            bool down = ev->gbutton.down;
+            PostJoystickButtonEvent(which, button, down);
+            break;
+		}
         case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
         {
             SDL_JoystickID which = ev->jbutton.which;
             int button = ev->jbutton.button;
             bool down = ev->jbutton.down;
+            PostJoystickButtonEvent(which, button, down);
+            break;
+        }
+        case SDL_EVENT_GAMEPAD_BUTTON_UP:
+        {
+            SDL_JoystickID which = ev->gbutton.which;
+            int button = ev->gbutton.button;
+            bool down = ev->gbutton.down;
             PostJoystickButtonEvent(which, button, down);
             break;
         }
@@ -87,6 +119,14 @@ void JoystickManager::HandleEvent(const SDL_Event* ev)
             PostJoystickButtonEvent(which, button, down);
             break;
         }
+        case SDL_EVENT_GAMEPAD_AXIS_MOTION:
+        {
+            SDL_JoystickID which = ev->gaxis.which;
+            int axis = ev->gaxis.axis;
+            Sint16 value = ev->gaxis.value;
+            PostJoystickAxisEvent(which, axis, value);
+			break;
+		}
         case SDL_EVENT_JOYSTICK_AXIS_MOTION:
         {
             SDL_JoystickID which = ev->jaxis.which;
@@ -95,6 +135,7 @@ void JoystickManager::HandleEvent(const SDL_Event* ev)
             PostJoystickAxisEvent(which, axis, value);
             break;
         }
+
         default:
             break;
     }
@@ -102,7 +143,7 @@ void JoystickManager::HandleEvent(const SDL_Event* ev)
 //---------------------------------------------------------------------------------------------
 std::vector<SDL_JoystickID> JoystickManager::GetConnectedJoysticks()
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
+   // std::lock_guard<std::mutex> lock(m_mutex);
     std::vector<SDL_JoystickID> res;
     res.reserve(m_joysticks.size());
     for (auto &kv : m_joysticks) res.push_back(kv.first);
@@ -111,13 +152,13 @@ std::vector<SDL_JoystickID> JoystickManager::GetConnectedJoysticks()
 //---------------------------------------------------------------------------------------------
 bool JoystickManager::IsJoystickConnected(SDL_JoystickID id)
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
+   // std::lock_guard<std::mutex> lock(m_mutex);
     return m_joysticks.find(id) != m_joysticks.end();
 }
 //---------------------------------------------------------------------------------------------
 void JoystickManager::OpenJoystick(SDL_JoystickID instance_id)
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
+   // std::lock_guard<std::mutex> lock(m_mutex);
     if (m_joysticks.find(instance_id) != m_joysticks.end()) return; // already open
 
     SDL_Joystick* js = SDL_OpenJoystick(instance_id);
@@ -150,7 +191,7 @@ void JoystickManager::OpenJoystick(SDL_JoystickID instance_id)
 //---------------------------------------------------------------------------------------------
 void JoystickManager::CloseJoystick(SDL_JoystickID instance_id)
 {
-    std::lock_guard<std::mutex> lock(m_mutex);
+  //  std::lock_guard<std::mutex> lock(m_mutex);
     auto it = m_joysticks.find(instance_id);
     if (it == m_joysticks.end()) return;
 
@@ -164,6 +205,7 @@ void JoystickManager::CloseJoystick(SDL_JoystickID instance_id)
 void JoystickManager::PostJoystickButtonEvent(SDL_JoystickID which, int button, bool down)
 {
     Message msg;
+	msg.struct_type = EventStructType::EventStructType_Olympe;
     msg.msg_type = down ? EventType::Olympe_EventType_Joystick_ButtonDown : EventType::Olympe_EventType_Joystick_ButtonUp;
     msg.sender = this;
     msg.deviceId = static_cast<int>(which);
@@ -177,6 +219,7 @@ void JoystickManager::PostJoystickButtonEvent(SDL_JoystickID which, int button, 
 void JoystickManager::PostJoystickAxisEvent(SDL_JoystickID which, int axis, Sint16 value)
 {
     Message msg;
+    msg.struct_type = EventStructType::EventStructType_Olympe;
     msg.msg_type = EventType::Olympe_EventType_Joystick_AxisMotion;
     msg.sender = this;
     msg.deviceId = static_cast<int>(which);
@@ -189,4 +232,14 @@ void JoystickManager::PostJoystickAxisEvent(SDL_JoystickID which, int axis, Sint
     msg.value = normalized;
 
     EventManager::Get().AddMessage(msg);
+}
+//---------------------------------------------------------------------------------------------
+void JoystickManager::PostJoystickConnectedEvent(SDL_JoystickID which, bool bconnected)
+{
+	Message msg;
+    msg.struct_type = EventStructType::EventStructType_Olympe;
+    msg.msg_type = bconnected ? EventType::Olympe_EventType_Joystick_Connected : EventType::Olympe_EventType_Joystick_Disconnected;
+    msg.sender = this;
+    msg.deviceId = static_cast<int>(which);
+	EventManager::Get().AddMessage(msg);
 }

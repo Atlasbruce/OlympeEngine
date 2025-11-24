@@ -5,6 +5,9 @@
 #include "system/system_consts.h"
 #include <iostream>
 #include <cmath>
+#include "InputsManager.h"
+
+int AI_Player::iPlayerCounterID = 0;
 
 bool AI_Player::FactoryRegistered =  Factory::Get().Register("AI_Player", AI_Player::Create);
 ObjectComponent* AI_Player::Create()
@@ -20,10 +23,19 @@ AI_Player::AI_Player()
     EventManager::Get().Register(this, EventType::Olympe_EventType_Joystick_ButtonUp, [this](const Message& m){ this->OnEvent(m); });
     EventManager::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyDown, [this](const Message& m){ this->OnEvent(m); });
     EventManager::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyUp, [this](const Message& m){ this->OnEvent(m); });
+
+	m_PlayerID = iPlayerCounterID++;
+
+	InputsManager::Get().AutoBindControllerToPlayer(m_PlayerID); // ensure inputs are bound
+
+	if (InputsManager::Get().IsPlayerBound(m_PlayerID))
+	    m_ControllerID = InputsManager::Get().GetPlayerBinding(m_PlayerID);
 }
 
 AI_Player::~AI_Player()
 {
+	iPlayerCounterID--;
+
     // Unregister all callbacks associated with this instance
     EventManager::Get().UnregisterAll(this);
 }
@@ -55,8 +67,6 @@ void AI_Player::Process()
         if (m_keyDown) vy = m_keyDown ? m_speed : vy;
     }
 
-    //m_posX += vx * fDt;
-    //m_posY += vy * fDt;
     gao->position.x += vx * fDt;
     gao->position.y += vy * fDt;
 
@@ -70,11 +80,20 @@ void AI_Player::OnEvent(const Message& msg)
     {
         case EventStructType::EventStructType_System_Windows:
         {
+			// Error: Windows messages not handled here
+			SYSTEM_LOG << "Warning AI_Player::OnEvent: received Windows event for GameObject: " << name << endl;
             // Not handled here
             break;
         }
         case EventStructType::EventStructType_SDL:
         {
+			/// Error: SDL messages not handled here
+			SYSTEM_LOG << "Warning AI_Player::OnEvent: received SDL event for GameObject: " << name << endl;
+            /*
+            // is the deviceId matching our controller?
+            if (msg.deviceId != m_ControllerID)
+                break;
+            
             switch ((int)msg.msg_type)
             {
 
@@ -144,11 +163,15 @@ void AI_Player::OnEvent(const Message& msg)
 
             default:
                 break;
-            }
+            }/**/
             break;
         }
         case EventStructType::EventStructType_Olympe:
         {
+            // is the deviceId matching our controller?
+            if (msg.deviceId != m_ControllerID)
+                break;
+
             switch (msg.msg_type)
             {
 

@@ -39,6 +39,7 @@ void MouseManager::HandleEvent(const SDL_Event* ev)
 void MouseManager::PostButtonEvent(const SDL_MouseButtonEvent& be)
 {
     Message msg;
+	msg.struct_type = EventStructType::EventStructType_Olympe;
     msg.msg_type = be.down ? EventType::Olympe_EventType_Mouse_ButtonDown : EventType::Olympe_EventType_Mouse_ButtonUp;
     msg.sender = this;
     msg.deviceId = static_cast<int>(be.which);

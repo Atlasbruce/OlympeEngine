@@ -45,7 +45,7 @@ void Viewport::Shutdown()
 }
 //-------------------------------------------------------------
 // Add a player id (0..3). Returns true if added, false if already present or full
-bool Viewport::AddPlayer(short playerID)
+bool Viewport::AddPlayer(short playerID, ViewportLayout viewportLayout = ViewportLayout::ViewportLayout_Grid1x1)
 {
     if (m_playerIndexMap.find(playerID) != m_playerIndexMap.end()) 
         return false;

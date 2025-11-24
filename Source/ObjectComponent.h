@@ -78,12 +78,8 @@ public:
     virtual void Process() override {/*AI logic goes here.*/ }
     virtual void OnEvent(const Message& msg) override;
 
-    float m_speed = 120.0f; // for tests to be removed
 protected:
-    float* fRef_posX;
-    float* fRef_posY;
-    float& m_posX = *fRef_posX;
-    float& m_posY = *fRef_posY;
+
 };
 //---------------------------------------------------------------------------------------------
 class VisualComponent : public ObjectComponent

@@ -60,4 +60,5 @@ private:
     void CloseJoystick(SDL_JoystickID instance_id);
     void PostJoystickButtonEvent(SDL_JoystickID which, int button, bool down);
     void PostJoystickAxisEvent(SDL_JoystickID which, int axis, Sint16 value);
+    void PostJoystickConnectedEvent(SDL_JoystickID which, bool bconnected);
 };

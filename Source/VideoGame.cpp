@@ -13,14 +13,6 @@ VideoGame::VideoGame()
 {
 	name = "VideoGame";
 
-	// Initialize viewport (default size)
-	/* deprecated called in the Viewport::Viewport
-     Viewport::Get().Initialize(GameEngine::screenWidth, GameEngine::screenHeight);
-    /**/
-
-	// Create default player 0
-	AddPlayer();
-
 	// Register to EventManager for game events
 	using EM = EventManager;
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_Pause, [this](const Message& m){ this->OnEvent(m); });
@@ -32,16 +24,17 @@ VideoGame::VideoGame()
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_TakeScreenshot, [this](const Message& m){ this->OnEvent(m); });
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_SaveState, [this](const Message& m){ this->OnEvent(m); });
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_LoadState, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_AddPlayer);
 
 	// Ensure default state is running
 	GameStateManager::SetState(GameState::GameState_Running);
-	testGao = (GameObject*)Factory::Get().CreateObject("Player");
-
-
+	
 	testGao = (GameObject*)Factory::Get().CreateObject("GameObject");
 	testGao->name = "OlympeSystem";
-	//testGao->position = { 400.0f, 300.0f };
 	Factory::Get().AddComponent("OlympeSystem", testGao);
+
+    // Create default player 0
+    AddPlayer();
 
 	SYSTEM_LOG << "VideoGame created\n";
 }
@@ -57,6 +50,11 @@ VideoGame::~VideoGame()
 // Returns assigned player ID [0..3] or -1 on failure
 short VideoGame::AddPlayer()
 {
+
+    testGao = (GameObject*)Factory::Get().CreateObject("Player");
+
+	return 0; // temporary
+
     if (m_players.size() >= 4) return -1;
     // choose lowest unused id
     short newId = -1;
@@ -97,7 +95,7 @@ short VideoGame::AddPlayer()
 
     m_players.push_back(newId);
     // update viewport and create camera for player
-    viewport.AddPlayer(newId);
+    viewport.AddPlayer(newId, ViewportLayout::ViewportLayout_Grid1x1);
     camera.CreateCameraForPlayer(newId);
     SYSTEM_LOG << "VideoGame: Added player " << newId << "\n";
     return newId;
