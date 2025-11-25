@@ -19,6 +19,7 @@ struct Message
 
     // Additional convenience fields for engine-level messages
     void* sender = nullptr; // optional sender pointer
+	void* objectParamPtr = nullptr; // target object pointer for operations (create/destroy/add property)
     uint64_t targetUid = 0; // target object UID for operations (create/destroy/add property)
     std::string className; // class to create (for object creation)
     std::string objectName; // desired object name

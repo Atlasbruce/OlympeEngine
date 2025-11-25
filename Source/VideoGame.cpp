@@ -9,6 +9,8 @@ Purpose: Implementation of the VideoGame class, which represents a video game wi
 #include <sstream>
 #include <string>
 
+short VideoGame::m_playerIdCounter = 0;
+
 VideoGame::VideoGame()
 {
 	name = "VideoGame";
@@ -25,6 +27,10 @@ VideoGame::VideoGame()
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_SaveState, [this](const Message& m){ this->OnEvent(m); });
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_LoadState, [this](const Message& m){ this->OnEvent(m); });
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_AddPlayer);
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_RemovePlayer);
+	EM::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyDown);
+	EM::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyUp);
+        
 
 	// Ensure default state is running
 	GameStateManager::SetState(GameState::GameState_Running);
@@ -50,12 +56,23 @@ VideoGame::~VideoGame()
 // Returns assigned player ID [0..3] or -1 on failure
 short VideoGame::AddPlayer()
 {
+	// m_PlayerIdCounter modified in the Player::Player construtor / destructor
+    GameObject* player = (GameObject*)Factory::Get().CreateObject("Player");
+	player->name = "Player_" + std::to_string(m_playerIdCounter);
+	m_players.push_back(player);
 
-    testGao = (GameObject*)Factory::Get().CreateObject("Player");
+	//Send message to ViewportManager to add a new player viewport
+	Message msg;
+	msg.sender = this;
+	msg.objectParamPtr = player;
+	msg.controlId = static_cast<int>(m_players.size()); // new player ID
+	msg.struct_type = EventStructType::EventStructType_Olympe;
+	msg.msg_type = EventType::Olympe_EventType_Camera_Viewport_Add;
+	EventManager::Get().AddMessage(msg);
 
-	return 0; // temporary
+	return m_playerIdCounter; // return the new player ID
 
-    if (m_players.size() >= 4) return -1;
+ /*   if (m_players.size() >= 4) return -1;
     // choose lowest unused id
     short newId = -1;
     for (short i = 0; i < 4; ++i) {
@@ -94,16 +111,19 @@ short VideoGame::AddPlayer()
     }
 
     m_players.push_back(newId);
+
+
     // update viewport and create camera for player
-    viewport.AddPlayer(newId, ViewportLayout::ViewportLayout_Grid1x1);
+    viewport.AddPlayer(ViewportLayout::ViewportLayout_Grid1x1);
     camera.CreateCameraForPlayer(newId);
     SYSTEM_LOG << "VideoGame: Added player " << newId << "\n";
-    return newId;
+    return newId;/**/
 }
 //-------------------------------------------------------------
 bool VideoGame::RemovePlayer(const short PlayerID)
 {
-    auto it = std::find(m_players.begin(), m_players.end(), PlayerID);
+	return false;
+   /* auto it = std::find(m_players.begin(), m_players.end(), PlayerID);
     if (it == m_players.end()) return false;
     // free controller mapping
     auto pit = m_playerToJoystick.find(PlayerID);
@@ -116,7 +136,7 @@ bool VideoGame::RemovePlayer(const short PlayerID)
     Viewport::Get().RemovePlayer(PlayerID);
     Camera::Get().RemoveCameraForPlayer(PlayerID);
     SYSTEM_LOG << "VideoGame: Removed player " << PlayerID << "\n";
-    return true;
+    return true;/**/
 }
 //-------------------------------------------------------------
 // Event handler for EventManager messages registered in ctor
@@ -142,26 +162,7 @@ void VideoGame::OnEvent(const Message& msg)
         break;
     case EventType::Olympe_EventType_Game_AddPlayer:
     {
-        // controlId (if provided) may request a specific player id; otherwise add next
-        bool ok = false;
-        if (msg.controlId >= 0)
-        {
-            short requested = static_cast<short>(msg.controlId);
-            // if requested id already present, ignore
-            if (std::find(m_players.begin(), m_players.end(), requested) == m_players.end())
-            {
-                // attempt to add with that id by first creating players until needed id available
-                short added = AddPlayer();
-                // AddPlayer chooses lowest free id; if not the requested one, user can map controllers separately
-                (void)added;
-                ok = true;
-            }
-        }
-        else
-        {
-            short added = AddPlayer();
-            ok = (added >= 0);
-        }
+        bool ok = (AddPlayer()> 0);
         SYSTEM_LOG << "VideoGame: AddPlayer event -> " << (ok ? "success" : "failed") << "\n";
         break;
     }
@@ -212,12 +213,12 @@ void VideoGame::OnEvent(const Message& msg)
             if (!m_kpMinusPressed && msg.state == 1)
             {
                 m_kpMinusPressed = true;
-                if (!m_players.empty())
-                {
-                    short pid = m_players.back();
-                    bool ok = RemovePlayer(pid);
-                    SYSTEM_LOG << "VideoGame: Numpad - pressed -> remove viewport/player " << pid << " -> " << (ok ? "removed" : "failed") << "\n";
-                }
+                //if (!m_players.empty())
+                //{
+                //    short pid = m_players.back();
+                //    bool ok = RemovePlayer(pid);
+                //    SYSTEM_LOG << "VideoGame: Numpad - pressed -> remove viewport/player " << pid << " -> " << (ok ? "removed" : "failed") << "\n";
+                //}
             }
         }
         break;

@@ -6,6 +6,8 @@
 #include <iostream>
 #include <cmath>
 #include "InputsManager.h"
+#include "VideoGame.h"
+using namespace std;
 
 int AI_Player::iPlayerCounterID = 0;
 
@@ -24,18 +26,18 @@ AI_Player::AI_Player()
     EventManager::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyDown, [this](const Message& m){ this->OnEvent(m); });
     EventManager::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyUp, [this](const Message& m){ this->OnEvent(m); });
 
-	m_PlayerID = iPlayerCounterID++;
+	m_PlayerID = VideoGame::m_playerIdCounter++;
 
 	InputsManager::Get().AutoBindControllerToPlayer(m_PlayerID); // ensure inputs are bound
 
 	if (InputsManager::Get().IsPlayerBound(m_PlayerID))
 	    m_ControllerID = InputsManager::Get().GetPlayerBinding(m_PlayerID);
+
 }
 
 AI_Player::~AI_Player()
 {
-	iPlayerCounterID--;
-
+	VideoGame::m_playerIdCounter--;
     // Unregister all callbacks associated with this instance
     EventManager::Get().UnregisterAll(this);
 }

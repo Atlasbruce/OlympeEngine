@@ -40,33 +40,33 @@ DataManager::DataManager()
     name = "DataManager";
     SYSTEM_LOG << "DataManager created\n";
 }
-
+//-------------------------------------------------------------
 DataManager::~DataManager()
 {
     SYSTEM_LOG << "DataManager destroyed\n";
     // Ensure resources are freed if shutdown wasn't explicitly called
     UnloadAll();
 }
-
+//-------------------------------------------------------------
 DataManager& DataManager::GetInstance()
 {
     static DataManager instance;
     return instance;
 }
-
+//-------------------------------------------------------------
 void DataManager::Initialize()
 {
     // Placeholder for initialization logic (e.g. preload system icons)
     SYSTEM_LOG << "DataManager Initialized\n";
 }
-
+//-------------------------------------------------------------
 void DataManager::Shutdown()
 {
     SYSTEM_LOG << "DataManager Shutdown - unloading all resources\n";
     UnloadAll();
 }
-
-bool DataManager::LoadTexture(const std::string& id, const std::string& path, ResourceCategory category)
+//-------------------------------------------------------------
+bool DataManager::PreloadTexture(const std::string& id, const std::string& path, ResourceCategory category)
 {
     std::lock_guard<std::mutex> lock(m_mutex_);
     if (id.empty() || path.empty()) return false;
@@ -81,7 +81,7 @@ bool DataManager::LoadTexture(const std::string& id, const std::string& path, Re
 
     if (!surf)
     {
-        SYSTEM_LOG << "DataManager: IMG_Load failed for '" << path << "' : " << SDL_GetError() << "\n";
+        SYSTEM_LOG << "DataManager::PreloadTexture IMG_Load failed for '" << path << "' : " << SDL_GetError() << "\n";
         return false;
     }
 
@@ -92,7 +92,7 @@ bool DataManager::LoadTexture(const std::string& id, const std::string& path, Re
         tex = SDL_CreateTextureFromSurface(renderer, surf);
         if (!tex)
         {
-            SYSTEM_LOG << "DataManager: SDL_CreateTextureFromSurface failed for '" << path << "' : " << SDL_GetError() << "\n";
+            SYSTEM_LOG << "DataManager::PreloadTexture SDL_CreateTextureFromSurface failed for '" << path << "' : " << SDL_GetError() << "\n";
             SDL_DestroySurface(surf);
             return false;
         }
@@ -124,12 +124,12 @@ bool DataManager::LoadTexture(const std::string& id, const std::string& path, Re
     SYSTEM_LOG << "DataManager: Loaded texture '" << id << "' from '" << path << "'\n";
     return true;
 }
-
-bool DataManager::LoadSprite(const std::string& id, const std::string& path, ResourceCategory category)
+//-------------------------------------------------------------
+bool DataManager::PreloadSprite(const std::string& id, const std::string& path, ResourceCategory category)
 {
-	return LoadTexture(id, path, category);
+	return PreloadTexture(id, path, category);
 }
-
+//-------------------------------------------------------------
 SDL_Texture* DataManager::GetTexture(const std::string& id) const
 {
     std::lock_guard<std::mutex> lock(m_mutex_);
@@ -163,7 +163,7 @@ SDL_Texture* DataManager::GetTexture(const std::string& id) const
 
     return nullptr;
 }
-
+//-------------------------------------------------------------
 SDL_Texture* DataManager::GetSprite(const std::string& id, const std::string& path, ResourceCategory category)
 {
     // Optimized: Check existence without locking twice
@@ -176,13 +176,13 @@ SDL_Texture* DataManager::GetSprite(const std::string& id, const std::string& pa
     }
     
     // Not found or texture not ready, try to load it
-    if (LoadSprite(id, path, category))
+    if (PreloadSprite(id, path, category))
     {
         return GetTexture(id);
     }
     return nullptr;
 }
-
+//-------------------------------------------------------------
 bool DataManager::ReleaseResource(const std::string& id)
 {
     std::lock_guard<std::mutex> lock(m_mutex_);
@@ -207,7 +207,7 @@ bool DataManager::ReleaseResource(const std::string& id)
     SYSTEM_LOG << "DataManager: Released resource '" << id << "'\n";
     return true;
 }
-
+//-------------------------------------------------------------
 void DataManager::UnloadAll()
 {
     std::lock_guard<std::mutex> lock(m_mutex_);
@@ -228,13 +228,13 @@ void DataManager::UnloadAll()
     }
     m_resources_.clear();
 }
-
+//-------------------------------------------------------------
 bool DataManager::HasResource(const std::string& id) const
 {
     std::lock_guard<std::mutex> lock(m_mutex_);
     return m_resources_.find(id) != m_resources_.end();
 }
-
+//-------------------------------------------------------------
 std::vector<std::string> DataManager::ListResourcesByType(ResourceType type) const
 {
     std::vector<std::string> out;
@@ -247,7 +247,7 @@ std::vector<std::string> DataManager::ListResourcesByType(ResourceType type) con
     }
     return out;
 }
-
+//-------------------------------------------------------------
 std::vector<std::string> DataManager::ListResourcesByCategory(ResourceCategory category) const
 {
     std::vector<std::string> out;
@@ -260,7 +260,7 @@ std::vector<std::string> DataManager::ListResourcesByCategory(ResourceCategory c
     }
     return out;
 }
-
+//-------------------------------------------------------------
 // Build standard game data path: ./Gamedata/{videogameName}/{objectName}.json
 std::string DataManager::BuildGameDataPath(const std::string& videogameName, const std::string& objectName)
 {
@@ -269,7 +269,7 @@ std::string DataManager::BuildGameDataPath(const std::string& videogameName, con
     std::string path = std::string(".") + "/Gamedata/" + game + "/" + obj + ".json";
     return path;
 }
-
+//-------------------------------------------------------------
 bool DataManager::SaveTextFile(const std::string& filepath, const std::string& content) const
 {
     if (filepath.empty()) return false;
@@ -290,7 +290,7 @@ bool DataManager::SaveTextFile(const std::string& filepath, const std::string& c
     ofs.write(content.data(), static_cast<std::streamsize>(content.size()));
     return ofs.good();
 }
-
+//-------------------------------------------------------------
 bool DataManager::LoadTextFile(const std::string& filepath, std::string& outContent) const
 {
     outContent.clear();
@@ -302,19 +302,19 @@ bool DataManager::LoadTextFile(const std::string& filepath, std::string& outCont
     outContent = ss.str();
     return true;
 }
-
+//-------------------------------------------------------------
 bool DataManager::SaveJSONForObject(const std::string& videogameName, const std::string& objectName, const std::string& jsonContent) const
 {
     std::string path = BuildGameDataPath(videogameName, objectName);
     return SaveTextFile(path, jsonContent);
 }
-
+//-------------------------------------------------------------
 bool DataManager::LoadJSONForObject(const std::string& videogameName, const std::string& objectName, std::string& outJson) const
 {
     std::string path = BuildGameDataPath(videogameName, objectName);
     return LoadTextFile(path, outJson);
 }
-
+//-------------------------------------------------------------
 bool DataManager::EnsureDirectoryExists(const std::string& dirpath) const
 {
     if (dirpath.empty()) return false;
@@ -365,7 +365,7 @@ bool DataManager::EnsureDirectoryExists(const std::string& dirpath) const
 
     return true;
 }
-
+//-------------------------------------------------------------
 bool DataManager::PreloadSystemResources(const std::string& configFilePath)
 {
     std::string content;
@@ -389,15 +389,19 @@ bool DataManager::PreloadSystemResources(const std::string& configFilePath)
             std::string path = item.contains("path") ? item["path"].get<std::string>() : std::string();
             std::string type = item.contains("type") ? item["type"].get<std::string>() : std::string();
             if (id.empty() || path.empty()) continue;
-            if (type == "texture" || type == "sprite")
+            if (type == "texture")
             {
-                LoadTexture(id, path, ResourceCategory::System);
+                PreloadTexture(id, path, ResourceCategory::Level);
             }
             else
-            {
-                // other types can be handled here (sound, level, etc.)
-                LoadTexture(id, path, ResourceCategory::System);
-            }
+                if (type == "sprite" || type == "animation")
+                {
+                    PreloadSprite(id, path, ResourceCategory::GameObject);
+				}
+                else
+                {
+                    PreloadTexture(id, path, ResourceCategory::System);
+                }
         }
     }
     catch (const std::exception& e)

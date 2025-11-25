@@ -12,6 +12,7 @@ Purpose:
 
 #include "Player.h"
 #include "Factory.h"
+#include "Sprite.h"
 bool Player::FactoryRegistered = Factory::Get().Register("Player", Player::Create);
 Object* Player::Create()
 {
@@ -19,6 +20,11 @@ Object* Player::Create()
 	Player *player = new Player();
 	player->name = "Player";
 	Factory::Get().AddComponent("AI_Player", player);
-	Factory::Get().AddComponent("Sprite", player);
+	Sprite* sprite = (Sprite*)Factory::Get().AddComponent("Sprite", player);
+	if (SDL_rand(2) == 0)
+		sprite->SetSprite("player_entity_male", "Resources/entity_male.png");
+	else
+		sprite->SetSprite("player_entity_female", "Resources/entity_female.png");
+
 	return player;
 }

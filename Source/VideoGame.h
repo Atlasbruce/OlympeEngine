@@ -70,9 +70,6 @@ public:
 
      bool RemovePlayer(const short PlayerID);
 
-     int GetPlayerCount() const { return static_cast<int>(m_players.size()); }
-     const std::vector<short>& GetPlayers() const { return m_players; }
-
      // Event handler for EventManager messages registered in ctor
      void OnEvent(const Message& msg);
 
@@ -88,13 +85,14 @@ public:
 	Camera& camera = Camera::GetInstance();
 	Viewport& viewport = Viewport::GetInstance();
 
+    // Players
+    std::vector<GameObject*> m_players;
+    static short m_playerIdCounter;
+
 private:
      // cached state for quick local reads (authoritative value lives in GameStateManager)
      GameState m_state = GameState::GameState_Running;
 
-     // Players
-     std::vector<short> m_players;
-     std::unordered_map<short, SDL_JoystickID> m_playerToJoystick; // -1 = keyboard
      bool m_keyboardAssigned = false;
 
      // key debounce flags for numpad +/-
