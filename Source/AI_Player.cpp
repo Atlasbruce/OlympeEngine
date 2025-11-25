@@ -31,8 +31,14 @@ AI_Player::AI_Player()
 	InputsManager::Get().AutoBindControllerToPlayer(m_PlayerID); // ensure inputs are bound
 
 	if (InputsManager::Get().IsPlayerBound(m_PlayerID))
-	    m_ControllerID = InputsManager::Get().GetPlayerBinding(m_PlayerID);
-
+    {
+        m_ControllerID = InputsManager::Get().GetPlayerBinding(m_PlayerID);
+		SYSTEM_LOG << "AI_Player created with PlayerID=" << m_PlayerID << " bound to ControllerID=" << m_ControllerID << endl;
+    }
+    else
+    {
+		SYSTEM_LOG << "Error: AI_Player creation failed to bind any inputs for PlayerID=" << m_PlayerID << endl;
+    }
 }
 
 AI_Player::~AI_Player()
