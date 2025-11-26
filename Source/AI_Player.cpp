@@ -12,6 +12,7 @@
 
 using namespace std;
 using EM = EventManager;
+using IM = InputsManager;
 
 bool AI_Player::FactoryRegistered =  Factory::Get().Register("AI_Player", AI_Player::Create);
 ObjectComponent* AI_Player::Create()
@@ -37,10 +38,11 @@ AI_Player::AI_Player()
 void AI_Player::Initialize()
 {
 	((Player*)gao)->m_PlayerID = ++VideoGame::m_playerIdCounter;
+	IM::Get().AddPlayerIndex(((Player*)gao)->m_PlayerID, (Player*)gao);
 
-	InputsManager::Get().AutoBindControllerToPlayer(((Player*)gao)->m_PlayerID); // ensure inputs are bound
+    IM::Get().AutoBindControllerToPlayer(((Player*)gao)->m_PlayerID); // ensure inputs are bound
 
-	if (InputsManager::Get().IsPlayerBound(((Player*)gao)->m_PlayerID))
+	if (IM::Get().IsPlayerBound(((Player*)gao)->m_PlayerID))
     {
         ((Player*)gao)->m_ControllerID = InputsManager::Get().GetPlayerBinding(((Player*)gao)->m_PlayerID);
 		SYSTEM_LOG << "AI_Player created with PlayerID=" << ((Player*)gao)->m_PlayerID << " bound to ControllerID=" << ((Player*)gao)->m_ControllerID << endl;
@@ -67,7 +69,7 @@ void AI_Player::RenderDebug()
 {
 
     SDL_SetRenderDrawColor(GameEngine::renderer, m_debugcolor.r, m_debugcolor.g, m_debugcolor.b, SDL_ALPHA_OPAQUE);
-	Draw_FilledCircle(GameEngine::renderer, gao->position.x, gao->position.y, 5);
+	Draw_FilledCircle(GameEngine::renderer, (int)gao->position.x, (int)gao->position.y, 5);
     //gao->boundingBox = { gao->position.x, gao->position.y, gao->width, gao->height };
     SDL_RenderRect(GameEngine::renderer, &gao->boundingBox);/**/
 
@@ -281,10 +283,12 @@ void AI_Player::OnEvent(const Message& msg)
 			}
             case EventType::Olympe_EventType_Joystick_Connected:
             {
+				SYSTEM_LOG << "AI_Player: Controller connected for GameObject: " << name << endl;
                 break;
 			}
             case EventType::Olympe_EventType_Keyboard_Connected:
             {
+				SYSTEM_LOG << "AI_Player: Keyboard connected for GameObject: " << name << endl;
 				break;
 			}
 

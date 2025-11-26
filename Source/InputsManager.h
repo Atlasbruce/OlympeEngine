@@ -4,6 +4,7 @@
 #include "system/KeyboardManager.h"
 #include "system/MouseManager.h"
 #include <unordered_map>
+#include "Player.h"
 
 class InputsManager : public Object
 {
@@ -26,6 +27,7 @@ public:
         KeyboardManager::Get().Shutdown();
         MouseManager::Get().Shutdown();
         m_playerBindings.clear();
+		m_playerIndex.clear();
         m_keyboardAssigned = false;
     }
 
@@ -76,7 +78,13 @@ public:
         }
 	}
 	//--------------------------------------------------------------
-
+    bool AddPlayerIndex(short playerID, Player* playerPtr)
+    {
+        if (m_playerIndex.find(playerID) != m_playerIndex.end()) return false;
+        m_playerIndex[playerID] = playerPtr;
+        return true;
+    }
+	//--------------------------------------------------------------
     // Bind a controller (joystick id) or keyboard (-1) to a player
     bool BindControllerToPlayer(short playerID, SDL_JoystickID controller)
     {
@@ -86,6 +94,7 @@ public:
             if (m_keyboardAssigned) return false;
             m_keyboardAssigned = true;
             m_playerBindings[playerID] = controller;
+            m_playerIndex[playerID]->m_ControllerID = controller;
             return true;
         }
         // ensure joystick exists
@@ -93,7 +102,8 @@ public:
         // ensure not already used
         for (auto &kv : m_playerBindings) if (kv.second == controller) return false;
         m_playerBindings[playerID] = controller;
-		SYSTEM_LOG << "Player " << playerID << " bound to joystick " << controller << "\n";
+        m_playerIndex[playerID]->m_ControllerID = controller;
+		SYSTEM_LOG << "Player " << playerID << " named "+ ((Player*)m_playerIndex[playerID])->name +" bound to joystick " << controller << "\n";
         return true;
     }
 
@@ -156,6 +166,7 @@ public:
 private:
     std::unordered_map<short, SDL_JoystickID> m_playerBindings;
 	std::unordered_map<short, SDL_JoystickID> m_playerDisconnected;
+	std::unordered_map<short, Player*> m_playerIndex;
     bool m_keyboardAssigned = false;
 	JoystickManager& joystickmanager = JoystickManager::GetInstance();
 	KeyboardManager& keyboardmanager = KeyboardManager::GetInstance();
