@@ -51,10 +51,10 @@ void InputsManager::OnEvent(const Message& msg)
 						RemoveDisconnectedPlayer(disconnectedPlayerID);
 						SYSTEM_LOG << "InputsManager: Joystick ID=" << msg.deviceId << " rebound to player " << disconnectedPlayerID << "\n";
                     }
+                    else
+						SYSTEM_LOG << "InputsManager: Failed to rebind joystick ID=" << msg.deviceId << " to disconnected player " << disconnectedPlayerID << "\n";
                 }
 			}
-            
-			SYSTEM_LOG << "InputsManager: Joystick disconnected, ID=" << msg.deviceId << "\n";
             break;
 		}
     }
