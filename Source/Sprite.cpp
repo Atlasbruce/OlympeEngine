@@ -10,7 +10,7 @@ ObjectComponent* Sprite::Create()
 {
 	return new Sprite();
 }
-
+//-----------------------------------------------------
 void Sprite::Initialize()
 {
 
@@ -22,15 +22,16 @@ void Sprite::Uninitialize()
 
 void Sprite::RenderDebug()
 {
-
-	SDL_SetRenderDrawColor(GameEngine::renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);  /* red, full alpha */
-	gao->boundingBox = { gao->position.x, gao->position.y, gao->width, gao->height };
+	/*
+	SDL_SetRenderDrawColor(GameEngine::renderer, 255, 0, 0, SDL_ALPHA_OPAQUE);
 	SDL_RenderRect(GameEngine::renderer, &gao->boundingBox);
-	
+	/**/
 }
 
 void Sprite::Render()
 {
+	gao->boundingBox = { gao->position.x, gao->position.y, gao->width, gao->height };
+
 	if (m_SpriteTexture)
 		SDL_RenderTexture(GameEngine::renderer, m_SpriteTexture, nullptr, &gao->boundingBox);
 }

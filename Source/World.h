@@ -100,6 +100,10 @@ public:
             {
                 if (prop) prop->RenderDebug();
             }
+            for (auto* prop : array_component_lists_bytypes[static_cast<size_t>(ComponentType::AI)])
+            {
+                if (prop) prop->RenderDebug();
+			}
 		}
 	}
 

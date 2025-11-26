@@ -106,8 +106,8 @@ public:
         }
 
         ObjectComponent* component = (ObjectComponent*) it->second(); // call the Create of the ObjectComponent
-
-		component->SetOwner(owner); // set the owner to the component
+        component->SetOwner(owner); // set the owner to the component
+		component->Initialize(); // initialize the component
 
         World::Get().StoreComponent(component);
 

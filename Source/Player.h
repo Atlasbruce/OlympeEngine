@@ -20,5 +20,9 @@ class Player : public GameObject
 
 	static bool FactoryRegistered;
 	static Object* Create();
+
+	int m_PlayerID = -1; // unique player ID assigned to this Player instance
+	int m_ControllerID = -1; // controller instance ID assigned to this Player instance
+	string m_PlayerName = "Unnamed_Player";
 };
 

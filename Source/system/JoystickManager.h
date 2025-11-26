@@ -29,6 +29,7 @@ public:
 
     // Initialize joystick subsystem and open currently connected devices
     void Initialize();
+    void Scan_Joysticks();
     void Shutdown();
 
     // Process per-frame (optional)

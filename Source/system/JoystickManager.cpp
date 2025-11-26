@@ -3,6 +3,10 @@
 #include "system_utils.h"
 #include <SDL3/SDL.h>
 #include <iostream>
+#include "../InputsManager.h"
+#include "message.h"
+using IM = ::InputsManager;
+using EM = ::EventManager;
 
 //---------------------------------------------------------------------------------------------
 JoystickManager& JoystickManager::GetInstance()
@@ -18,17 +22,23 @@ void JoystickManager::Initialize()
     // Enable joystick events so SDL will post them to the event queue
     SDL_SetJoystickEventsEnabled(true);
 
-    int count =0;
+    Scan_Joysticks();
+	SYSTEM_LOG << "JoystickManager created and Initialized with " << m_joysticks.size() << " joysticks connected\n";
+}
+//---------------------------------------------------------------------------------------------
+// Scan currently connected joysticks and open them
+void JoystickManager::Scan_Joysticks()
+{
+    int count = 0;
     SDL_JoystickID* ids = SDL_GetJoysticks(&count);
     if (ids)
     {
-        for (int i =0; i < count; ++i)
+        for (int i = 0; i < count; ++i)
         {
             OpenJoystick(ids[i]);
         }
         SDL_free(ids);
     }
-	SYSTEM_LOG << "JoystickManager created and Initialized with " << count << " joysticks connected\n";
 }
 //---------------------------------------------------------------------------------------------
 void JoystickManager::Shutdown()
@@ -70,6 +80,18 @@ void JoystickManager::HandleEvent(const SDL_Event* ev)
             SDL_JoystickID id = ev->jdevice.which;
             OpenJoystick(id);
             SYSTEM_LOG << "Joystick added id=" << id << "\n";
+
+            //Notify players that their controller has been disconnected
+            EM::Get().DispatchImmediate
+            (Message::Create
+            (
+                EventStructType::EventStructType_Olympe,
+                EventType::Olympe_EventType_Joystick_Connected,
+                this,
+                static_cast<int>(id),
+                -1
+            )
+            );
             break;
         }
         case SDL_EVENT_GAMEPAD_REMOVED:
@@ -85,6 +107,22 @@ void JoystickManager::HandleEvent(const SDL_Event* ev)
             SDL_JoystickID id = ev->jdevice.which;
             CloseJoystick(id);
             SYSTEM_LOG << "Joystick removed id=" << id << "\n";
+			// send notification to inputmanager
+			short playerID = IM::Get().GetPlayerForController(id);
+            IM::Get().UnbindControllerFromPlayer(playerID);
+            IM::Get().AddDisconnectedPlayer(playerID, SDL_JoystickID(id));
+
+			//Notify players that their controller has been disconnected
+            EM::Get().DispatchImmediate
+            (Message::Create
+                (
+                EventStructType::EventStructType_Olympe,
+                EventType::Olympe_EventType_Joystick_Disconnected,
+                this,
+                static_cast<int>(id),
+                -1
+			    )
+            );
             break;
         }
         case SDL_EVENT_GAMEPAD_BUTTON_DOWN:

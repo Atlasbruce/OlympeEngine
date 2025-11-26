@@ -8,16 +8,8 @@
 class InputsManager : public Object
 {
 public:
-    InputsManager()
-    {
-		name = "InputsManager";
-        SYSTEM_LOG << "InputsManager created and Initialized\n";
-    }
-    virtual ~InputsManager()
-    {
-        Shutdown();
-		SYSTEM_LOG << "InputsManager destroyed\n";
-    }
+    InputsManager();
+    virtual ~InputsManager();
 
     virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
@@ -38,8 +30,26 @@ public:
     }
 
     virtual void HandleEvent(const SDL_Event* ev);
-
+    virtual void OnEvent(const Message& msg) override;
+    
 	//--------------------------------------------------------------
+    int GetConnectedJoysticksCount() const
+    {
+        return static_cast<int>(JoystickManager::Get().GetConnectedJoysticks().size());
+	}
+    
+    int GetConnectedKeyboardsCount() const
+    {
+		return m_keyboardAssigned ? 1 : 0;
+	}
+
+    int GetMaxDevices() const
+    {
+        // Max players = number of connected joysticks + 1 (keyboard)
+		return static_cast<int>(GetConnectedJoysticksCount() + GetConnectedKeyboardsCount());
+	}
+
+   	//--------------------------------------------------------------
 	// Automatically bind first available controller (joystick or keyboard) to a player
     bool AutoBindControllerToPlayer(short playerID)
     {
@@ -96,6 +106,35 @@ public:
 		SYSTEM_LOG << "Player " << playerID << " unbound from controller\n";
         return true;
     }
+	//--------------------------------------------------------------
+	// Manage disconnected players
+    bool AddDisconnectedPlayer(short playerID, SDL_JoystickID old_controller)
+    {
+        if (m_playerDisconnected.find(playerID) != m_playerDisconnected.end()) return false;
+        m_playerDisconnected[playerID] = old_controller;
+        return true;
+	}
+    bool RemoveDisconnectedPlayer(short playerID)
+    {
+        auto it = m_playerDisconnected.find(playerID);
+        if (it == m_playerDisconnected.end()) return false;
+        m_playerDisconnected.erase(it);
+        return true;
+    }
+    bool IsPlayerDisconnected(short playerID) const
+    {
+        return m_playerDisconnected.find(playerID) != m_playerDisconnected.end();
+	}
+    short GetDisconnectedPlayersCount() const
+    {
+        return static_cast<int>(m_playerDisconnected.size());
+    }
+    short GetFirstDisconnectedPlayerID() const
+    {
+        if (m_playerDisconnected.empty()) return -1;
+        return m_playerDisconnected.begin()->first;
+	}
+
 
     // Query
     bool IsPlayerBound(short playerID) const { return m_playerBindings.find(playerID) != m_playerBindings.end(); }
@@ -105,9 +144,18 @@ public:
         if (it == m_playerBindings.end()) return SDL_JoystickID(0);
         return it->second;
     }
+    short GetPlayerForController(SDL_JoystickID controller) const
+    {
+        for (auto &kv : m_playerBindings)
+        {
+            if (kv.second == controller) return kv.first;
+        }
+        return -1;
+	}
 
 private:
     std::unordered_map<short, SDL_JoystickID> m_playerBindings;
+	std::unordered_map<short, SDL_JoystickID> m_playerDisconnected;
     bool m_keyboardAssigned = false;
 	JoystickManager& joystickmanager = JoystickManager::GetInstance();
 	KeyboardManager& keyboardmanager = KeyboardManager::GetInstance();

@@ -39,4 +39,21 @@ struct Message
     float value2 = 0.0f;
 
     void* payload = nullptr; // optional pointer for extended data
+
+	static Message Create(
+		EventStructType _st_ev_t,
+		EventType _ev_t,
+		void* _sender,
+		int _d_id,
+		int _c_id
+	)
+	{
+		Message msg;
+		msg.struct_type = _st_ev_t;
+		msg.msg_type = _ev_t;
+		msg.sender = _sender;
+		msg.deviceId = _d_id;
+		msg.controlId = _c_id;
+		return msg;
+	}
 };

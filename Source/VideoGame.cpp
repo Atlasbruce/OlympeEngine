@@ -5,7 +5,7 @@ Purpose: Implementation of the VideoGame class, which represents a video game wi
 #include "VideoGame.h"
 #include "DataManager.h"
 #include "GameObject.h"
-
+#include "Player.h"
 #include <sstream>
 #include <string>
 
@@ -17,7 +17,7 @@ VideoGame::VideoGame()
 
 	// Register to EventManager for game events
 	using EM = EventManager;
-	EM::Get().Register(this, EventType::Olympe_EventType_Game_Pause, [this](const Message& m){ this->OnEvent(m); });
+	/*EM::Get().Register(this, EventType::Olympe_EventType_Game_Pause, [this](const Message& m) { this->OnEvent(m); });
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_Resume, [this](const Message& m){ this->OnEvent(m); });
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_Quit, [this](const Message& m){ this->OnEvent(m); });
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_Restart, [this](const Message& m){ this->OnEvent(m); });
@@ -25,7 +25,7 @@ VideoGame::VideoGame()
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_RemovePlayer, [this](const Message& m){ this->OnEvent(m); });
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_TakeScreenshot, [this](const Message& m){ this->OnEvent(m); });
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_SaveState, [this](const Message& m){ this->OnEvent(m); });
-	EM::Get().Register(this, EventType::Olympe_EventType_Game_LoadState, [this](const Message& m){ this->OnEvent(m); });
+	EM::Get().Register(this, EventType::Olympe_EventType_Game_LoadState, [this](const Message& m){ this->OnEvent(m); });/**/
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_AddPlayer);
 	EM::Get().Register(this, EventType::Olympe_EventType_Game_RemovePlayer);
 	EM::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyDown);
@@ -53,7 +53,7 @@ VideoGame::~VideoGame()
 }
 //-------------------------------------------------------------
 // Player management: supports up to 4 players
-// Returns assigned player ID [0..3] or -1 on failure
+// Returns assigned player ID  -1 on failure
 short VideoGame::AddPlayer()
 {
 	// m_PlayerIdCounter modified in the Player::Player construtor / destructor
@@ -65,7 +65,7 @@ short VideoGame::AddPlayer()
 	Message msg;
 	msg.sender = this;
 	msg.objectParamPtr = player;
-	msg.controlId = static_cast<int>(m_players.size()); // new player ID
+	msg.controlId = ((Player*)player)->m_PlayerID; // new player ID
 	msg.struct_type = EventStructType::EventStructType_Olympe;
 	msg.msg_type = EventType::Olympe_EventType_Camera_Viewport_Add;
 	EventManager::Get().AddMessage(msg);

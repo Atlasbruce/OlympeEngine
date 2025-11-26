@@ -31,6 +31,8 @@ public:
     // Which Type this property participates in
     virtual ComponentType GetComponentType() const = 0;
 
+	virtual void Initialize() {}
+
     // Called during the update loop (for Physics/AI/Audio)
     virtual void Process() {}
 

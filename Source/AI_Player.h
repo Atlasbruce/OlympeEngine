@@ -14,19 +14,19 @@ public:
     static ObjectComponent* Create(void);
 
     explicit AI_Player();
+    virtual void Initialize() override;
     virtual ~AI_Player() override;
 
 	virtual void SetOwner(Object* _owner) override;
+
+    virtual void RenderDebug();
 
     // AI properties participate in the AI stage (AIProperty already does this)
     virtual void Process() override;
     virtual void OnEvent(const Message& msg) override;
 
-	static int iPlayerCounterID; // static counter to assign unique player IDs per AI_Player instance
-	int m_PlayerID = -1; // unique player ID assigned to this AI_Player instance
-	int m_ControllerID = -1; // controller instance ID assigned to this AI_Player instance
-
 private:
+	SDL_Color m_debugcolor = { 0, 255, 0, 255 };
 
     float m_speed = 120.0f; // for tests to be removed
 

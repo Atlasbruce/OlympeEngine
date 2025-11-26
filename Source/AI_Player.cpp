@@ -7,9 +7,11 @@
 #include <cmath>
 #include "InputsManager.h"
 #include "VideoGame.h"
-using namespace std;
+#include "Player.h"
+#include "drawing.h"
 
-int AI_Player::iPlayerCounterID = 0;
+using namespace std;
+using EM = EventManager;
 
 bool AI_Player::FactoryRegistered =  Factory::Get().Register("AI_Player", AI_Player::Create);
 ObjectComponent* AI_Player::Create()
@@ -20,24 +22,32 @@ ObjectComponent* AI_Player::Create()
 AI_Player::AI_Player()
 {
     // Register to input-related events
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Joystick_AxisMotion, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Joystick_ButtonDown, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Joystick_ButtonUp, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyDown, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyUp, [this](const Message& m){ this->OnEvent(m); });
+    EM::Get().Register(this, EventType::Olympe_EventType_Joystick_AxisMotion);
+    EM::Get().Register(this, EventType::Olympe_EventType_Joystick_ButtonDown);
+    EM::Get().Register(this, EventType::Olympe_EventType_Joystick_ButtonUp);
+    EM::Get().Register(this, EventType::Olympe_EventType_Joystick_Disconnected);
+    EM::Get().Register(this, EventType::Olympe_EventType_Joystick_Connected);
 
-	m_PlayerID = VideoGame::m_playerIdCounter++;
+    EM::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyDown);
+    EM::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyUp);	
+	EM::Get().Register(this, EventType::Olympe_EventType_Keyboard_Disconnected);
+	EM::Get().Register(this, EventType::Olympe_EventType_Keyboard_Connected);
 
-	InputsManager::Get().AutoBindControllerToPlayer(m_PlayerID); // ensure inputs are bound
+}
+void AI_Player::Initialize()
+{
+	((Player*)gao)->m_PlayerID = ++VideoGame::m_playerIdCounter;
 
-	if (InputsManager::Get().IsPlayerBound(m_PlayerID))
+	InputsManager::Get().AutoBindControllerToPlayer(((Player*)gao)->m_PlayerID); // ensure inputs are bound
+
+	if (InputsManager::Get().IsPlayerBound(((Player*)gao)->m_PlayerID))
     {
-        m_ControllerID = InputsManager::Get().GetPlayerBinding(m_PlayerID);
-		SYSTEM_LOG << "AI_Player created with PlayerID=" << m_PlayerID << " bound to ControllerID=" << m_ControllerID << endl;
+        ((Player*)gao)->m_ControllerID = InputsManager::Get().GetPlayerBinding(((Player*)gao)->m_PlayerID);
+		SYSTEM_LOG << "AI_Player created with PlayerID=" << ((Player*)gao)->m_PlayerID << " bound to ControllerID=" << ((Player*)gao)->m_ControllerID << endl;
     }
     else
     {
-		SYSTEM_LOG << "Error: AI_Player creation failed to bind any inputs for PlayerID=" << m_PlayerID << endl;
+		SYSTEM_LOG << "Error: AI_Player creation failed to bind any inputs for PlayerID=" << ((Player*)gao)->m_PlayerID << endl;
     }
 }
 
@@ -52,6 +62,17 @@ void AI_Player::SetOwner ( Object *_owner)
 {
 	AIComponent::SetOwner(_owner);
 }
+
+void AI_Player::RenderDebug()
+{
+
+    SDL_SetRenderDrawColor(GameEngine::renderer, m_debugcolor.r, m_debugcolor.g, m_debugcolor.b, SDL_ALPHA_OPAQUE);
+	Draw_FilledCircle(GameEngine::renderer, gao->position.x, gao->position.y, 5);
+    //gao->boundingBox = { gao->position.x, gao->position.y, gao->width, gao->height };
+    SDL_RenderRect(GameEngine::renderer, &gao->boundingBox);/**/
+
+}
+
 
 void AI_Player::Process()
 {
@@ -177,7 +198,7 @@ void AI_Player::OnEvent(const Message& msg)
         case EventStructType::EventStructType_Olympe:
         {
             // is the deviceId matching our controller?
-            if (msg.deviceId != m_ControllerID)
+            if (msg.deviceId != ((Player*)gao)->m_ControllerID)
                 break;
 
             switch (msg.msg_type)
@@ -246,6 +267,26 @@ void AI_Player::OnEvent(const Message& msg)
                 }
                 break;
             }
+            case EventType::Olympe_EventType_Joystick_Disconnected:
+            {
+				SYSTEM_LOG << "AI_Player: Controller disconnected for GameObject: " << name << endl;
+                // if our controller got disconnected, reset inputs
+                break;
+            }
+            case EventType::Olympe_EventType_Keyboard_Disconnected:
+            {
+				SYSTEM_LOG << "AI_Player: Keyboard disconnected for GameObject: " << name << endl;
+                // if our keyboard got disconnected, reset inputs
+                break;
+			}
+            case EventType::Olympe_EventType_Joystick_Connected:
+            {
+                break;
+			}
+            case EventType::Olympe_EventType_Keyboard_Connected:
+            {
+				break;
+			}
 
             default:
                 break;
