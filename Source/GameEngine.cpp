@@ -26,10 +26,10 @@ void GameEngine::Initialize()
 
 	// Create and initialize panel manager
 	PanelManager::Get().Initialize();
-	PanelManager::Get().CreateMainMenuWindow();
+	//PanelManager::Get().CreateMainMenuWindow();
 	PanelManager::Get().CreateLogWindow();
-	PanelManager::Get().CreateObjectInspectorWindow();
-	PanelManager::Get().CreateTreeViewWindow();	
+	//PanelManager::Get().CreateObjectInspectorWindow();
+	//PanelManager::Get().CreateTreeViewWindow();	
 	PanelManager::Get().CreateInputsInspectorWindow();
 	// By default keep them hidden; can be shown by the UI later
 }

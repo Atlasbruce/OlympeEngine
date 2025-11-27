@@ -211,6 +211,23 @@ SDL_AppResult SDL_AppIterate(void* appstate)
 
     SDL_RenderPresent(renderer);  /* put it all on the screen! */
 
+    // Update FPS counter and set window title once per second
+    static int frameCount = 0;
+    static Uint64 fpsLastTime = 0;
+    frameCount++;
+    const Uint64 nowMs = SDL_GetTicks();
+    if (fpsLastTime == 0) fpsLastTime = nowMs;
+    const Uint64 elapsed = nowMs - fpsLastTime;
+    if (elapsed >= 1000)
+    {
+        float fps = frameCount * 1000.0f / (float)elapsed;
+        char title[256];
+        snprintf(title, sizeof(title), "Olympe Engine 2.0 - FPS: %.1f", fps);
+        if (window) SDL_SetWindowTitle(window, title);
+        frameCount = 0;
+        fpsLastTime = nowMs;
+    }
+
     return SDL_APP_CONTINUE;  /* carry on with the program! */
 }
 
