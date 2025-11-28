@@ -33,6 +33,8 @@ public:
 
     virtual void HandleEvent(const SDL_Event* ev);
     virtual void OnEvent(const Message& msg) override;
+
+    string GetDevicesStatusUpdate();
     
 	//--------------------------------------------------------------
     int GetConnectedJoysticksCount() const
@@ -171,6 +173,6 @@ private:
 	JoystickManager& joystickmanager = JoystickManager::GetInstance();
 	KeyboardManager& keyboardmanager = KeyboardManager::GetInstance();
 	MouseManager& mousemanager = MouseManager::GetInstance();
-
+	std::ostringstream m_devicesStatus;
 };
 

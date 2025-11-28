@@ -59,3 +59,52 @@ void InputsManager::OnEvent(const Message& msg)
 		}
     }
 }
+//-------------------------------------------------------------
+// set a strin with the status and info of all connected devices (joysticks, keyboard and mouse)
+// state of connectivity, bouds to player ID etc...
+// the returned string is stored internally and updated at each call and will be use by the PanelManager InputsInspector panel
+string InputsManager::GetDevicesStatusUpdate()
+{
+    m_devicesStatus.str(std::string());
+    m_devicesStatus << "---- InputsManager Devices Status ----\r\n";
+    // Joysticks
+    auto joysticks = JoystickManager::Get().GetConnectedJoysticks();
+    m_devicesStatus << "Connected Joysticks: " << joysticks.size() << "\r\n";
+    for (auto jid : joysticks)
+    {
+        m_devicesStatus << "  - Joystick ID=" << jid;
+        // find which player is bound to this joystick
+        short boundPlayerID = -1;
+        for (auto& kv : m_playerBindings)
+        {
+            if (kv.second == jid) { boundPlayerID = kv.first; break; }
+        }
+        if (boundPlayerID >= 0)
+            m_devicesStatus << "  -> Bound to Player " << boundPlayerID << "\r\n";
+        else
+            m_devicesStatus << "  -> Not bound to any player\r\n";
+    }
+    // Keyboard
+    m_devicesStatus << "Keyboard: ";
+    if (m_keyboardAssigned)
+    {
+        m_devicesStatus << "Assigned to Player ";
+        // find which player is bound to keyboard
+        short boundPlayerID = -1;
+        for (auto& kv : m_playerBindings)
+        {
+            if (kv.second == SDL_JoystickID(-1)) { boundPlayerID = kv.first; break; }
+        }
+        if (boundPlayerID >= 0)
+            m_devicesStatus << boundPlayerID << "\r\n";
+        else
+            m_devicesStatus << "(error: assigned but no player?)\r\n";
+    }
+    else
+    {
+        m_devicesStatus << "Not assigned\r\n";
+    }
+    // Mouse
+    m_devicesStatus << "Mouse: Connected\r\n"; // assume always connected for now
+    return m_devicesStatus.str();
+}

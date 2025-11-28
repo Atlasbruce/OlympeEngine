@@ -17,6 +17,7 @@ Notes:
 #include "GameEngine.h"
 #include "system/EventManager.h"
 #include <mutex>
+#include "inputsmanager.h"
 
 #ifdef _WIN32
 #include <strsafe.h>
@@ -316,9 +317,7 @@ void PanelManager::HandleEvent(const SDL_Event* ev)
                 if (IsPanelVisible("inputs_inspector")) {
                     auto pit = m_panels_.find("inputs_inspector");
                     if (pit != m_panels_.end() && pit->second.hwndChild) {
-                        // call helper to update UI in InputsInspectorPanel.cpp
-                        extern void UpdateInputsInspectorUI(HWND hwndEdit);
-                        UpdateInputsInspectorUI(pit->second.hwndChild);
+						UpdateInputsInspectorList();
                     }
                 }
                 continue;
@@ -378,9 +377,7 @@ void PanelManager::OnEvent(const Message& msg)
                         auto pit = m_panels_.find("inputs_inspector");
                         if (pit != m_panels_.end() && pit->second.hwndChild)
                         {
-                            // call helper to update UI in InputsInspectorPanel.cpp
-                            extern void UpdateInputsInspectorUI(HWND hwndEdit);
-                            UpdateInputsInspectorUI(pit->second.hwndChild);
+							UpdateInputsInspectorList();
                         }
                     }
                     break;
@@ -393,7 +390,23 @@ void PanelManager::OnEvent(const Message& msg)
         {
             switch (msg.msg_type)
             {
-               
+			case EventType::Olympe_EventType_Keyboard_Connected:
+			case EventType::Olympe_EventType_Keyboard_Disconnected:
+			case EventType::Olympe_EventType_Mouse_Connected:
+			case EventType::Olympe_EventType_Mouse_Disconnected:
+			case EventType::Olympe_EventType_Joystick_Connected:
+            case EventType::Olympe_EventType_Joystick_Disconnected:
+            {
+                if (IsPanelVisible("inputs_inspector"))
+                {
+                    auto pit = m_panels_.find("inputs_inspector");
+                    if (pit != m_panels_.end() && pit->second.hwndChild)
+                    {
+                        UpdateInputsInspectorList();
+                    }
+                }
+                break;
+				}
             default:
                 break;
             }
@@ -516,8 +529,7 @@ void PanelManager::UpdateInputsInspectorList()
     auto it = m_panels_.find("inputs_inspector");
     if (it == m_panels_.end()) return;
     if (!it->second.hwndChild) return;
-    // call helper defined in InputsInspectorPanel.cpp
-    extern void UpdateInputsInspectorUI(HWND hwndEdit);
-    UpdateInputsInspectorUI(it->second.hwndChild);
+    std::string text = InputsManager::Get().GetDevicesStatusUpdate();
+    SetWindowTextA(it->second.hwndChild, text.c_str());
 #endif
 }
