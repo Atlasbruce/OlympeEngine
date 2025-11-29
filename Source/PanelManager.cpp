@@ -277,7 +277,7 @@ void PanelManager::AppendLog(const std::string& text)
     if (!hEdit) return;
     int len = GetWindowTextLength(hEdit);
     SendMessage(hEdit, EM_SETSEL, (WPARAM)len, (LPARAM)len);
-    std::string s = text;
+    std::string s = text + "\r\n";
     SendMessageA(hEdit, EM_REPLACESEL, FALSE, (LPARAM)s.c_str());
     SendMessage(hEdit, EM_SCROLLCARET, 0, 0);
 #endif

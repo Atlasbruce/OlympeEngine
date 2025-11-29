@@ -64,10 +64,8 @@ public:
      void Resume() { SetState(GameState::GameState_Running); }
      void RequestQuit() { SetState(GameState::GameState_Quit); }
 
-     // Player management: supports up to 4 players
-     // Returns assigned player ID [0..3] or -1 on failure
-     short AddPlayer();
-
+     // Player management
+     short AddPlayer(string _playerclassname = "");
      bool RemovePlayer(const short PlayerID);
 
      // Event handler for EventManager messages registered in ctor

@@ -12,11 +12,14 @@ class GameObject;
 enum class ComponentType
 {
 	None = 0, // no processing or used for extra data components for entities
-    Physics = 1,
-    AI = 2,
-    Visual = 3,
-    Audio = 4,
-	Count = 5 // used in World to size arrays
+	GameObject, // general game object component
+    Physics,
+    AI,
+    Visual,
+    Audio,
+    System,
+    Processus,
+	Count // used in World to size arrays
 };
 //---------------------------------------------------------------------------------------------
 class ObjectComponent : public Object
@@ -59,7 +62,6 @@ protected:
 
 //---------------------------------------------------------------------------------------------
 // Inherited properties - minimal implementations
-
 class PhysicsComponent : public ObjectComponent
 {
 public:
@@ -103,3 +105,33 @@ public:
     virtual void Process() override{/* Audio update logic goes here. */}
     virtual void OnEvent(const Message & msg) override;
 };
+//---------------------------------------------------------------------------------------------
+class SystemComponent : public ObjectComponent
+{
+    public:
+    explicit SystemComponent() = default;
+    virtual ~SystemComponent() override = default;
+    virtual ComponentType GetComponentType() const override { return ComponentType::System; }
+    virtual void Process() override{/* System update logic goes here. */}
+    virtual void OnEvent(const Message & msg) override;
+};
+//---------------------------------------------------------------------------------------------
+class ProcessusComponent : public ObjectComponent
+{
+    public:
+    explicit ProcessusComponent() = default;
+    virtual ~ProcessusComponent() override = default;
+    virtual ComponentType GetComponentType() const override { return ComponentType::Processus; }
+    virtual void Process() override{/* Processus update logic goes here. */}
+    virtual void OnEvent(const Message & msg) override;
+};
+//---------------------------------------------------------------------------------------------
+class GameObjectComponent : public ObjectComponent
+{
+public:
+    explicit GameObjectComponent() = default;
+    virtual ~GameObjectComponent() override = default;
+    virtual ComponentType GetComponentType() const override { return ComponentType::GameObject; }
+    virtual void OnEvent(const Message& msg) override;
+};
+

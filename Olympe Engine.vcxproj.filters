@@ -16,29 +16,11 @@
     <Filter Include="Fichiers d%27en-tête\System">
       <UniqueIdentifier>{91f4ebbc-c117-462a-80e4-a75fe90e3b64}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Fichiers d%27en-tête\GameObject">
-      <UniqueIdentifier>{ad28a455-d2eb-48fd-afae-5acb194b821d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête\Component">
-      <UniqueIdentifier>{aa29337d-d071-4ec0-919a-26448b0bbb43}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête\AI">
-      <UniqueIdentifier>{82ce43e1-62bd-4da3-982e-daf219c00a50}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête\Entities">
-      <UniqueIdentifier>{f83642fc-98c1-4b0e-bfc4-006502714838}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête\GameSystem">
-      <UniqueIdentifier>{993d385c-c1cc-447d-b603-55ce21173592}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Fichiers d%27en-tête\Rendering">
       <UniqueIdentifier>{5c8281db-50ab-4825-b865-0c1309b369f8}</UniqueIdentifier>
     </Filter>
     <Filter Include="Fichiers d%27en-tête\Inputs">
       <UniqueIdentifier>{841c4f31-7cef-4e3d-987b-76f3d68a8599}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Fichiers d%27en-tête\Data">
-      <UniqueIdentifier>{4affccaa-0dff-45a8-a975-528c87ffd116}</UniqueIdentifier>
     </Filter>
     <Filter Include="Fichiers d%27en-tête\Messages">
       <UniqueIdentifier>{9299da2e-ab55-41b2-ac58-56896f290d5e}</UniqueIdentifier>
@@ -49,46 +31,67 @@
     <Filter Include="Fichiers d%27en-tête\System Helpers">
       <UniqueIdentifier>{d0159c18-c274-43b1-809e-3c469963281f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Deprecated">
+      <UniqueIdentifier>{272b77bc-2967-4d5e-bb7f-dfb2a31a3965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Components">
+      <UniqueIdentifier>{aa29337d-d071-4ec0-919a-26448b0bbb43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Components\Deprecated">
+      <UniqueIdentifier>{7441defe-5775-487f-b785-b0f02a841113}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Components\Game">
+      <UniqueIdentifier>{455a049b-2ffd-43d4-90c1-24daea862c50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Components\System">
+      <UniqueIdentifier>{80d38e67-ecea-41ac-8786-8536d52ed9ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\GameObject">
+      <UniqueIdentifier>{ad28a455-d2eb-48fd-afae-5acb194b821d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\Entities">
+      <UniqueIdentifier>{f83642fc-98c1-4b0e-bfc4-006502714838}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Deprecated\AI">
+      <UniqueIdentifier>{82ce43e1-62bd-4da3-982e-daf219c00a50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Data &amp; Resources">
+      <UniqueIdentifier>{4affccaa-0dff-45a8-a975-528c87ffd116}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête\Game Systems">
+      <UniqueIdentifier>{993d385c-c1cc-447d-b603-55ce21173592}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GameEngine.cpp">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ObjectComponent.cpp">
-      <Filter>Fichiers d%27en-tête\Component</Filter>
-    </ClCompile>
     <ClCompile Include="source\GameObject.cpp">
-      <Filter>Fichiers d%27en-tête\GameObject</Filter>
+      <Filter>Deprecated\GameObject</Filter>
     </ClCompile>
     <ClCompile Include="source\Npc.cpp">
-      <Filter>Fichiers d%27en-tête\Entities</Filter>
+      <Filter>Deprecated\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\AI_Player.cpp">
-      <Filter>Fichiers d%27en-tête\AI</Filter>
+      <Filter>Deprecated\AI</Filter>
     </ClCompile>
     <ClCompile Include="source\Player.cpp">
-      <Filter>Fichiers d%27en-tête\Entities</Filter>
+      <Filter>Deprecated\Entities</Filter>
     </ClCompile>
     <ClCompile Include="Source\system\GameMenu.cpp">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameState.cpp">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClCompile>
     <ClCompile Include="Source\OlympeEngine.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="source\AI_Npc.cpp">
-      <Filter>Fichiers d%27en-tête\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Sprite.cpp">
-      <Filter>Fichiers d%27en-tête\Component</Filter>
+      <Filter>Deprecated\AI</Filter>
     </ClCompile>
     <ClCompile Include="source\VideoGame.cpp">
       <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\OlympeSystem.cpp">
-      <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClCompile>
     <ClCompile Include="source\drawing.h">
       <Filter>Fichiers d%27en-tête\System Helpers</Filter>
@@ -115,7 +118,7 @@
       <Filter>Fichiers d%27en-tête\Inputs</Filter>
     </ClCompile>
     <ClCompile Include="Source\DataManager.cpp">
-      <Filter>Fichiers d%27en-tête\Data</Filter>
+      <Filter>Fichiers d%27en-tête\Data &amp; Resources</Filter>
     </ClCompile>
     <ClCompile Include="source\system\system_utils.cpp">
       <Filter>Fichiers d%27en-tête\System Helpers</Filter>
@@ -129,22 +132,28 @@
     <ClCompile Include="Source\InputsInspectorPanel.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\OlympeSystem.cpp">
+      <Filter>Deprecated\Components\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Sprite.cpp">
+      <Filter>Deprecated\Components\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ObjectComponent.cpp">
+      <Filter>Deprecated\Components\System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\GameEngine.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\Object.h">
-      <Filter>Fichiers d%27en-tête\GameObject</Filter>
+      <Filter>Deprecated\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Source\GameObject.h">
-      <Filter>Fichiers d%27en-tête\GameObject</Filter>
+      <Filter>Deprecated\GameObject</Filter>
     </ClInclude>
     <ClInclude Include="Source\Npc.h">
-      <Filter>Fichiers d%27en-tête\Entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ObjectComponent.h">
-      <Filter>Fichiers d%27en-tête\Component</Filter>
+      <Filter>Deprecated\Entities</Filter>
     </ClInclude>
     <ClInclude Include="source\system\system_consts.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
@@ -153,43 +162,43 @@
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\AI_Player.h">
-      <Filter>Fichiers d%27en-tête\AI</Filter>
+      <Filter>Deprecated\AI</Filter>
     </ClInclude>
     <ClInclude Include="Source\Player.h">
-      <Filter>Fichiers d%27en-tête\Entities</Filter>
+      <Filter>Deprecated\Entities</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\GameMenu.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\GameRules.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\GameState.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\GraphicMap.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Level.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Objective.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Quest.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\QuestManager.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Sector.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Task.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\CollisionMap.h">
-      <Filter>Fichiers d%27en-tête\GameSystem</Filter>
+      <Filter>Fichiers d%27en-tête\Game Systems</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Fichiers de ressources</Filter>
@@ -198,19 +207,13 @@
       <Filter>Fichiers de ressources</Filter>
     </ClInclude>
     <ClInclude Include="source\AI_Npc.h">
-      <Filter>Fichiers d%27en-tête\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Sprite.h">
-      <Filter>Fichiers d%27en-tête\Component</Filter>
+      <Filter>Deprecated\AI</Filter>
     </ClInclude>
     <ClInclude Include="Source\OptionsManager.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
     </ClInclude>
     <ClInclude Include="Source\VideoGame.h">
       <Filter>Fichiers d%27en-tête\System</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\OlympeSystem.h">
-      <Filter>Fichiers d%27en-tête\Component</Filter>
     </ClInclude>
     <ClInclude Include="Source\Factory.h">
       <Filter>Fichiers d%27en-tête\System Helpers</Filter>
@@ -246,7 +249,7 @@
       <Filter>Fichiers d%27en-tête\Inputs</Filter>
     </ClInclude>
     <ClInclude Include="Source\DataManager.h">
-      <Filter>Fichiers d%27en-tête\Data</Filter>
+      <Filter>Fichiers d%27en-tête\Data &amp; Resources</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\EventManager.h">
       <Filter>Fichiers d%27en-tête\Messages</Filter>
@@ -259,6 +262,15 @@
     </ClInclude>
     <ClInclude Include="Source\PanelManager.h">
       <Filter>Fichiers d%27en-tête\Panels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OlympeSystem.h">
+      <Filter>Deprecated\Components\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Sprite.h">
+      <Filter>Deprecated\Components\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ObjectComponent.h">
+      <Filter>Deprecated\Components\System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -279,5 +291,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="olympe.log" />
+    <Text Include="credits.txt" />
   </ItemGroup>
 </Project>

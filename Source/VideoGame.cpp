@@ -8,8 +8,11 @@ Purpose: Implementation of the VideoGame class, which represents a video game wi
 #include "Player.h"
 #include <sstream>
 #include <string>
+#include "InputsManager.h"
 
 short VideoGame::m_playerIdCounter = 0;
+using namespace std;
+using IM = InputsManager;
 
 VideoGame::VideoGame()
 {
@@ -54,10 +57,24 @@ VideoGame::~VideoGame()
 //-------------------------------------------------------------
 // Player management: supports up to 4 players
 // Returns assigned player ID  -1 on failure
-short VideoGame::AddPlayer()
+short VideoGame::AddPlayer(string _playerclassname)
 {
-	// m_PlayerIdCounter modified in the Player::Player construtor / destructor
-    GameObject* player = (GameObject*)Factory::Get().CreateObject("Player");
+	// check if there is some input devices available
+    if (IM::Get().GetAvailableJoystickCount() <= 0)
+    {
+        SYSTEM_LOG << "VideoGame::AddPlayer: No input devices available to add a new player\n";
+        return -1;
+	}
+
+
+	// check if class name is valid and registered in Factory
+    if (_playerclassname.empty() || ! Factory::Get().IsRegistered(_playerclassname))
+    {
+        SYSTEM_LOG << "VideoGame::AddPlayer: Player class name '" << _playerclassname << "' not found in Factory, using default 'Player'\n";
+        _playerclassname = "Player";
+    }
+
+    GameObject* player = (GameObject*)Factory::Get().CreateObject(_playerclassname);
 	player->name = "Player_" + std::to_string(m_playerIdCounter);
 	m_players.push_back(player);
 
@@ -234,7 +251,7 @@ void VideoGame::OnEvent(const Message& msg)
         break;
     }
 }
-
+//-------------------------------------------------------------
 // Save full game state into a single JSON file per slot using DataManager
 // Optimized: pre-allocate string capacity to avoid reallocations
 bool VideoGame::SaveGame(int slot) const

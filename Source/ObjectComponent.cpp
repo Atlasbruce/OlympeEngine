@@ -45,4 +45,20 @@ void VisualComponent::OnEvent(const Message& msg)
 //-------------------------------------------------------------
 void AudioComponent::OnEvent(const Message& msg)
 {
+	ObjectComponent::OnEvent(msg);
+}
+//-------------------------------------------------------------
+void SystemComponent::OnEvent(const Message& msg)
+{
+	ObjectComponent::OnEvent(msg);
+}
+//-------------------------------------------------------------
+void ProcessusComponent::OnEvent(const Message& msg)
+{
+	ObjectComponent::OnEvent(msg);
+}
+//-------------------------------------------------------------
+void GameObjectComponent::OnEvent(const Message& msg)
+{
+	ObjectComponent::OnEvent(msg);
 }

@@ -57,7 +57,7 @@ public:
     // Forward received messages to properties (default behavior)
     virtual void OnEvent(const Message& msg) override;
 
-	void Render() { SYSTEM_LOG << " WARNING GameObject::Render call: the visual component should handling the GameObject rendering (sprite, a,imation etc..) invalid call for GameObject: " << name << " at (" << position.x << ", " << position.y << ")\n"; }
+	void Render() { SYSTEM_LOG << " WARNING GameObject::Render call: the visual component should handling the GameObject rendering (sprite, animation etc..) invalid call for GameObject: " << name << " at (" << position.x << ", " << position.y << ")\n"; }
 
     // Serialization to/from JSON (simple implementation)
     std::string Save() const;

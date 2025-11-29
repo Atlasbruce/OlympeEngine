@@ -77,7 +77,15 @@ public:
             return true;
         }
     }
-
+	//-------------------------------------------------------------
+	// @brief Check if a class is registered in the factory
+	// @param className The name of the class to check
+	// @return true if the class is registered, false otherwise
+    bool IsRegistered(const std::string& className) const
+    {
+        return m_registeredCreators.find(className) != m_registeredCreators.end();
+	}
+	//-------------------------------------------------------------
     /**
      * @brief Crée une nouvelle instance de l'objet spécifié par son nom de classe.
      * @param className Le nom de la classe à créer.

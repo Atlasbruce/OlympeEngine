@@ -41,19 +41,35 @@ public:
     {
         return static_cast<int>(JoystickManager::Get().GetConnectedJoysticks().size());
 	}
-    
+	//--------------------------------------------------------------
     int GetConnectedKeyboardsCount() const
     {
 		return m_keyboardAssigned ? 1 : 0;
 	}
-
+	//--------------------------------------------------------------
     int GetMaxDevices() const
     {
         // Max players = number of connected joysticks + 1 (keyboard)
 		return static_cast<int>(GetConnectedJoysticksCount() + GetConnectedKeyboardsCount());
 	}
-
    	//--------------------------------------------------------------
+    int GetAvailableJoystickCount() const
+    {
+        int count = 0;
+        auto joysticks = JoystickManager::Get().GetConnectedJoysticks();
+        for (auto jid : joysticks)
+        {
+            bool used = false;
+            for (auto& kv : m_playerBindings) 
+                if (kv.second == jid) 
+                {
+                    used = true; break;
+                }
+            if (!used) ++count;
+        }
+        return count;
+    }
+	//--------------------------------------------------------------
 	// Automatically bind first available controller (joystick or keyboard) to a player
     bool AutoBindControllerToPlayer(short playerID)
     {

@@ -70,6 +70,8 @@ string InputsManager::GetDevicesStatusUpdate()
     // Joysticks
     auto joysticks = JoystickManager::Get().GetConnectedJoysticks();
     m_devicesStatus << "Connected Joysticks: " << joysticks.size() << "\r\n";
+	m_devicesStatus << "Available Unassigned Joysticks: " << GetAvailableJoystickCount() << "\r\n";
+	m_devicesStatus << "Available Assigned Joysticks: " << (GetConnectedJoysticksCount() - GetAvailableJoystickCount()) << "\r\n";
     for (auto jid : joysticks)
     {
         m_devicesStatus << "  - Joystick ID=" << jid;
