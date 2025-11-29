@@ -24,7 +24,6 @@
     <TargetName>Olympe Blueprint Editor</TargetName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Graph.cpp" />
@@ -33,11 +32,9 @@
     <ClInclude Include="include\Graph.h" />
     <ClInclude Include="include\imnodes_stub.h" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
-
   <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -49,6 +46,5 @@
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
-
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
