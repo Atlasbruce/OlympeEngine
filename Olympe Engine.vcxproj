@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="OlympeBlueprintEditor\src\Graph.cpp" />
+    <ClCompile Include="OlympeBlueprintEditor\src\main.cpp" />
+    <ClCompile Include="OlympeBlueprintEditor\src\serialize_example.cpp" />
     <ClCompile Include="source\AI_Npc.cpp" />
     <ClCompile Include="Source\AI_Player.cpp" />
     <ClCompile Include="Source\InputsInspectorPanel.cpp" />
@@ -47,6 +50,9 @@
     <ClCompile Include="source\VideoGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="OlympeBlueprintEditor\include\BlueprintEditor.h" />
+    <ClInclude Include="OlympeBlueprintEditor\include\Graph.h" />
+    <ClInclude Include="OlympeBlueprintEditor\include\imnodes_stub.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="source\AI_Npc.h" />
     <ClInclude Include="Source\AI_Player.h" />
@@ -87,6 +93,7 @@
     <ClInclude Include="source\system\system_consts.h" />
     <ClInclude Include="Source\system\Viewport.h" />
     <ClInclude Include="Source\Task.h" />
+    <ClInclude Include="Source\third_party\imnodes\imnodes.h" />
     <ClInclude Include="Source\third_party\nlohmann\json.hpp" />
     <ClInclude Include="Source\VideoGame.h" />
     <ClInclude Include="Source\World.h" />
@@ -94,6 +101,12 @@
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
     <None Include="olympe.ini" />
+    <None Include="OlympeBlueprintEditor.sln" />
+    <None Include="OlympeBlueprintEditor\.gitignore" />
+    <None Include="OlympeBlueprintEditor\OlympeBlueprintEditor.vcxproj" />
+    <None Include="OlympeBlueprintEditor\OlympeBlueprintEditor.vcxproj.filters" />
+    <None Include="OlympeBlueprintEditor\README.md" />
+    <None Include="Source\third_party\imnodes\README.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\olympe.ico" />

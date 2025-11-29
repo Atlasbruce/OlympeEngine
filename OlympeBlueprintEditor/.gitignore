@@ -1,0 +1,11 @@
+# Build artifacts
+*.obj
+*.exe
+*.pdb
+*.ilk
+*.user
+*.opensdf
+*.sdf
+*.vcxproj.user
+bin/
+build/

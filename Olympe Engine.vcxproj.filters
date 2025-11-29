@@ -61,6 +61,9 @@
     <Filter Include="Fichiers d%27en-tête\Game Systems">
       <UniqueIdentifier>{993d385c-c1cc-447d-b603-55ce21173592}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Olympe Blueprint Editor">
+      <UniqueIdentifier>{f0874496-0845-4ac8-925a-399b9e89b709}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\GameEngine.cpp">
@@ -126,9 +129,6 @@
     <ClCompile Include="Source\PanelManager.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="Source\InputsManager.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\InputsInspectorPanel.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -140,6 +140,18 @@
     </ClCompile>
     <ClCompile Include="Source\ObjectComponent.cpp">
       <Filter>Deprecated\Components\System</Filter>
+    </ClCompile>
+    <ClCompile Include="OlympeBlueprintEditor\src\serialize_example.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\InputsManager.cpp">
+      <Filter>Fichiers d%27en-tête\Inputs</Filter>
+    </ClCompile>
+    <ClCompile Include="OlympeBlueprintEditor\src\main.cpp">
+      <Filter>Olympe Blueprint Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="OlympeBlueprintEditor\src\Graph.cpp">
+      <Filter>Olympe Blueprint Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -272,6 +284,18 @@
     <ClInclude Include="Source\ObjectComponent.h">
       <Filter>Deprecated\Components\System</Filter>
     </ClInclude>
+    <ClInclude Include="OlympeBlueprintEditor\include\BlueprintEditor.h">
+      <Filter>Olympe Blueprint Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="OlympeBlueprintEditor\include\Graph.h">
+      <Filter>Olympe Blueprint Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\third_party\imnodes\imnodes.h">
+      <Filter>Olympe Blueprint Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="OlympeBlueprintEditor\include\imnodes_stub.h">
+      <Filter>Olympe Blueprint Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Olympe Engine.rc">
@@ -287,6 +311,22 @@
     <None Include="ClassDiagram.cd" />
     <None Include="olympe.ini">
       <Filter>Fichiers sources</Filter>
+    </None>
+    <None Include="OlympeBlueprintEditor\.gitignore" />
+    <None Include="OlympeBlueprintEditor.sln">
+      <Filter>Olympe Blueprint Editor</Filter>
+    </None>
+    <None Include="OlympeBlueprintEditor\OlympeBlueprintEditor.vcxproj">
+      <Filter>Olympe Blueprint Editor</Filter>
+    </None>
+    <None Include="OlympeBlueprintEditor\OlympeBlueprintEditor.vcxproj.filters">
+      <Filter>Olympe Blueprint Editor</Filter>
+    </None>
+    <None Include="Source\third_party\imnodes\README.md">
+      <Filter>Olympe Blueprint Editor</Filter>
+    </None>
+    <None Include="OlympeBlueprintEditor\README.md">
+      <Filter>Olympe Blueprint Editor</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
