@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11222.16 d18.3
+VisualStudioVersion = 18.3.11222.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Olympe Engine", "Olympe Engine.vcxproj", "{7E778348-7AE8-44C3-95A4-303274248FE5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9B4C9E2A-0000-0000-0000-000000000001} = {9B4C9E2A-0000-0000-0000-000000000001}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OlympeBlueprintEditor", "OlympeBlueprintEditor\OlympeBlueprintEditor.vcxproj", "{9B4C9E2A-0000-0000-0000-000000000001}"
 EndProject
