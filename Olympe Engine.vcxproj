@@ -21,6 +21,8 @@
   <ItemGroup>
     <ClCompile Include="source\AI_Npc.cpp" />
     <ClCompile Include="Source\AI_Player.cpp" />
+    <ClCompile Include="source\ECS_Register.h" />
+    <ClCompile Include="Source\ECS_Systems.cpp" />
     <ClCompile Include="Source\InputsInspectorPanel.cpp" />
     <ClCompile Include="Source\InputsManager.cpp" />
     <ClCompile Include="Source\OlympeSystem.cpp" />
@@ -45,12 +47,16 @@
     <ClCompile Include="source\system\system_utils.cpp" />
     <ClCompile Include="Source\system\Viewport.cpp" />
     <ClCompile Include="source\VideoGame.cpp" />
+    <ClCompile Include="Source\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="source\AI_Npc.h" />
     <ClInclude Include="Source\AI_Player.h" />
     <ClInclude Include="Source\CollisionMap.h" />
+    <ClInclude Include="source\ECS_Components.h" />
+    <ClInclude Include="source\ECS_Entity.h" />
+    <ClInclude Include="source\ECS_Systems.h" />
     <ClInclude Include="Source\OlympeSystem.h" />
     <ClInclude Include="Source\DataManager.h" />
     <ClInclude Include="Source\Factory.h" />
