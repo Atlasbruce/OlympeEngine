@@ -23,7 +23,7 @@ Notes:
 #include "system/JoystickManager.h"
 #include "InputsManager.h"
 #include "GameState.h"
-#include "system/Camera.h"
+//#include "system/Camerasytem.h"
 #include "system/Viewport.h"
 #include "videogame.h"
 #include "DataManager.h"
@@ -220,13 +220,13 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     if (frameStartTime > 0)
     {
         // Temps écoulé depuis le début de la frame précédente
-        Uint32 timeTakenForFrame = SDL_GetTicks() - frameStartTime;
+        Uint64 timeTakenForFrame = SDL_GetTicks() - frameStartTime;
 
         // Si la frame a pris moins de temps que le temps cible (16.666 ms)...
         if (timeTakenForFrame < FRAME_TARGET_TIME_MS)
         {
             // ... alors nous "dormons" (bloquons) le thread pour le temps restant.
-            Uint32 timeToWait = FRAME_TARGET_TIME_MS - timeTakenForFrame;
+            Uint64 timeToWait = FRAME_TARGET_TIME_MS - timeTakenForFrame;
             SDL_Delay(timeToWait);
             // Ce SDL_Delay garantit que chaque frame ne sera pas traitée plus vite que TARGET_FPS.
         }

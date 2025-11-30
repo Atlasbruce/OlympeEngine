@@ -1,9 +1,9 @@
-#include "Camera.h"
+#include "CameraManager.h"
 #include "EventManager.h"
 #include "Viewport.h"
 #include <iostream>
 
-void Camera::Initialize()
+void CameraManager::Initialize()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
@@ -11,67 +11,67 @@ void Camera::Initialize()
     CreateCameraForPlayer(0);
 
     // Register to camera-related events
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Shake, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Teleport, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_MoveToPosition, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_ZoomTo, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Reset, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_SetBounds, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_2D, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_2_5D, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_Isometric, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_Follow, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_Unfollow, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_SetOffset, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_ClearOffset, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Viewport_Add, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Viewport_Remove, [this](const Message& m){ this->OnEvent(m); });
-    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Viewport_Clear, [this](const Message& m){ this->OnEvent(m); });
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Shake);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Teleport);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_MoveToPosition);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_ZoomTo);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Reset);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_SetBounds);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_2D);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_2_5D);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Mode_Isometric);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_Follow);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_Unfollow);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_SetOffset);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Target_ClearOffset);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Viewport_Add);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Viewport_Remove);
+    EventManager::Get().Register(this, EventType::Olympe_EventType_Camera_Viewport_Clear);
 
-	name = "Camera";
+	name = "CameraManager";
 
-	SYSTEM_LOG << "Camera Initialized\n";
+	SYSTEM_LOG << "CameraManager Initialized\n";
 }
 
-void Camera::Shutdown()
+void CameraManager::Shutdown()
 {
     // Unregister all callbacks associated with this instance
     EventManager::Get().UnregisterAll(this);
     std::lock_guard<std::mutex> lock(m_mutex);
-    m_cameras.clear();
+    m_cameraInstances.clear();
 	SYSTEM_LOG << "Camera Shutdown\n";
 }
 
-void Camera::CreateCameraForPlayer(short playerID)
+void CameraManager::CreateCameraForPlayer(short playerID)
 {
     //std::lock_guard<std::mutex> lock(m_mutex);
-    if (m_cameras.find(playerID) != m_cameras.end()) return;
+    if (m_cameraInstances.find(playerID) != m_cameraInstances.end()) return;
     CameraInstance inst;
     inst.playerId = playerID;
     inst.x = 0.0f; inst.y = 0.0f; inst.zoom = 1.0f;
-    m_cameras[playerID] = inst;
+    m_cameraInstances[playerID] = inst;
 }
 
-void Camera::RemoveCameraForPlayer(short playerID)
+void CameraManager::RemoveCameraForPlayer(short playerID)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
-    auto it = m_cameras.find(playerID);
-    if (it != m_cameras.end()) m_cameras.erase(it);
+    auto it = m_cameraInstances.find(playerID);
+    if (it != m_cameraInstances.end()) m_cameraInstances.erase(it);
 }
 
-Camera::CameraInstance Camera::GetCameraForPlayer(short playerID) const
+CameraManager::CameraInstance CameraManager::GetCameraForPlayer(short playerID) const
 {
     std::lock_guard<std::mutex> lock(m_mutex);
-    auto it = m_cameras.find(playerID);
-    if (it != m_cameras.end()) return it->second;
+    auto it = m_cameraInstances.find(playerID);
+    if (it != m_cameraInstances.end()) return it->second;
     // fallback to player 0
-    auto it0 = m_cameras.find(0);
-    if (it0 != m_cameras.end()) return it0->second;
+    auto it0 = m_cameraInstances.find(0);
+    if (it0 != m_cameraInstances.end()) return it0->second;
     // default instance
     CameraInstance d; d.playerId = 0; return d;
 }
 
-void Camera::Apply(SDL_Renderer* renderer)
+void CameraManager::Apply(SDL_Renderer* renderer)
 {
     // Backwards-compatible: set render viewport to the first viewport rectangle
     if (!renderer) return;
@@ -83,7 +83,7 @@ void Camera::Apply(SDL_Renderer* renderer)
     }
 }
 
-void Camera::OnEvent(const Message& msg)
+void CameraManager::OnEvent(const Message& msg)
 {
     // Generic event handler that updates camera instances based on message payload.
     // Messages can target specific player via msg.deviceId (player index) or default to 0.
@@ -91,12 +91,12 @@ void Camera::OnEvent(const Message& msg)
     if (msg.deviceId >= 0) playerID = static_cast<short>(msg.deviceId);
 
     std::lock_guard<std::mutex> lock(m_mutex);
-    auto it = m_cameras.find(playerID);
-    if (it == m_cameras.end())
+    auto it = m_cameraInstances.find(playerID);
+    if (it == m_cameraInstances.end())
     {
         // if not present create it
         CreateCameraForPlayer(playerID);
-        it = m_cameras.find(playerID);
+        it = m_cameraInstances.find(playerID);
     }
     CameraInstance& cam = it->second;
 
@@ -154,11 +154,14 @@ void Camera::OnEvent(const Message& msg)
             break;
         }
         case EventType::Olympe_EventType_Camera_Mode_2D:
-            cam.mode = CameraInstance::Mode::Mode2D; break;
+            cam.mode = CameraInstance::Mode::Mode2D;
+            break;
         case EventType::Olympe_EventType_Camera_Mode_2_5D:
-            cam.mode = CameraInstance::Mode::Mode2_5D; break;
+            cam.mode = CameraInstance::Mode::Mode2_5D;
+            break;
         case EventType::Olympe_EventType_Camera_Mode_Isometric:
-            cam.mode = CameraInstance::Mode::ModeIsometric; break;
+            cam.mode = CameraInstance::Mode::ModeIsometric;
+            break;
         case EventType::Olympe_EventType_Camera_Target_Follow:
         {
             // follow target specified by msg.controlId as UID or payload pointer to Object*
@@ -171,17 +174,22 @@ void Camera::OnEvent(const Message& msg)
             cam.followTarget = false; cam.targetUid = -1; break;
         case EventType::Olympe_EventType_Camera_Target_SetOffset:
         {
-            cam.offset.x = static_cast<int>(msg.value);
-            cam.offset.y = static_cast<int>(msg.value2);
+            cam.offset.x = msg.value;
+            cam.offset.y = msg.value2;
             break;
         }
         case EventType::Olympe_EventType_Camera_Target_ClearOffset:
-            cam.offset = {0,0}; break;
-        case EventType::Olympe_EventType_Camera_Viewport_Add:
+            cam.offset = {0.f,0.f};
+            break;
         case EventType::Olympe_EventType_Camera_Viewport_Remove:
+            break;
         case EventType::Olympe_EventType_Camera_Viewport_Clear:
+			break;
+        case EventType::Olympe_EventType_Camera_Viewport_Add:
+        {
             // viewport layout is handled by Viewport; nothing to do here by default
             break;
+        }
         default:
             break;
     }

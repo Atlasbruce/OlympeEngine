@@ -11,7 +11,22 @@
 // Exposes minimal API used by the engine: Initialize(), Shutdown(), Apply(renderer)
 // Additional helpers allow creating/removing cameras per player and query their transform.
 
-class Camera : public Object
+enum class CameraType
+{
+    CameraType_2D = 0,
+    CameraType_2_5D,
+    CameraType_Isometric,
+	CameraType_Count
+};
+
+enum class CameraMode
+{
+    CameraMode_Fixed = 0, // camera fixed at position
+    CameraMode_Follow,   // camera follows an entity (player or other)
+    CameraMode_Count
+};
+
+class CameraManager : public Object
 {
 public:
     struct CameraInstance
@@ -24,21 +39,23 @@ public:
         enum class Mode { Mode2D, Mode2_5D, ModeIsometric } mode = Mode::Mode2D;
         bool followTarget = false;
         int targetUid = -1; // optional follow target UID
-        SDL_Point offset{0,0};
+        SDL_FPoint offset{0.f,0.f};
+		CameraMode camMode = CameraMode::CameraMode_Fixed;
+		CameraType camType = CameraType::CameraType_2D;
     };
 
 public:
-    Camera() { Initialize(); }
-    ~Camera() { Shutdown(); }
+    CameraManager() { Initialize(); }
+    ~CameraManager() { Shutdown(); }
 
     virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
-    static Camera& GetInstance()
+    static CameraManager& GetInstance()
     {
-        static Camera instance;
+        static CameraManager instance;
         return instance;
     }
-    static Camera& Get() { return GetInstance(); }
+    static CameraManager& Get() { return GetInstance(); }
 
     void Initialize();
     void Shutdown();
@@ -58,5 +75,5 @@ public:
 
 private:
     mutable std::mutex m_mutex;
-    std::unordered_map<short, CameraInstance> m_cameras;
+    std::unordered_map<short, CameraInstance> m_cameraInstances;
 };

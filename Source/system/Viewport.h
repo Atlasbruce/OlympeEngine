@@ -55,8 +55,8 @@ public:
     void UpdateViewports();
 
 private:
-    int m_width = 800;
-    int m_height = 600;
+    int m_width = 400;
+    int m_height = 320;
     std::vector<SDL_FRect> m_viewRects;
     std::vector<short> m_players; // ordered list of player ids
     std::unordered_map<short,int> m_playerIndexMap;

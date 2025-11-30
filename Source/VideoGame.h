@@ -8,7 +8,7 @@
 #include "GameRules.h"
 #include "QuestManager.h"
 #include "system/GameMenu.h"
-#include "system/Camera.h"
+#include "system/CameraManager.h"
 #include "system/Viewport.h"
 #include "system/JoystickManager.h"
 #include "system/EventManager.h"
@@ -48,7 +48,7 @@ public:
     inline GameRules& GetRules() { return gamerules; }
     inline QuestManager& GetQuestManager() { return questmanager; }
     inline GameMenu& GetMenu() { return gamemenu; }
-    inline Camera& GetCamera() { return camera; }
+    inline CameraManager& GetCameraSsytem() { return cameramanager; }
 	inline Viewport& GetViewport() { return viewport; }
 
      // Game state helpers (front-end to GameStateManager)
@@ -80,7 +80,7 @@ public:
 	GameRules& gamerules = GameRules::GetInstance();
 	GameMenu& gamemenu = GameMenu::GetInstance();
 	QuestManager& questmanager = QuestManager::GetInstance();
-	Camera& camera = Camera::GetInstance();
+	CameraManager& cameramanager = CameraManager::GetInstance();
 	Viewport& viewport = Viewport::GetInstance();
 
     // Players

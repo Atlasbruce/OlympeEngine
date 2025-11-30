@@ -99,7 +99,7 @@
     <ClCompile Include="Source\drawing.cpp">
       <Filter>Fichiers d%27en-tête\Engine Systems\System Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="Source\system\Camera.cpp">
+    <ClCompile Include="Source\system\CameraManager.cpp">
       <Filter>Fichiers d%27en-tête\Engine Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Source\system\SystemMenu.cpp">
@@ -236,7 +236,7 @@
     <ClInclude Include="Source\Serialization.h">
       <Filter>Fichiers d%27en-tête\Engine Systems\System Helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Source\system\Camera.h">
+    <ClInclude Include="Source\system\CameraManager.h">
       <Filter>Fichiers d%27en-tête\Engine Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\SystemMenu.h">
