@@ -28,7 +28,7 @@ public:
 private:
 	SDL_Color m_debugcolor = { 0, 255, 0, 255 };
 
-    float m_speed = 120.0f; // for tests to be removed
+    float m_speed = 250.0f; // for tests to be removed
 
     // input state
     float m_axisX = 0.0f;

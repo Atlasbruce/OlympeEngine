@@ -19,9 +19,6 @@
     <Filter Include="Deprecated\Components">
       <UniqueIdentifier>{aa29337d-d071-4ec0-919a-26448b0bbb43}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Deprecated\Components\Deprecated">
-      <UniqueIdentifier>{7441defe-5775-487f-b785-b0f02a841113}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Deprecated\Components\Game">
       <UniqueIdentifier>{455a049b-2ffd-43d4-90c1-24daea862c50}</UniqueIdentifier>
     </Filter>
