@@ -46,6 +46,8 @@ using namespace std;
  /* We will use this renderer to draw into this window every frame. */
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
+const int TARGET_FPS = 60;
+const Uint32 FRAME_TARGET_TIME_MS = 1000 / TARGET_FPS;
 
 /* This function runs once at startup. */
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
@@ -214,6 +216,23 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     // Update FPS counter and set window title once per second
     static int frameCount = 0;
     static Uint64 fpsLastTime = 0;
+    static Uint64 frameStartTime = 0;
+    if (frameStartTime > 0)
+    {
+        // Temps écoulé depuis le début de la frame précédente
+        Uint32 timeTakenForFrame = SDL_GetTicks() - frameStartTime;
+
+        // Si la frame a pris moins de temps que le temps cible (16.666 ms)...
+        if (timeTakenForFrame < FRAME_TARGET_TIME_MS)
+        {
+            // ... alors nous "dormons" (bloquons) le thread pour le temps restant.
+            Uint32 timeToWait = FRAME_TARGET_TIME_MS - timeTakenForFrame;
+            SDL_Delay(timeToWait);
+            // Ce SDL_Delay garantit que chaque frame ne sera pas traitée plus vite que TARGET_FPS.
+        }
+    }
+    frameStartTime = SDL_GetTicks();
+
     frameCount++;
     const Uint64 nowMs = SDL_GetTicks();
     if (fpsLastTime == 0) fpsLastTime = nowMs;
@@ -222,7 +241,7 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     {
         float fps = frameCount * 1000.0f / (float)elapsed;
         char title[256];
-        snprintf(title, sizeof(title), "Olympe Engine 2.0 - FPS: %.1f", fps);
+        snprintf(title, sizeof(title), "Olympe Engine 2.0 - FPS: %.f", fps);
         if (window) SDL_SetWindowTitle(window, title);
         frameCount = 0;
         fpsLastTime = nowMs;
