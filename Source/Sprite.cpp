@@ -30,18 +30,25 @@ void Sprite::RenderDebug()
 
 void Sprite::Render()
 {
-	Vector vRenderPos = gao->position -CameraManager::Get().GetCameraPositionForPlayer();
-	gao->boundingBox = { vRenderPos.x, vRenderPos.y, gao->width, gao->height };
+	Vector vRenderPos = gao->GetPosition() - CameraManager::Get().GetCameraPositionForPlayer();
+	float _w, _h;
+	gao->GetSize(_w, _h);
+	gao->SetBoundingbox( {vRenderPos.x, vRenderPos.y, _w, _h} );
 
 	if (m_SpriteTexture)
-		SDL_RenderTexture(GameEngine::renderer, m_SpriteTexture, nullptr, &gao->boundingBox);
+	{
+		SDL_FRect box = gao->GetBoundingBox();
+
+		SDL_RenderTexture(GameEngine::renderer, m_SpriteTexture, nullptr, &box);
+	}
 }
 
 void Sprite::SetSprite(SDL_Texture* texture)
 {
 	m_SpriteTexture = texture;
-	gao->width = gao->boundingBox.h = (float)m_SpriteTexture->h;
-	gao->height = gao->boundingBox.w = (float)m_SpriteTexture->w;
+	gao->SetSize((float)m_SpriteTexture->w, (float)m_SpriteTexture->h);
+	//gao->width = gao->boundingBox.h = (float)m_SpriteTexture->h;
+	//gao->height = gao->boundingBox.w = (float)m_SpriteTexture->w;
 }
 
 void Sprite::SetSprite(const std::string& resourceName,const std::string& filePath)

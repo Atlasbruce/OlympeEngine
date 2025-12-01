@@ -34,6 +34,8 @@ VideoGame::VideoGame()
 	EM::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyDown);
 	EM::Get().Register(this, EventType::Olympe_EventType_Keyboard_KeyUp);
         
+	// Initialize viewport manager
+	viewport.Initialize(GameEngine::screenWidth, GameEngine::screenHeight);
 
 	// Ensure default state is running
 	GameStateManager::SetState(GameState::GameState_Running);
@@ -92,8 +94,35 @@ short VideoGame::AddPlayer(string _playerclassname)
 	// Vieport mode enabled? 
 	//if ()
     {
-        msg.msg_type = EventType::Olympe_EventType_Camera_Viewport_Add;
-        EventManager::Get().AddMessage(msg);
+        switch (m_players.size())
+		{
+            case 1:
+                viewport.AddPlayer(((Player*)player)->m_PlayerID, ViewportLayout::ViewportLayout_Grid1x1);
+			break;
+            case 2:
+				viewport.AddPlayer(((Player*)player)->m_PlayerID, ViewportLayout::ViewportLayout_Grid2x1);
+                break;
+			case 3:
+                viewport.AddPlayer(((Player*)player)->m_PlayerID, ViewportLayout::ViewportLayout_Grid3x1);
+                break;
+            case 4:
+                viewport.AddPlayer(((Player*)player)->m_PlayerID, ViewportLayout::ViewportLayout_Grid2x2);
+                break;
+			case 5:
+            case 6:
+                viewport.AddPlayer(((Player*)player)->m_PlayerID, ViewportLayout::ViewportLayout_Grid3x2);
+				break;
+			case 7:
+            case 8:
+				viewport.AddPlayer(((Player*)player)->m_PlayerID, ViewportLayout::ViewportLayout_Grid4x2);
+				break;
+
+            default:
+                break;
+		}
+
+        //msg.msg_type = EventType::Olympe_EventType_Camera_Viewport_Add;
+        //EventManager::Get().AddMessage(msg);
     }
 
 	return m_playerIdCounter; // return the new player ID

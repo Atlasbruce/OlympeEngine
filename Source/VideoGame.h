@@ -9,7 +9,7 @@
 #include "QuestManager.h"
 #include "system/GameMenu.h"
 #include "system/CameraManager.h"
-#include "system/Viewport.h"
+#include "system/ViewportManager.h"
 #include "system/JoystickManager.h"
 #include "system/EventManager.h"
 #include "system/message.h"
@@ -49,7 +49,7 @@ public:
     inline QuestManager& GetQuestManager() { return questmanager; }
     inline GameMenu& GetMenu() { return gamemenu; }
     inline CameraManager& GetCameraSsytem() { return cameramanager; }
-	inline Viewport& GetViewport() { return viewport; }
+	inline ViewportManager& GetViewport() { return viewport; }
 
      // Game state helpers (front-end to GameStateManager)
      void SetState(GameState s)
@@ -81,7 +81,7 @@ public:
 	GameMenu& gamemenu = GameMenu::GetInstance();
 	QuestManager& questmanager = QuestManager::GetInstance();
 	CameraManager& cameramanager = CameraManager::GetInstance();
-	Viewport& viewport = Viewport::GetInstance();
+    ViewportManager& viewport = ViewportManager::GetInstance();
 
     // Players
     std::vector<GameObject*> m_players;

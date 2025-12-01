@@ -1,10 +1,8 @@
 #pragma once
 #include "../object.h"
-#include <SDL3/SDL.h>
 #include <vector>
 #include <unordered_map>
-#include <algorithm>
-#include "system_utils.h"
+
 
 // Simple Viewport manager singleton that computes up to 4 view rectangles
 // according to the number of players. Viewports are laid out as follows:
@@ -22,20 +20,20 @@ enum class ViewportLayout
 	ViewportLayout_Grid4x2
 };
 
-class Viewport : public Object
+class ViewportManager : public Object
 {
 public:
-    Viewport();// { Initialize(GameEngine::screenWidth, GameEngine::screenHeight); }
-    ~Viewport();// { Shutdown(); }
+    ViewportManager();
+    ~ViewportManager();
 
     virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
-    static Viewport& GetInstance()
+    static ViewportManager& GetInstance()
     {
-        static Viewport instance;
+        static ViewportManager instance;
         return instance;
     }
-    static Viewport& Get() { return GetInstance(); }
+    static ViewportManager& Get() { return GetInstance(); }
 
 	virtual void Render() override; // Render viewports (for debug purposes)
 

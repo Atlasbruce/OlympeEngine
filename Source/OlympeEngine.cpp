@@ -24,7 +24,7 @@ Notes:
 #include "InputsManager.h"
 #include "GameState.h"
 //#include "system/Camerasytem.h"
-#include "system/Viewport.h"
+#include "system/ViewportManager.h"
 #include "videogame.h"
 #include "DataManager.h"
 #include "system/system_utils.h"
@@ -209,7 +209,38 @@ SDL_AppResult SDL_AppIterate(void* appstate)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);  /* black, full alpha */
     SDL_RenderClear(renderer);  /* start with a blank canvas. */
 
-    World::Get().Render();
+    // Render world once per viewport/player so each viewport gets its own draw pass
+    const auto& rects = ViewportManager::Get().GetViewRects();
+    const auto& players = ViewportManager::Get().GetPlayers();
+
+    if (rects.empty())
+    {
+        // fallback to previous single-render behavior
+        World::Get().Render();
+    }
+    else
+    {
+        // save current viewport to restore later
+        SDL_Rect prev = { 0, 0, GameEngine::screenHeight, GameEngine::screenHeight };
+        //SDL_RenderGetViewport(renderer, &prev);
+
+        for (size_t i = 0; i < rects.size(); ++i)
+        {
+            const auto& rf = rects[i];
+            SDL_Rect r = { (int)rf.x, (int)rf.y, (int)rf.w, (int)rf.h };
+            SDL_SetRenderViewport(renderer, &r);
+
+            // Optionally you can set camera state here using player id:
+            // short playerId = (i < players.size()) ? players[i] : 0;
+             CameraManager::Get().Apply(renderer, i);
+
+            // Draw world for this viewport. World::Render should use CameraManager to determine camera.
+            World::Get().Render();
+        }
+
+        // restore previous viewport
+        SDL_SetRenderViewport(renderer, &prev);
+    }
 
     SDL_RenderPresent(renderer);  /* put it all on the screen! */
 
@@ -261,3 +292,4 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result)
     SYSTEM_LOG << "----------- OLYMPE ENGINE V2 ------------" << endl;
     SYSTEM_LOG << "System shutdown completed\n" << endl;
 }
+

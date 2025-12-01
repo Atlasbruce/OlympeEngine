@@ -69,10 +69,11 @@ void AI_Player::RenderDebug()
 {
 
     SDL_SetRenderDrawColor(GameEngine::renderer, m_debugcolor.r, m_debugcolor.g, m_debugcolor.b, SDL_ALPHA_OPAQUE);
-    Vector vRenderPos = gao->position - CameraManager::Get().GetCameraPositionForPlayer();
+    Vector vRenderPos = gao->GetPosition() - CameraManager::Get().GetCameraPositionForPlayer();
 	Draw_FilledCircle(GameEngine::renderer, (int)vRenderPos.x, (int)vRenderPos.y, 5);
     //gao->boundingBox = { gao->position.x, gao->position.y, gao->width, gao->height };
-    SDL_RenderRect(GameEngine::renderer, &gao->boundingBox);/**/
+	SDL_FRect box = gao->GetBoundingBox();
+    SDL_RenderRect(GameEngine::renderer, &box);/**/
 
 }
 
@@ -98,9 +99,11 @@ void AI_Player::Process()
         if (m_keyUp) vy = -m_speed;
         if (m_keyDown) vy = m_keyDown ? m_speed : vy;
     }
-
-    gao->position.x += vx * fDt;
-    gao->position.y += vy * fDt;
+    // position
+	Vector vtmp = gao->GetPosition() + Vector(vx * fDt, vy * fDt, 0.0f);
+	gao->SetPosition(vtmp); 
+//    gao->position.x += vx * fDt;
+//    gao->position.y += vy * fDt;
 
 }
 

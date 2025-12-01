@@ -105,7 +105,7 @@
     <ClCompile Include="Source\system\SystemMenu.cpp">
       <Filter>Fichiers d%27en-tête\Engine Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Source\system\Viewport.cpp">
+    <ClCompile Include="Source\system\ViewportManager.cpp">
       <Filter>Fichiers d%27en-tête\Engine Rendering</Filter>
     </ClCompile>
     <ClCompile Include="Source\system\MouseManager.cpp">
@@ -248,7 +248,7 @@
     <ClInclude Include="Source\system\SystemMenu.h">
       <Filter>Fichiers d%27en-tête\Engine Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Source\system\Viewport.h">
+    <ClInclude Include="Source\system\ViewportManager.h">
       <Filter>Fichiers d%27en-tête\Engine Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Source\system\MouseManager.h">

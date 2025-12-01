@@ -71,6 +71,8 @@ public:
     // Backward-compatible single-apply: sets renderer viewport to first view and leaves it.
     void Apply(SDL_Renderer* renderer);
 
+    void Apply(SDL_Renderer* renderer, short playerID);
+
     // Utility: create/remove camera instance for a player
     void CreateCameraForPlayer(short playerID);
     void RemoveCameraForPlayer(short playerID);
@@ -84,6 +86,9 @@ public:
 
     // Handle incoming engine messages for camera control
     void OnEvent(const Message& msg);
+
+	//update the camera rectangles according to the viewports
+	void UpdateCameraRectsInstances();
 
 private:
     std::unordered_map<short, CameraInstance> m_cameraInstances;

@@ -46,7 +46,7 @@
     <ClCompile Include="Source\system\MouseManager.cpp" />
     <ClCompile Include="Source\system\SystemMenu.cpp" />
     <ClCompile Include="source\system\system_utils.cpp" />
-    <ClCompile Include="Source\system\Viewport.cpp" />
+    <ClCompile Include="Source\system\ViewportManager.cpp" />
     <ClCompile Include="Source\vector.cpp" />
     <ClCompile Include="source\VideoGame.cpp" />
     <ClCompile Include="Source\World.cpp" />
@@ -94,7 +94,7 @@
     <ClInclude Include="Source\system\system_utils.h" />
     <ClInclude Include="Source\system\SystemMenu.h" />
     <ClInclude Include="source\system\system_consts.h" />
-    <ClInclude Include="Source\system\Viewport.h" />
+    <ClInclude Include="Source\system\ViewportManager.h" />
     <ClInclude Include="Source\Task.h" />
     <ClInclude Include="Source\third_party\nlohmann\json.hpp" />
     <ClInclude Include="Source\vector.h" />

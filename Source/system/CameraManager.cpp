@@ -1,6 +1,6 @@
 #include "CameraManager.h"
 #include "EventManager.h"
-#include "Viewport.h"
+#include "ViewportManager.h"
 #include "../World.h"
 #include "../vector.h"
 #include "system_utils.h"
@@ -49,6 +49,9 @@ void CameraManager::CreateCameraForPlayer(short playerID)
 	inst.offset = { -GameEngine::screenWidth / 2.f, -GameEngine::screenHeight / 2.f, 0.0f };
     inst.zoom = 1.0f;
     m_cameraInstances[playerID] = inst;
+
+	// update the camera rectangles according to the viewports
+	UpdateCameraRectsInstances();
 }
 
 void CameraManager::RemoveCameraForPlayer(short playerID)
@@ -74,6 +77,10 @@ CameraManager::CameraInstance CameraManager::GetCameraForPlayer(short playerID =
     auto it0 = m_cameraInstances.find(0);
     if (it0 != m_cameraInstances.end()) 
         return it0->second;
+
+	// return default
+	CameraInstance d;
+	return d;
 }
 
 Vector CameraManager::GetCameraPositionForPlayer(short playerID) const
@@ -85,6 +92,9 @@ Vector CameraManager::GetCameraPositionForPlayer(short playerID) const
 	// fallback to player 0
 	auto it0 = m_cameraInstances.find(0);
 	if (it0 != m_cameraInstances.end()) return it0->second.position;
+
+	// return default
+    return Vector();
 }
 
 void CameraManager::Process()
@@ -99,7 +109,7 @@ void CameraManager::Process()
         if (cam.followTarget && cam.targetObject)
         {
             // Simple follow logic (could be smoothed)
-			Vector v2 = cam.targetObject->position + cam.offset;
+			Vector v2 = cam.targetObject->GetPosition() + cam.offset;
             cam.position = vBlend(cam.position, v2 , 0.75f);
 		}
     }
@@ -109,11 +119,31 @@ void CameraManager::Apply(SDL_Renderer* renderer)
 {
     // Backwards-compatible: set render viewport to the first viewport rectangle
     if (!renderer) return;
-    const auto& rects = Viewport::Get().GetViewRects();
+    const auto& rects = ViewportManager::Get().GetViewRects();
     if (rects.size() > 0)
     {
-		const SDL_Rect r = { (int)rects[0].x, (int)rects[0].y, (int)rects[0].w, (int)rects[0].h };
+		for (const auto& _r : rects)
+        {
+            const SDL_Rect r = { (int)_r.x, (int)_r.y, (int)_r.w, (int)_r.h };
+            SDL_SetRenderViewport(renderer, &r);
+        }
+    }
+}
+
+// New overload: apply viewport for given playerID (use ViewportManager to resolve player -> rect)
+void CameraManager::Apply(SDL_Renderer* renderer, short playerID)
+{
+    if (!renderer) return;
+    SDL_FRect rectf;
+    if (ViewportManager::Get().GetViewRectForPlayer(playerID, rectf))
+    {
+        const SDL_Rect r = { (int)rectf.x, (int)rectf.y, (int)rectf.w, (int)rectf.h };
         SDL_SetRenderViewport(renderer, &r);
+    }
+    else
+    {
+        // fallback to default behaviour if player not found
+        Apply(renderer);
     }
 }
 
@@ -122,7 +152,8 @@ void CameraManager::OnEvent(const Message& msg)
     // Generic event handler that updates camera instances based on message payload.
     // Messages can target specific player via msg.deviceId (player index) or default to 0.
     short playerID = 0;
-    if (msg.deviceId >= 0) playerID = static_cast<short>(msg.deviceId);
+    if (msg.deviceId >= 0) 
+        playerID = static_cast<short>(msg.deviceId);
 
     auto it = m_cameraInstances.find(playerID);
     if (it == m_cameraInstances.end())
@@ -176,6 +207,7 @@ void CameraManager::OnEvent(const Message& msg)
                 // try to get object by UID
                 cam.targetObject = (GameObject*)World::Get().GetObjectByUID(msg.targetUid);
 			}
+            UpdateCameraRectsInstances();
             break;
         }
         case EventType::Olympe_EventType_Camera_Target_Unfollow:
@@ -195,4 +227,20 @@ void CameraManager::OnEvent(const Message& msg)
         default:
             break;
     }
+}
+
+void CameraManager::UpdateCameraRectsInstances()
+{
+    // Update camera rectangles according to the viewports
+    const auto& rects = ViewportManager::Get().GetViewRects();
+    size_t index = 0;
+    for (auto& kv : m_cameraInstances)
+    {
+        if (index >= rects.size()) break;
+        const auto& r = rects[index];
+        // Update camera offset based on viewport size
+        CameraInstance& cam = kv.second;
+        cam.offset = { -r.w / 2.f, -r.h / 2.f, 0.0f };
+        index++;
+	}
 }
