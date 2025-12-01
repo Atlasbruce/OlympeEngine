@@ -1,6 +1,8 @@
 #include "drawing.h"
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_render.h>
 #include <cmath>
+#include "vector.h"
 
 // Portable pi definition for C++14 (avoids M_PI reliance)
 static const float PI = static_cast<float>(std::acos(-1.0));
@@ -101,7 +103,7 @@ void Draw_FilledCircle(SDL_Renderer* renderer, int cx, int cy, int radius)
 }
 //----------------------------------------------------------
 // Draws the outline of a triangle
-void Draw_Triangle(SDL_Renderer* renderer, SDL_FPoint p1, SDL_FPoint p2, SDL_FPoint p3)
+void Draw_Triangle(SDL_Renderer* renderer, Vector p1, Vector p2, Vector p3)
 {
     SDL_RenderLine(renderer, p1.x, p1.y, p2.x, p2.y);
     SDL_RenderLine(renderer, p2.x, p2.y, p3.x, p3.y);
@@ -110,16 +112,16 @@ void Draw_Triangle(SDL_Renderer* renderer, SDL_FPoint p1, SDL_FPoint p2, SDL_FPo
 //----------------------------------------------------------
 // Draws a filled triangle using SDL_RenderGeometry
 void Draw_FilledTriangle(SDL_Renderer* renderer,
-    const SDL_FPoint& p1,
-    const SDL_FPoint& p2,
-    const SDL_FPoint& p3,
+    const Vector& p1,
+    const Vector& p2,
+    const Vector& p3,
     SDL_FColor color)
 {
     SDL_Vertex vertices[3];
 
-    vertices[0].position = p1;
-    vertices[1].position = p2;
-    vertices[2].position = p3;
+    vertices[0].position = p1.ToFPoint();
+	vertices[1].position = p2.ToFPoint();
+    vertices[2].position = p3.ToFPoint();
 
     vertices[0].color = color;
     vertices[1].color = color;
@@ -134,7 +136,7 @@ void Draw_FilledTriangle(SDL_Renderer* renderer,
 //----------------------------------------------------------
 // Draws a filled hexagon using SDL_RenderGeometry
 void Draw_FilledHexagon(SDL_Renderer* renderer,
-    SDL_FPoint center,
+    Vector center,
     float radius,
     SDL_FColor color)
 {
@@ -143,7 +145,7 @@ void Draw_FilledHexagon(SDL_Renderer* renderer,
     int indices[numSides * 3];
 
     // Le centre du polygone
-    vertices[0].position = center;
+    vertices[0].position = center.ToFPoint();
     vertices[0].color = color;
     vertices[0].tex_coord = { 0, 0 };
 
@@ -170,10 +172,10 @@ void Draw_FilledHexagon(SDL_Renderer* renderer,
 }
 //----------------------------------------------------------
 // Draw hexagon outline
-void Draw_Hexagon(SDL_Renderer* renderer, SDL_FPoint center, float radius, SDL_Color color)
+void Draw_Hexagon(SDL_Renderer* renderer, Vector center, float radius, SDL_Color color)
 {
     const int numSides = 6;
-    SDL_FPoint verts[numSides];
+    Vector verts[numSides];
     // Use pre-calculated trig values for performance
     for (int i = 0; i < numSides; ++i) {
         verts[i].x = center.x + radius * HEXAGON_COS_ANGLES[i];

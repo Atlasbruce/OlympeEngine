@@ -150,6 +150,12 @@
     <ClCompile Include="Source\World.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="Source\vector.cpp">
+      <Filter>Fichiers d%27en-tête\Engine Systems\System Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\engine_utils.cpp">
+      <Filter>Fichiers d%27en-tête\Engine Systems\System Helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\GameEngine.h">
@@ -289,6 +295,12 @@
     </ClInclude>
     <ClInclude Include="source\ECS_Systems.h">
       <Filter>Fichiers d%27en-tête\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\vector.h">
+      <Filter>Fichiers d%27en-tête\Engine Systems\System Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\engine_utils.h">
+      <Filter>Fichiers d%27en-tête\Engine Systems\System Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

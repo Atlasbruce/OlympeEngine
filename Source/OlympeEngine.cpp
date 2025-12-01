@@ -226,7 +226,7 @@ SDL_AppResult SDL_AppIterate(void* appstate)
         if (timeTakenForFrame < FRAME_TARGET_TIME_MS)
         {
             // ... alors nous "dormons" (bloquons) le thread pour le temps restant.
-            Uint64 timeToWait = FRAME_TARGET_TIME_MS - timeTakenForFrame;
+            Uint32 timeToWait = FRAME_TARGET_TIME_MS - (Uint32)timeTakenForFrame;
             SDL_Delay(timeToWait);
             // Ce SDL_Delay garantit que chaque frame ne sera pas traitée plus vite que TARGET_FPS.
         }

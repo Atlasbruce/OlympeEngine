@@ -15,6 +15,7 @@ Purpose:
 #include "ObjectComponent.h"
 #include <vector>
 #include <SDL3/SDL_rect.h>
+#include "vector.h"
 
 
 enum class EntityType
@@ -45,7 +46,7 @@ public:
 // GameObject Properties--------------------------
 public:
 	// position
-	SDL_FPoint position = { 0., 0. };
+	Vector position;
     // Size
     float width = 100.0f;
     float height = 150.0f;

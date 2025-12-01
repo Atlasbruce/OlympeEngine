@@ -1,7 +1,11 @@
 #include "CameraManager.h"
 #include "EventManager.h"
 #include "Viewport.h"
+#include "../World.h"
+#include "../vector.h"
 #include <iostream>
+#include "system_utils.h"
+#include "../GameObject.h"
 
 void CameraManager::Initialize()
 {
@@ -48,7 +52,8 @@ void CameraManager::CreateCameraForPlayer(short playerID)
     if (m_cameraInstances.find(playerID) != m_cameraInstances.end()) return;
     CameraInstance inst;
     inst.playerId = playerID;
-    inst.x = 0.0f; inst.y = 0.0f; inst.zoom = 1.0f;
+    inst.position = { 0.0f, 0.0f, 0.0f };
+    inst.zoom = 1.0f;
     m_cameraInstances[playerID] = inst;
 }
 
@@ -69,6 +74,32 @@ CameraManager::CameraInstance CameraManager::GetCameraForPlayer(short playerID) 
     if (it0 != m_cameraInstances.end()) return it0->second;
     // default instance
     CameraInstance d; d.playerId = 0; return d;
+}
+
+void CameraManager::Process()
+{
+	if (m_cameraInstances.empty()) return;
+    
+    // For each camera instance, update position if following target, apply bounds, etc.
+    for (auto& kv : m_cameraInstances)
+    {
+        CameraInstance& cam = kv.second;
+        if (cam.followTarget && cam.targetUid >= 0)
+        {
+			GameObject* targetObj = (GameObject*)World::Get().GetObjectByUID(cam.targetUid);
+			if (!targetObj)
+            {
+				//we should stop following if target not found and remove camera instance from list
+                continue; // target not found
+            }
+            
+         
+            // Simple follow logic (could be smoothed)
+            Vector v1 = cam.position + cam.offset;
+			Vector v2 = targetObj->position;
+            cam.position = vBlend(v1, v2, 0.9f);
+		}
+    }
 }
 
 void CameraManager::Apply(SDL_Renderer* renderer)
@@ -108,21 +139,21 @@ void CameraManager::OnEvent(const Message& msg)
             if (msg.payload)
             {
                 SDL_Point* p = reinterpret_cast<SDL_Point*>(msg.payload);
-                cam.x = static_cast<float>(p->x);
-                cam.y = static_cast<float>(p->y);
+                cam.position.x = static_cast<float>(p->x);
+                cam.position.y = static_cast<float>(p->y);
             }
             else
             {
-                cam.x = msg.value;
-                cam.y = msg.value2;
+                cam.position.x = msg.value;
+                cam.position.y = msg.value2;
             }
             break;
         }
         case EventType::Olympe_EventType_Camera_MoveToPosition:
         {
             // For now perform instant move (no blending) - could be extended
-            cam.x = msg.value;
-            cam.y = msg.value2;
+            cam.position.x = msg.value;
+            cam.position.y = msg.value2;
             break;
         }
         case EventType::Olympe_EventType_Camera_ZoomTo:
@@ -132,7 +163,7 @@ void CameraManager::OnEvent(const Message& msg)
         }
         case EventType::Olympe_EventType_Camera_Reset:
         {
-            cam.x = 0; cam.y = 0; cam.zoom = 1.0f; cam.offset = {0,0}; cam.followTarget = false; cam.targetUid = -1;
+            cam.position.x = 0; cam.position.y = 0; cam.zoom = 1.0f; cam.offset = {0,0, 0}; cam.followTarget = false; cam.targetUid = -1;
             break;
         }
         case EventType::Olympe_EventType_Camera_Mode_SetBounds:
@@ -179,7 +210,7 @@ void CameraManager::OnEvent(const Message& msg)
             break;
         }
         case EventType::Olympe_EventType_Camera_Target_ClearOffset:
-            cam.offset = {0.f,0.f};
+            cam.offset = {0.f,0.f, 0.f};
             break;
         case EventType::Olympe_EventType_Camera_Viewport_Remove:
             break;

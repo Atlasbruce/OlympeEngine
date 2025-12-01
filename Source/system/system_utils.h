@@ -182,7 +182,6 @@ namespace Logging
 // Convenience macro (keeps existing code using SYSTEM_LOG)
 #define SYSTEM_LOG ::Logging::Logger()
 
-
 //-------------------------------------------------------------
 // JSON helpers (kept here for compatibility with existing code)
 //

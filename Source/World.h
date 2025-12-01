@@ -148,7 +148,21 @@ public:
         m_objectlist.push_back(obj);
 		SYSTEM_LOG << "World: Added object " + obj->name + " to World\n";
     }
-
+	//---------------------------------------------------------------------------------------------
+    Object*& GetObjectByUID(uint64_t uid)
+    {
+        static Object* ObjPtr = nullptr;
+        for (auto* obj : m_objectlist)
+        {
+            if (obj && obj->GetUID() == uid)
+            {
+				ObjPtr = obj;
+                return ObjPtr;
+            }
+        }
+        ObjPtr = nullptr;
+		return ObjPtr;
+   	}
     // provide access to object list for other systems (Factory)
     /*DEPRECATED OBJECT MANAGEMENT*/std::vector<Object*>& GetObjectList() { return m_objectlist; }
     /*DEPRECATED OBJECT MANAGEMENT*/const std::vector<Object*>& GetObjectList() const { return m_objectlist; }
