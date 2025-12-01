@@ -136,9 +136,9 @@ void AI_Player::OnEvent(const Message& msg)
             {
                 // controlId = axis index, value = normalized [-1..1]
                 if (msg.controlId == 0)
-                    m_axisX = msg.value;
+                    m_axisX = msg.param1;
                 else if (msg.controlId == 1)
-                    m_axisY = msg.value;
+                    m_axisY = msg.param1;
                 break;
             }
 

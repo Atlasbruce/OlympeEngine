@@ -43,7 +43,7 @@ void KeyboardManager::PostKeyEvent(SDL_KeyboardEvent const& ke)
     msg.deviceId = -1; // -1 is keyboard // static_cast<int>(ke.which);
     msg.controlId = static_cast<int>(ke.scancode);
     msg.state = ke.down ? 1 : 0;
-    msg.value = 0.0f;
+    msg.param1 = 0.0f;
 
     EventManager::Get().AddMessage(msg);
 }

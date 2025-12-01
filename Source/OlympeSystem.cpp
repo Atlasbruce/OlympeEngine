@@ -7,6 +7,7 @@
 #include <SDL3/SDL_surface.h>
 #include "drawing.h"
 #include "DataManager.h"
+#include "system/CameraManager.h"
 
 
 #define NUM_POINTS 500
@@ -204,8 +205,12 @@ void OlympeSystem::Render()
     SDL_SetRenderDrawColor(GameEngine::renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderPoints(GameEngine::renderer, snowpoints, SDL_arraysize(snowpoints));
 
+	Vector vPos = -CameraManager::Get().GetCameraPositionForPlayer();
+	// compute destination and source rectangles with CameraManager position offset if any
+	SDL_FRect destRect = { vPos.x, vPos.y, static_cast<float>(width), static_cast<float>(height) };
+	
     // Copy our texture onto the main renderer
-    SDL_RenderTexture(GameEngine::renderer, morphTexture, nullptr, nullptr);
+    SDL_RenderTexture(GameEngine::renderer, morphTexture, nullptr, &destRect);
 }
 
 void OlympeSystem::GenerateGradient()

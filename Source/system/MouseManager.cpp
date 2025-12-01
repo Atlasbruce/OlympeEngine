@@ -45,8 +45,8 @@ void MouseManager::PostButtonEvent(const SDL_MouseButtonEvent& be)
     msg.deviceId = static_cast<int>(be.which);
     msg.controlId = static_cast<int>(be.button);
     msg.state = be.down ? 1 : 0;
-    msg.value = be.x;
-    msg.value2 = be.y;
+    msg.param1 = be.x;
+    msg.param2 = be.y;
 
     EventManager::Get().AddMessage(msg);
 }
@@ -59,8 +59,8 @@ void MouseManager::PostMotionEvent(const SDL_MouseMotionEvent& me)
     msg.deviceId = static_cast<int>(me.which);
     msg.controlId = 0;
     msg.state = 0;
-    msg.value = me.x;
-    msg.value2 = me.y;
+    msg.param1 = me.x;
+    msg.param2 = me.y;
 
     EventManager::Get().AddMessage(msg);
 }

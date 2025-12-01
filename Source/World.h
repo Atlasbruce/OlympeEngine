@@ -23,6 +23,7 @@ World purpose: Manage the overall game world, including object management, level
 #include "Level.h" // add Level management
 #include "GameState.h"
 #include "OptionsManager.h"
+#include "system/CameraManager.h"
 
 // Include ECS related headers
 #include "Ecs_Entity.h"
@@ -111,6 +112,9 @@ public:
                 }
             }
         }
+
+		// Update Camera positions if needed after all objects have been processed
+        CameraManager::Get().Process();
     }
     //---------------------------------------------------------------------------------------------
     void Render()

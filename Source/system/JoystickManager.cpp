@@ -249,7 +249,7 @@ void JoystickManager::PostJoystickButtonEvent(SDL_JoystickID which, int button, 
     msg.deviceId = static_cast<int>(which);
     msg.controlId = button;
     msg.state = down ?1 :0;
-    msg.value = down ?1.0f :0.0f;
+    msg.param1 = down ?1.0f :0.0f;
 
     EventManager::Get().AddMessage(msg);
 }
@@ -267,7 +267,7 @@ void JoystickManager::PostJoystickAxisEvent(SDL_JoystickID which, int axis, Sint
     float normalized =0.0f;
     if (value >=0) normalized = (value /32767.0f);
     else normalized = (value /32768.0f);
-    msg.value = normalized;
+    msg.param1 = normalized;
 
     EventManager::Get().AddMessage(msg);
 }

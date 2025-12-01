@@ -81,11 +81,20 @@ short VideoGame::AddPlayer(string _playerclassname)
 	//Send message to ViewportManager to add a new player viewport
 	Message msg;
 	msg.sender = this;
+	msg.targetUid = player->GetUID();
 	msg.objectParamPtr = player;
 	msg.controlId = ((Player*)player)->m_PlayerID; // new player ID
 	msg.struct_type = EventStructType::EventStructType_Olympe;
-	msg.msg_type = EventType::Olympe_EventType_Camera_Viewport_Add;
+
+	msg.msg_type = EventType::Olympe_EventType_Camera_Target_Follow;
 	EventManager::Get().AddMessage(msg);
+
+	// Vieport mode enabled? 
+	//if ()
+    {
+        msg.msg_type = EventType::Olympe_EventType_Camera_Viewport_Add;
+        EventManager::Get().AddMessage(msg);
+    }
 
 	return m_playerIdCounter; // return the new player ID
 

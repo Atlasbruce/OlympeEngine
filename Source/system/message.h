@@ -35,17 +35,18 @@ struct Message
     int deviceId = -1;
     int controlId = -1;
     int state = 0;
-    float value = 0.0f;
-    float value2 = 0.0f;
-
-    void* payload = nullptr; // optional pointer for extended data
+    float param1 = 0.0f;
+    float param2 = 0.0f;
 
 	static Message Create(
 		EventStructType _st_ev_t,
 		EventType _ev_t,
 		void* _sender,
 		int _d_id,
-		int _c_id
+		int _c_id, 
+		uint64_t _t_uid = 0,
+		void* _obj_ptr = nullptr
+
 	)
 	{
 		Message msg;
@@ -54,6 +55,8 @@ struct Message
 		msg.sender = _sender;
 		msg.deviceId = _d_id;
 		msg.controlId = _c_id;
+		msg.targetUid = _t_uid;
+		msg.objectParamPtr = _obj_ptr;
 		return msg;
 	}
 };

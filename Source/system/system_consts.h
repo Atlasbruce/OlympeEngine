@@ -77,14 +77,11 @@ enum class EventType
 	Olympe_EventType_Camera_MoveToPosition, // smoothly move camera to position over time using blending (velocity)
 	Olympe_EventType_Camera_ZoomTo, // smoothly zoom camera to level over time using blending (velocity)
 	Olympe_EventType_Camera_Reset, // reset camera to default position/zoom
-	Olympe_EventType_Camera_Mode_SetBounds, // set camera movement bounds rectangle
 	Olympe_EventType_Camera_Mode_2D, // set camera to free 2D mode
 	Olympe_EventType_Camera_Mode_2_5D, // set camera to 2.5D mode (follow target on X axis only)
 	Olympe_EventType_Camera_Mode_Isometric, // set camera to isometric mode
 	Olympe_EventType_Camera_Target_Follow, // follow an object (given by UID or object pointer or object name)
 	Olympe_EventType_Camera_Target_Unfollow, // stop following object, return to free mode
-	Olympe_EventType_Camera_Target_SetOffset, // set camera target offset (from followed object position)
-	Olympe_EventType_Camera_Target_ClearOffset, // clear camera target offset (return to followed object position)
 	Olympe_EventType_Camera_Viewport_Add, // add a camera viewport according to the number of renderer textures on screen
 	Olympe_EventType_Camera_Viewport_Remove, // remove a camera viewport from renderers texture list on screen
 	Olympe_EventType_Camera_Viewport_Clear, // clear camera viewport (return to full renderer size)

@@ -1,16 +1,22 @@
+/*
+ Olympe Engine V2 2025
+ Nicolas Chereau
+ nchereau@gmail.com
+
+ Purpose: 
+ - CameraManager class to handle multiple camera instances for players
+
+*/
 #pragma once
 
 #include <SDL3/SDL.h>
 #include <unordered_map>
-#include <mutex>
 #include "message.h"
-#include "system_consts.h"
 #include "../object.h"
 #include "../vector.h"
 
-// Camera singleton that manages multiple per-player camera instances.
-// Exposes minimal API used by the engine: Initialize(), Shutdown(), Apply(renderer)
-// Additional helpers allow creating/removing cameras per player and query their transform.
+class GameObject;
+
 
 enum class CameraType
 {
@@ -35,16 +41,13 @@ public:
     struct CameraInstance
     {
         short playerId = 0;
-		Vector position;
-        Vector offset;
+        Vector position;
         float zoom = 1.0f;
         SDL_Rect bounds{INT_MIN, INT_MIN, INT_MAX, INT_MAX};
-        enum class Mode { Mode2D, Mode2_5D, ModeIsometric } mode = Mode::Mode2D;
         bool followTarget = false;
-        int targetUid = -1; // optional follow target UID
-        
-		CameraMode camMode = CameraMode::CameraMode_Standard_Fixed;
-		CameraType camType = CameraType::CameraType_2D;
+		GameObject* targetObject = nullptr; // optional follow target pointer
+		CameraMode mode = CameraMode::CameraMode_Standard_Fixed;
+		CameraType type = CameraType::CameraType_2D;
     };
 
 public:
@@ -73,13 +76,13 @@ public:
     // Get camera instance for a player. If not present returns default camera (player 0).
     CameraInstance GetCameraForPlayer(short playerID) const;
 
+	Vector GetCameraPositionForPlayer(short playerID = 0) const;
+
 	void Process(); // per-frame processing (if needed)
 
     // Handle incoming engine messages for camera control
     void OnEvent(const Message& msg);
 
 private:
-    mutable std::mutex m_mutex;
     std::unordered_map<short, CameraInstance> m_cameraInstances;
-
 };
