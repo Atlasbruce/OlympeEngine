@@ -5,6 +5,7 @@
 #include "../vector.h"
 #include "system_utils.h"
 #include "../GameObject.h"
+#include "../GameEngine.h"
 
 using EM = EventManager;
 
@@ -44,7 +45,8 @@ void CameraManager::CreateCameraForPlayer(short playerID)
     if (m_cameraInstances.find(playerID) != m_cameraInstances.end()) return;
     CameraInstance inst;
     inst.playerId = playerID;
-    inst.position = { 0.0f, 0.0f, 0.0f };
+	// set camera offset to screen center by default
+	inst.offset = { -GameEngine::screenWidth / 2.f, -GameEngine::screenHeight / 2.f, 0.0f };
     inst.zoom = 1.0f;
     m_cameraInstances[playerID] = inst;
 }
@@ -97,7 +99,8 @@ void CameraManager::Process()
         if (cam.followTarget && cam.targetObject)
         {
             // Simple follow logic (could be smoothed)
-            cam.position = vBlend(cam.position, cam.targetObject->position, 0.9f);
+			Vector v2 = cam.targetObject->position + cam.offset;
+            cam.position = vBlend(cam.position, v2 , 0.75f);
 		}
     }
 }

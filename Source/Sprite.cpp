@@ -30,7 +30,7 @@ void Sprite::RenderDebug()
 
 void Sprite::Render()
 {
-	Vector vRenderPos = gao->position - CameraManager::Get().GetCameraPositionForPlayer();
+	Vector vRenderPos = gao->position -CameraManager::Get().GetCameraPositionForPlayer();
 	gao->boundingBox = { vRenderPos.x, vRenderPos.y, gao->width, gao->height };
 
 	if (m_SpriteTexture)

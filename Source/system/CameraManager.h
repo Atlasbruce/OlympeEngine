@@ -14,6 +14,7 @@
 #include "message.h"
 #include "../object.h"
 #include "../vector.h"
+#include "../GameEngine.h"
 
 class GameObject;
 
@@ -42,6 +43,7 @@ public:
     {
         short playerId = 0;
         Vector position;
+        Vector offset = { -GameEngine::screenWidth / 2.f, -GameEngine::screenHeight / 2.f, 0.0f };
         float zoom = 1.0f;
         SDL_Rect bounds{INT_MIN, INT_MIN, INT_MAX, INT_MAX};
         bool followTarget = false;
