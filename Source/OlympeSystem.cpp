@@ -205,7 +205,7 @@ void OlympeSystem::Render()
     SDL_SetRenderDrawColor(GameEngine::renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
     SDL_RenderPoints(GameEngine::renderer, snowpoints, SDL_arraysize(snowpoints));
 
-	Vector vPos = -CameraManager::Get().GetCameraPositionForPlayer();
+	Vector vPos = -CameraManager::Get().GetCameraPositionForActivePlayer();
 	// compute destination and source rectangles with CameraManager position offset if any
 	SDL_FRect destRect = { vPos.x, vPos.y, static_cast<float>(width), static_cast<float>(height) };
 	

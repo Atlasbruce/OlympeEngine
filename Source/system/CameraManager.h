@@ -80,7 +80,7 @@ public:
     // Get camera instance for a player. If not present returns default camera (player 0).
     CameraInstance GetCameraForPlayer(short playerID) const;
 
-	Vector GetCameraPositionForPlayer(short playerID = 0) const;
+	Vector GetCameraPositionForActivePlayer(short playerID = 0) const;
 
 	void Process(); // per-frame processing (if needed)
 
@@ -90,6 +90,24 @@ public:
 	//update the camera rectangles according to the viewports
 	void UpdateCameraRectsInstances();
 
+    // Définit quel joueur est "actif" pour le rendu actuel
+    void SetActivePlayerID(short playerID) { m_activePlayerID = playerID; }
+	short GetActivePlayerID() const { return m_activePlayerID; }
+
+    // Récupère l'offset de la caméra active (à utiliser dans VisualComponent::Render)
+    Vector GetActiveCameraOffset() const
+    {
+        if (m_cameraInstances.find(m_activePlayerID) != m_cameraInstances.end()) 
+        {
+            Vector _v = m_cameraInstances.at(m_activePlayerID).offset;
+            _v -= m_cameraInstances.at(m_activePlayerID).position;
+            return _v;
+        }
+        // Fallback sur la caméra 0 ou identité si introuvable
+        return m_cameraInstances.count(0) ? m_cameraInstances.at(0).offset : Vector(0, 0, 0);
+    }
+
 private:
     std::unordered_map<short, CameraInstance> m_cameraInstances;
+	short m_activePlayerID = 0; // currently active player for camera and viewport rendering
 };

@@ -34,6 +34,8 @@ public:
     virtual void HandleEvent(const SDL_Event* ev);
     virtual void OnEvent(const Message& msg) override;
 
+	bool IsKeyboardAssigned() const { return m_keyboardAssigned; }
+
     string GetDevicesStatusUpdate();
     
 	//--------------------------------------------------------------

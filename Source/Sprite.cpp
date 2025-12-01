@@ -30,7 +30,7 @@ void Sprite::RenderDebug()
 
 void Sprite::Render()
 {
-	Vector vRenderPos = gao->GetPosition() - CameraManager::Get().GetCameraPositionForPlayer();
+	Vector vRenderPos = gao->GetPosition() - CameraManager::Get().GetCameraPositionForActivePlayer();
 	float _w, _h;
 	gao->GetSize(_w, _h);
 	gao->SetBoundingbox( {vRenderPos.x, vRenderPos.y, _w, _h} );

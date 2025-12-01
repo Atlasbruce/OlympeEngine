@@ -231,8 +231,8 @@ SDL_AppResult SDL_AppIterate(void* appstate)
             SDL_SetRenderViewport(renderer, &r);
 
             // Optionally you can set camera state here using player id:
-            // short playerId = (i < players.size()) ? players[i] : 0;
-             CameraManager::Get().Apply(renderer, i);
+            short playerId = (i < players.size()) ? players[i] : 0;
+            CameraManager::Get().Apply(renderer, playerId);
 
             // Draw world for this viewport. World::Render should use CameraManager to determine camera.
             World::Get().Render();

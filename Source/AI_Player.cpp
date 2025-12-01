@@ -69,7 +69,7 @@ void AI_Player::RenderDebug()
 {
 
     SDL_SetRenderDrawColor(GameEngine::renderer, m_debugcolor.r, m_debugcolor.g, m_debugcolor.b, SDL_ALPHA_OPAQUE);
-    Vector vRenderPos = gao->GetPosition() - CameraManager::Get().GetCameraPositionForPlayer();
+    Vector vRenderPos = gao->GetPosition() - CameraManager::Get().GetCameraPositionForActivePlayer();
 	Draw_FilledCircle(GameEngine::renderer, (int)vRenderPos.x, (int)vRenderPos.y, 5);
     //gao->boundingBox = { gao->position.x, gao->position.y, gao->width, gao->height };
 	SDL_FRect box = gao->GetBoundingBox();

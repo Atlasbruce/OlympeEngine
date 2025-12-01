@@ -45,7 +45,9 @@ VideoGame::VideoGame()
 	Factory::Get().AddComponent("OlympeSystem", testGao);
 
     // Create default player 0
-    AddPlayer();
+    //AddPlayer();
+    //AddPlayer();
+    //AddPlayer();
 
 	SYSTEM_LOG << "VideoGame created\n";
 }
@@ -64,8 +66,15 @@ short VideoGame::AddPlayer(string _playerclassname)
 	// check if there is some input devices available
     if (IM::Get().GetAvailableJoystickCount() <= 0)
     {
-        SYSTEM_LOG << "VideoGame::AddPlayer: No input devices available to add a new player\n";
-        return -1;
+        if (! IM::Get().IsKeyboardAssigned())
+        {
+            SYSTEM_LOG << "VideoGame::AddPlayer: No joysticks available, but keyboard is free to use\n";
+        }
+		else
+            {
+                SYSTEM_LOG << "VideoGame::AddPlayer: No input devices available to add a new player\n";
+                return -1;
+            }
 	}
 
 
@@ -85,7 +94,7 @@ short VideoGame::AddPlayer(string _playerclassname)
 	msg.sender = this;
 	msg.targetUid = player->GetUID();
 	msg.objectParamPtr = player;
-	msg.controlId = ((Player*)player)->m_PlayerID; // new player ID
+	msg.param1 = ((Player*)player)->m_PlayerID; // new player ID
 	msg.struct_type = EventStructType::EventStructType_Olympe;
 
 	msg.msg_type = EventType::Olympe_EventType_Camera_Target_Follow;

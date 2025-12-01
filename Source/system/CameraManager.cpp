@@ -12,7 +12,7 @@ using EM = EventManager;
 void CameraManager::Initialize()
 {
     // Create default camera for player 0
-    CreateCameraForPlayer(0);
+  //  CreateCameraForPlayer(0);
 
     // Register to camera-related events
     EM::Get().Register(this, EventType::Olympe_EventType_Camera_Shake);
@@ -83,15 +83,19 @@ CameraManager::CameraInstance CameraManager::GetCameraForPlayer(short playerID =
 	return d;
 }
 
-Vector CameraManager::GetCameraPositionForPlayer(short playerID) const
+Vector CameraManager::GetCameraPositionForActivePlayer(short playerID) const
 {
 	if (m_cameraInstances.empty()) return Vector();
 
-	auto it = m_cameraInstances.find(playerID);
-	if (it != m_cameraInstances.end()) return it->second.position;
+	short pid = GetActivePlayerID();
+
+	auto it = m_cameraInstances.find(pid);
+	if (it != m_cameraInstances.end()) 
+        return it->second.position;
 	// fallback to player 0
 	auto it0 = m_cameraInstances.find(0);
-	if (it0 != m_cameraInstances.end()) return it0->second.position;
+	if (it0 != m_cameraInstances.end()) 
+        return it0->second.position;
 
 	// return default
     return Vector();
@@ -134,6 +138,9 @@ void CameraManager::Apply(SDL_Renderer* renderer)
 void CameraManager::Apply(SDL_Renderer* renderer, short playerID)
 {
     if (!renderer) return;
+    
+    SetActivePlayerID(playerID);
+
     SDL_FRect rectf;
     if (ViewportManager::Get().GetViewRectForPlayer(playerID, rectf))
     {
@@ -149,11 +156,14 @@ void CameraManager::Apply(SDL_Renderer* renderer, short playerID)
 
 void CameraManager::OnEvent(const Message& msg)
 {
+    if (msg.struct_type != EventStructType::EventStructType_Olympe)
+		return;
+
     // Generic event handler that updates camera instances based on message payload.
     // Messages can target specific player via msg.deviceId (player index) or default to 0.
     short playerID = 0;
-    if (msg.deviceId >= 0) 
-        playerID = static_cast<short>(msg.deviceId);
+    if (msg.param1 >= 0) 
+        playerID = static_cast<short>(msg.param1);
 
     auto it = m_cameraInstances.find(playerID);
     if (it == m_cameraInstances.end())
