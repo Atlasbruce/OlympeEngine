@@ -9,13 +9,13 @@ Purpose:
 */
 
 #include "Npc.h"
-#include "Factory.h"
-bool Npc::FactoryRegistered = Factory::Get().Register("Npc", Npc::Create);
+#include "ObjectFactory.h"
+bool Npc::FactoryRegistered = ObjectFactory::Get().Register("Npc", Npc::Create);
 Object* Npc::Create()
 {
 	// Create a new Npc instance each time (not static)
 	Npc* npc = new Npc();
 	npc->name = "Npc";
-	Factory::Get().AddComponent("AI_Npc", npc);
+	ObjectFactory::Get().AddComponent("AI_Npc", npc);
 	return npc;
 }

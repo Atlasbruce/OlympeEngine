@@ -1,5 +1,5 @@
 #include "OlympeSystem.h"
-#include "Factory.h"
+#include "ObjectFactory.h"
 #include "GameEngine.h"
 #include <cmath>
 #include <cstdlib>
@@ -25,7 +25,7 @@ static SDL_FPoint snowpoints[NUM_POINTS];
 static float snowpoint_speeds[NUM_POINTS];
 
 
-bool OlympeSystem::FactoryRegistered = Factory::Get().Register("OlympeSystem", OlympeSystem::Create);
+bool OlympeSystem::FactoryRegistered = ObjectFactory::Get().Register("OlympeSystem", OlympeSystem::Create);
 ObjectComponent* OlympeSystem::Create()
 {
 	return new OlympeSystem();

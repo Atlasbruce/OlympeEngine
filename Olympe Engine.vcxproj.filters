@@ -147,14 +147,14 @@
     <ClCompile Include="Source\PanelManager.cpp">
       <Filter>Fichiers d%27en-tête\Engine Rendering\Panels</Filter>
     </ClCompile>
-    <ClCompile Include="Source\World.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="Source\vector.cpp">
       <Filter>Fichiers d%27en-tête\Engine Systems\System Helpers</Filter>
     </ClCompile>
     <ClCompile Include="Source\engine_utils.cpp">
       <Filter>Fichiers d%27en-tête\Engine Systems\System Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\World.cpp">
+      <Filter>Fichiers d%27en-tête\Engine Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

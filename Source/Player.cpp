@@ -11,16 +11,16 @@ Purpose:
 */
 
 #include "Player.h"
-#include "Factory.h"
+#include "ObjectFactory.h"
 #include "Sprite.h"
-bool Player::FactoryRegistered = Factory::Get().Register("Player", Player::Create);
+bool Player::FactoryRegistered = ObjectFactory::Get().Register("Player", Player::Create);
 Object* Player::Create()
 {
 	// Create a new Player instance each time (not static)
 	Player *player = new Player();
 	player->name = "Player";
-	Factory::Get().AddComponent("AI_Player", player);
-	Sprite* sprite = (Sprite*)Factory::Get().AddComponent("Sprite", player);
+	ObjectFactory::Get().AddComponent("AI_Player", player);
+	Sprite* sprite = (Sprite*)ObjectFactory::Get().AddComponent("Sprite", player);
 	if (SDL_rand(2) == 0)
 		sprite->SetSprite("player_entity_male", "Resources/entity_male.png");
 	else

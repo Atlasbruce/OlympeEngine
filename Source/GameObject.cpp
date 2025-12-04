@@ -1,5 +1,5 @@
 #include "GameObject.h"
-#include "Factory.h"
+#include "ObjectFactory.h"
 #include "system/system_utils.h"
 #include <sstream>
 #include <iomanip>
@@ -10,7 +10,7 @@
 #include "GameEngine.h"
 //extern SDL_Renderer* renderer;
 
-bool GameObject::FactoryRegistered = Factory::Get().Register("GameObject", Create); // []() { return new GameObject(); });
+bool GameObject::FactoryRegistered = ObjectFactory::Get().Register("GameObject", Create); // []() { return new GameObject(); });
 
 Object* GameObject::Create()
 {

@@ -1,11 +1,11 @@
 #include "Sprite.h"
-#include "Factory.h"
+#include "ObjectFactory.h"
 #include "GameEngine.h"
 #include "GameObject.h"
 #include <SDL3/SDL_render.h>
 #include "DataManager.h"
 
-bool Sprite::FactoryRegistered = Factory::Get().Register("Sprite", Sprite::Create);
+bool Sprite::FactoryRegistered = ObjectFactory::Get().Register("Sprite", Sprite::Create);
 ObjectComponent* Sprite::Create()
 {
 	return new Sprite();

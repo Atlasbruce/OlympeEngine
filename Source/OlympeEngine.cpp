@@ -18,7 +18,7 @@ Notes:
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL_messagebox.h>
 #include "gameengine.h"
-#include "Factory.h"
+#include "ObjectFactory.h"
 #include "World.h"
 #include "system/JoystickManager.h"
 #include "InputsManager.h"

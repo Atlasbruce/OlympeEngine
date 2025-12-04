@@ -3,10 +3,10 @@
 */
 #include "AI_Npc.h"
 #include "GameObject.h"
-#include "Factory.h"
+#include "ObjectFactory.h"
 
 
-bool AI_Npc::FactoryRegistered = Factory::Get().Register("AI_Npc", AI_Npc::Create);
+bool AI_Npc::FactoryRegistered = ObjectFactory::Get().Register("AI_Npc", AI_Npc::Create);
 ObjectComponent* AI_Npc::Create()
 {
 	return new AI_Npc();

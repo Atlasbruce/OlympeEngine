@@ -19,7 +19,7 @@
 #include <vector>
 #include <unordered_map>
 #include "system/system_utils.h"
-#include "Factory.h"
+#include "ObjectFactory.h"
 #include "GameEngine.h"
 
 //for tests

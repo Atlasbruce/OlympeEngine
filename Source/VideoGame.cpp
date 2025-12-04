@@ -40,9 +40,9 @@ VideoGame::VideoGame()
 	// Ensure default state is running
 	GameStateManager::SetState(GameState::GameState_Running);
 	
-	testGao = (GameObject*)Factory::Get().CreateObject("GameObject");
+	testGao = (GameObject*)ObjectFactory::Get().CreateObject("GameObject");
 	testGao->name = "OlympeSystem";
-	Factory::Get().AddComponent("OlympeSystem", testGao);
+	ObjectFactory::Get().AddComponent("OlympeSystem", testGao);
 
     // Create default player 0
     //AddPlayer();
@@ -79,13 +79,13 @@ short VideoGame::AddPlayer(string _playerclassname)
 
 
 	// check if class name is valid and registered in Factory
-    if (_playerclassname.empty() || ! Factory::Get().IsRegistered(_playerclassname))
+    if (_playerclassname.empty() || ! ObjectFactory::Get().IsRegistered(_playerclassname))
     {
         SYSTEM_LOG << "VideoGame::AddPlayer: Player class name '" << _playerclassname << "' not found in Factory, using default 'Player'\n";
         _playerclassname = "Player";
     }
 
-    GameObject* player = (GameObject*)Factory::Get().CreateObject(_playerclassname);
+    GameObject* player = (GameObject*)ObjectFactory::Get().CreateObject(_playerclassname);
 	player->name = "Player_" + std::to_string(m_playerIdCounter);
 	m_players.push_back(player);
 
@@ -430,7 +430,7 @@ bool VideoGame::LoadGame(int slot)
             }
         }
 
-        Object* o = Factory::Get().CreateObject(className);
+        Object* o = ObjectFactory::Get().CreateObject(className);
         GameObject* go = dynamic_cast<GameObject*>(o);
         if (go)
         {

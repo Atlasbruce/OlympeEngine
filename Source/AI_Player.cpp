@@ -1,6 +1,6 @@
 #include "AI_Player.h"
 #include "GameObject.h"
-#include "Factory.h"
+#include "ObjectFactory.h"
 #include "system/EventManager.h"
 #include "system/system_consts.h"
 #include <iostream>
@@ -14,7 +14,7 @@ using namespace std;
 using EM = EventManager;
 using IM = InputsManager;
 
-bool AI_Player::FactoryRegistered =  Factory::Get().Register("AI_Player", AI_Player::Create);
+bool AI_Player::FactoryRegistered =  ObjectFactory::Get().Register("AI_Player", AI_Player::Create);
 ObjectComponent* AI_Player::Create()
 {
     return new AI_Player();

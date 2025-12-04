@@ -8,7 +8,6 @@ Purpose:
 
 */
 #pragma once
-#include "object.h"
 #include "Object.h"
 #include <map>
 #include <string>
@@ -21,25 +20,25 @@ Purpose:
 #include "system/EventManager.h"
 #include "ObjectComponent.h"
 
-class Factory: public Object
+class ObjectFactory: public Object
 {
 public:
     using CreatorFunction = std::function<Object* ()>;
     std::map<std::string, CreatorFunction> m_registeredCreators;
 
-    Factory()
+    ObjectFactory()
     {
-		name = "Factory";
-		SYSTEM_LOG << "Factory created and Initialized\n";
+		name = "ObjectFactory";
+		SYSTEM_LOG << "ObjectFactory created and Initialized\n";
 		// register to event manager to receive object events
 		EventManager::Get().Register(this, EventType::Olympe_EventType_Object_Create);
 		EventManager::Get().Register(this, EventType::Olympe_EventType_Object_Destroy);
 		EventManager::Get().Register(this, EventType::Olympe_EventType_Property_Add);
 		EventManager::Get().Register(this, EventType::Olympe_EventType_Property_Remove);
     };
-    virtual ~Factory()
+    virtual ~ObjectFactory()
     {
-        SYSTEM_LOG << "Factory destroyed\n";
+        SYSTEM_LOG << "ObjectFactory destroyed\n";
 		EventManager::Get().Unregister(this, EventType::Olympe_EventType_Object_Create);
 		EventManager::Get().Unregister(this, EventType::Olympe_EventType_Object_Destroy);
 		EventManager::Get().Unregister(this, EventType::Olympe_EventType_Property_Add);
@@ -49,12 +48,12 @@ public:
     virtual ObjectType GetObjectType() const { return ObjectType::Singleton; }
 
     // Per-class singleton accessors
-    static Factory& GetInstance()
+    static ObjectFactory& GetInstance()
     {
-        static Factory instance;
+        static ObjectFactory instance;
         return instance;
     }
-    static Factory& Get() { return GetInstance(); }
+    static ObjectFactory& Get() { return GetInstance(); }
 
     /**
      * @brief Enregistre une fonction de création pour un nom de classe donné.
@@ -96,7 +95,7 @@ public:
         auto it = m_registeredCreators.find(className);
         if (it == m_registeredCreators.end())
         {
-            SYSTEM_LOG << "Error: Factory::CreateObject: Class '" << className << "' not found/registered in factory." << std::endl;
+            SYSTEM_LOG << "Error: ObjectFactory::CreateObject: Class '" << className << "' not found/registered in factory." << std::endl;
             return nullptr;
         }
 		Object* o = it->second(); // Cann the Create of the Object
@@ -109,7 +108,7 @@ public:
         auto it = m_registeredCreators.find(className);
         if (it == m_registeredCreators.end())
         {
-            SYSTEM_LOG << "Error: Class Factory::AddComponent: '" << className << "' not found/registered in factory." << std::endl;
+            SYSTEM_LOG << "Error: Class ObjectFactory::AddComponent: '" << className << "' not found/registered in factory." << std::endl;
             return nullptr;
         }
 
@@ -127,7 +126,7 @@ public:
     {
         if (msg.struct_type != EventStructType::EventStructType_Olympe)
         {
-			SYSTEM_LOG << "Error Factory::OnEvent: received non-Olympe event, ignoring.\n";
+			SYSTEM_LOG << "Error ObjectFactory::OnEvent: received non-Olympe event, ignoring.\n";
             return;
         }
 
@@ -242,7 +241,7 @@ class AutoRegister
 public:
     AutoRegister(const std::string& className)
     {
-        Factory::GetInstance().Register(className, createT<T>);
+        ObjectFactory::GetInstance().Register(className, createT<T>);
     }
 };
 
